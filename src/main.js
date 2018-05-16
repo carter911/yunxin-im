@@ -19,7 +19,9 @@ var axios_instance = axios.create({
   transformRequest: [function (data) {
     return Qs.stringify(data)
   }],
-  headers: { userid: '530', platform: 'web', 'Content-Type': 'application/x-www-form-urlencoded' }
+  headers: { userid: '530', 
+             platform: 'web', 
+            'Content-Type': 'application/x-www-form-urlencoded' }
 })
 
 Vue.use(VueAxios, axios_instance)

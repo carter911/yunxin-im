@@ -67,6 +67,7 @@ export default {
           }
         });
       },
+      
       getCode() {
         if(this.form.mobile == "" || this.form.mobile == undefined || this.form.mobile == null ){
           this.$message({message: '请输入手机号码',type: 'error'});
