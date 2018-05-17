@@ -7,6 +7,8 @@ import LoginOut from '@/pages/common/loginout.vue'
 import Notfind from '@/pages/common/notfind.vue'
 import Admin from '@/pages/Admin.vue'
 Vue.use(Router)
+
+
 export default new Router({
   mode: 'history',
   routes: [

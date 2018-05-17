@@ -67,7 +67,7 @@ export default {
           }
         });
       },
-      
+
       getCode() {
         if(this.form.mobile == "" || this.form.mobile == undefined || this.form.mobile == null ){
           this.$message({message: '请输入手机号码',type: 'error'});
@@ -106,8 +106,10 @@ export default {
         }, response => {
             // error callback
         })
-      
+
       },
+
+      
       loginApp(){
         var loginUrl = 'loginApp';
         var param = {'mobile':this.form.mobile,'code':this.form.code}
@@ -157,6 +159,7 @@ export default {
     height: 30px;
     
   }
+
   .input{
     margin-top:20px
   }
