@@ -86,9 +86,14 @@
     <!-- 右侧显示详情界面 -->
     <div id="left-popup" class="left-popup" :style="{'right' : show_right_pop ? '0px' : '-100%' }"> 
              <TaskAndRemindList :pid="this.pid" 
-                                :pType="1"
+                                :pType="this.show_pop_type"
                                 @action_close_pop="action_close_pop"></TaskAndRemindList>
     </div>
+
+    <div>
+        <NewRemindAdd :pid="this.pid"></NewRemindAdd>
+    </div>
+    
 
     </div>
    
@@ -103,14 +108,15 @@
     import TaskAndRemindList from  './TaskAndRemindList.vue'
     import RemindItem from "../../components/project/RemindItem.vue"
     import TaskItem from "../../components/project/TaskItem.vue"
-
+    import NewRemindAdd from "../../components/remind/NewRemindAdd.vue"
 
     let date = new Date();
     export default {
         components : {
             TaskAndRemindList,
             RemindItem,
-            TaskItem
+            TaskItem,
+            NewRemindAdd
         },
 
         props:{
@@ -128,7 +134,7 @@
                 user_id : 530,
 
                 show_right_pop : false,
-
+                show_pop_type : 0 ,
             }      
         },
     
@@ -150,10 +156,16 @@
 
     methods: {
         getMore(type) {
-            Log.L("----->>get More----->>" + type )
+            // Log.L("----->>get More----->>" + type )
+            // this.show_pop_type = type; 
+            // this.show_right_pop = true;
+            if(type === 0) {
+                this.$router.push("/project/remind/remind_list/" + this.pid);
 
-        
-            this.show_right_pop = true;
+            }else {
+                this.$router.push("/project/task/task_list/" + this.pid);
+                
+            }
         },
 
         action_close_pop() {
@@ -193,7 +205,12 @@
 
                 let result = response.data;
                 if(result.code == 200) {
-                    this.remindList = result.data || [];
+                    if(null != result.data) {
+                        for(let i = 0 ; i < Math.min(2, result.data.length) ; i++) {
+                            this.remindList[this.remindList.length]  = result.data[i];
+                        }
+                    }
+                    
                 }else {
                     this.remindList = [];
                 }
@@ -216,22 +233,29 @@
 
              let result = response.data;
              if(result.code == 200 ){
-                 this.taskList = result.data || [] ;
-             } else {
+                if(null != result.data && result.data.length > 0) {
+                    for(let i = 0 ; i < Math.min(2, result.data) ; i++) {
+                        this.taskList[this.taskList.length] = result.data[i];
+                    }
+                }
+
+              } else {
                  this.taskList = [];
              }
+        
          }, response => {
              //TODO 
             
          })             
-        },
+      },
 
     },
 
     //事件监听
     watch : {
         pid : function(val , oldVal) {
-            console.log("--->>" + val + "---" + oldVal)
+            console.log("--xxxx--->>" + val + "---" + oldVal)
+            if(val == undefined || val == '' || val.length == 0) return;
 
             this.require_project_detail();
             this.require_remind_list();
@@ -312,14 +336,14 @@
     z-index: 999;
     right: -100%;
     top: 0px;
-    width: 800px;
+    width: 600px;
     max-width: 100%;
     background: #fff;
     display: none;
     border: 1px solid #d2d2d2;
     border-right: none;
     top: 60px; 
-    height: 700px; 
+    height: 640px; 
     display: block;
 }
 

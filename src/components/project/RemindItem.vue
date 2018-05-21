@@ -1,7 +1,7 @@
 <template>
         <div>
-            <div class="remind-item" v-for="(item,index) in this.remindList"  v-if="index < 2">
-                <el-row>
+            <div class="remind-item" v-for="(item,index) in this.remindList" :key="index" v-if="index < 2"  @click="getRemindDetail(item.id)">
+                <el-row >
                     <el-col :span="1"> 
                         <div style="text-align: center; height:40px;">
                                                 <div class="product-remind-dot"/>
@@ -14,15 +14,14 @@
 
                     <el-col :span="15">
                         <div class="product-remind-item">
-                            <div class="product-remind-item-title">{{item.from}}</div>
+                            <div class="product-remind-item-title">{{ item.from }}</div>
                             <div class="product-remind-item-content"> {{ parse_remind_detail(item.detail) }}</div>
                         </div>
-
                     </el-col>
 
                     <el-col :span="6">
                         <div class="product-remind-item-time">
-                            <span class="product-remind-time-content">2018-02-23</span>
+                            <span class="product-remind-time-content"> {{ item.startTime | formatDate}}</span>
                         </div>
                     </el-col>
                 </el-row>
@@ -49,7 +48,11 @@ export default {
     },
 
     methods : {
+        getRemindDetail(id) {
+            this.$router.push("/project/remind/detail/" + id)
+        },
 
+    
         get_remind_avatar(item) {
             if(item == null || item == undefined || item.createUser == null || item.createUser.avatar == undefined) 
                 return Log.DEFAULT_IMAGE();

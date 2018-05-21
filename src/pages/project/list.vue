@@ -14,7 +14,7 @@
 
         <!-- 主体展示container -->
         <el-main class='project_content_class' v-loading='request_data_loading' >
-          <div v-for="item in project_list" class="project_list" v-if="!data_is_empty" @click="onItemClick(item)">
+          <div v-for="item in project_list" class="project_list" :key="item.id" v-if="!data_is_empty" @click="onItemClick(item)">
             <div>{{item.name}}</div>
 
             <el-progress :percentage="item.schedule" v-if="currentStatus <= 0" ></el-progress>
@@ -113,6 +113,9 @@ export default {
             if(result.code == 200){
               this.project_list = result.data;
               if(result.data != null){
+                //获取当前pid
+                this.current_pid = "" + result.data[0].id;
+
                 this.projectTotal = parseInt(result.data[0]['count']);
               }
               
@@ -163,9 +166,16 @@ export default {
           console.log("----the current_pid-----" + this.current_pid);
       }
   },
-  mounted:function(){
-        this.get_list();
-  }
+
+  created() {
+    this.get_list();
+  },
+
+  // mounted:function(){
+    
+  // }
+
+
 }
 </script>
 <style scoped>

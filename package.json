@@ -13,6 +13,7 @@
   "dependencies": {
     "axios": "^0.18.0",
     "element-ui": "^2.3.7",
+    "qiniu-js": "^2.2.2",
     "qs": "^6.5.2",
     "vue": "^2.5.2",
     "vue-axios": "^2.1.1",

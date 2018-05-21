@@ -13,13 +13,16 @@ import ElementUI from 'element-ui'
 import 'element-ui/lib/theme-chalk/index.css'
 Vue.use(ElementUI, { size: 'small' })
 
+import { formatDate } from '@/common/date.js'
+
+
 Vue.use(Vuex)
 var axios_instance = axios.create({
   baseURL: 'http://dev.e-shigong.com/',
   transformRequest: [function (data) {
     return Qs.stringify(data)
   }],
-  headers: { userid: '530', 
+  headers: { userid: '1585', 
              platform: 'web', 
             'Content-Type': 'application/x-www-form-urlencoded' }
 })
@@ -32,6 +35,7 @@ const store = new Vuex.Store({
     user_id: 0,
     deviceid: ''
   },
+
   mutations: {
     changeLogin (state, status) {
       state.isLogin = status
@@ -56,11 +60,54 @@ router.beforeEach((to, from, next) => {
   }
 })
 
+//定义remote标签 引入外部js文件
+Vue.component('remote-script',{
+  render: function (createElement) {
+    var self = this;
+    return createElement('script', {
+        attrs: {
+            type: 'text/javascript',
+            src: this.src
+        },
+
+        on: {
+            load: function (event) {
+                self.$emit('load', event);
+            },
+            error: function (event) {
+                self.$emit('error', event);
+            },
+            
+            readystatechange: function (event) {
+                if (this.readyState == 'complete') {
+                    self.$emit('load', event);
+                }
+            }
+        }
+    });
+},
+
+props: {
+    src: {
+        type: String,
+        required: true
+      }
+  }
+})
+
+//时间格式化
+Vue.filter('formatDate', function(time) {
+  let date = new Date(time * 1000) 
+  return formatDate(date, "yyyy-MM-dd")
+}) 
+
+
 var vm = new Vue({
   el: '#app',
   router,
   store,
   components: { App },
   template: '<App/>',
-  render: h => h(App)
+  render: h => h(App),
+
 })

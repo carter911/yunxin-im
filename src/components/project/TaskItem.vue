@@ -1,6 +1,6 @@
 <template>
         <div>
-             <div class="remind-item" v-for="(item,index) in taskList" v-if="index< 2" >
+             <div class="remind-item" v-for="(item,index) in taskList" :key="index"  @click="gotoDetail(item.id)" >
                    <el-row>
                         <el-col :span="1"> <div>
                                             <div class="product-remind-dot"/>
@@ -20,7 +20,7 @@
 
                                 <el-col :span="6">
                                         <div class="product-remind-item-time">
-                                            <span class="product-remind-time-content">2018-02-23</span>
+                                            <span class="product-remind-time-content"> {{ item.startTime | formatDate}}</span>
                                         </div>
                                 </el-col>
                         </el-row>
@@ -39,10 +39,14 @@ export default {
         taskList :  {
             type : Array,
             required:true ,
-        }
+        }, 
     },
 
     methods : {
+        gotoDetail(id) {
+            this.$router.push("/project/task/detail/" + id);
+        },
+
         get_task_avatar(item ) {
             return Log.DEFAULT_IMAGE();
         },
