@@ -28,6 +28,8 @@
   </div>
 </template>
 <script>
+import cookie from "../utils/cookie";
+import pageUtil from "../utils/page";
 export default {
   data() {
       return {
@@ -113,11 +115,13 @@ export default {
             var result = response.data
             console.log(result)
             if(result.code == 200){
-              sessionStorage.setItem('teoken',result.data.token);
-              sessionStorage.setItem('user_id',result.data.user.id);
-              sessionStorage.setItem('user',JSON.stringify(result.data.user));
-              sessionStorage.setItem('isLogin',1);
-              this.$store.commit('changeLogin','1')   
+              cookie.setCookie("uid", "sgb"+result.data.user.id);
+              cookie.setCookie("sdktoken", 123456);
+              // sessionStorage.setItem('teoken',result.data.token);
+              // sessionStorage.setItem('user_id',result.data.user.id);
+              // sessionStorage.setItem('user',JSON.stringify(result.data.user));
+              // sessionStorage.setItem('isLogin',1);
+              // this.$store.commit('changeLogin','1')   
               //console.log(this.$store.state.isLogin);
               this.$router.push({name: 'home'});
             }else{

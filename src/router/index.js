@@ -6,9 +6,8 @@ import Login from '@/pages/common/login.vue'
 import LoginOut from '@/pages/common/loginout.vue'
 import Notfind from '@/pages/common/notfind.vue'
 import Admin from '@/pages/Admin.vue'
+import Chat from '@/pages/chat/index.vue'
 Vue.use(Router)
-
-
 export default new Router({
   mode: 'history',
   routes: [
@@ -32,6 +31,11 @@ export default new Router({
           name: 'admin_project',
           path: 'project/:status',
           component: ProjectList
+        },
+        {
+          name: 'admin_chat',
+          path: 'chat',
+          component: Chat
         }
       ]
     },
