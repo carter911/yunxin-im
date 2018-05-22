@@ -7,18 +7,18 @@
                                     </div>
                         </el-col>
 
-                        <el-col :span="2">
+                        <el-col :span="3">
                                     <img :src="get_task_avatar(item)" class="project-remind-avatar"/>
                                 </el-col>
 
-                                <el-col :span="15">
+                                <el-col :span="16">
                                         <div class="product-remind-item">
                                             <div class="product-remind-item-title"> {{ item.name}}</div>
                                             <div class="product-remind-item-content"> {{ parse_task_detail(item.detail) }}</div>
                                         </div>
                                 </el-col>
 
-                                <el-col :span="6">
+                                <el-col :span="4">
                                         <div class="product-remind-item-time">
                                             <span class="product-remind-time-content"> {{ item.startTime | formatDate}}</span>
                                         </div>

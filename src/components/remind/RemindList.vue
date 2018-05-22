@@ -1,7 +1,7 @@
 <!-- 提醒列表 未读&全部列表 -->
 
 <template>
-        <div>
+        <div class="remind-list-content">
                 <div class="remind-title"> 
                     <el-row>
                             <el-col :span="20">
@@ -75,7 +75,6 @@ export default {
      }
  },
 
-
 methods : {
     handleSelect(type){
         //TODO
@@ -98,7 +97,7 @@ methods : {
 
     action_add_new() {
             //进入添加任务
-            this.$router.push('/project/task/add/' + this.pid);
+            this.$router.push('/project/remind/add/' + this.pid);
     },
 
     action_close_pop() {
@@ -138,25 +137,29 @@ methods : {
     }
 },
 
-    created() {
+created() {
         this.request_remind_list();
-
     }
-
-
 
 }
 </script>
 
 <style>
+.remind-list-content {
+    padding:8px;
+    background-color:#fff;
+
+}
+
 .remind-title {
     text-align: center;
 }
 
 .remind-external {
-    display: relative;
-    margin: 0,auto;
-    height: 56px;
+    background-color:#fff;
+    height: 61px;
+    padding-top:19px;
+    padding-bottom:19px;
     text-align: center;
 }
 

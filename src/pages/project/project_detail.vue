@@ -10,7 +10,7 @@
                         <el-col :span="18">
                             <div class="project-detail">
                             <span class="project-title">{{project.name + " " + project.door}}</span><br/>
-                            <span class="project-detail">施工时间：{{project_start_time}}&nbsp;至&nbsp;{{project_end_time}}</span><br/>
+                            <span class="project-detail">施工时间：{{project.startTime | formatDate }}&nbsp;至&nbsp;{{ project.endTime | formatDate}}</span><br/>
                             <span class="project-detail">施工单位：{{project.company}}</span>
                         </div>
                        </el-col>
@@ -28,17 +28,16 @@
                   <el-row>
                     <el-col :span="18">
                         <div class="product-remind-title">
-                                <span> 提醒</span>
+                                <span>提醒</span>
                         </div>
                             
                     </el-col>
 
-                    <el-col :span="6">    
+                    <el-col :span="6" class="product-remind-right">    
                             <span v-on:click="getMore(0)">更多</span>
                     </el-col>
-
+                    
                   </el-row>
-
                   <hr/>
 
                   <div>
@@ -61,7 +60,7 @@
                                     
                             </el-col>
 
-                            <el-col :span="6" >    
+                            <el-col :span="6" class="product-remind-right">    
                                     <span v-on:click="getMore(1)">更多</span>
                             </el-col>
                     </el-row>
@@ -84,20 +83,14 @@
     </div>
 
     <!-- 右侧显示详情界面 -->
-    <div id="left-popup" class="left-popup" :style="{'right' : show_right_pop ? '0px' : '-100%' }"> 
+    <!-- <div id="left-popup" class="left-popup" :style="{'right' : show_right_pop ? '0px' : '-100%' }"> 
              <TaskAndRemindList :pid="this.pid" 
                                 :pType="this.show_pop_type"
                                 @action_close_pop="action_close_pop"></TaskAndRemindList>
-    </div>
-
-    <div>
-        <NewRemindAdd :pid="this.pid"></NewRemindAdd>
-    </div>
-    
+    </div> -->
 
     </div>
-   
-    
+       
 
 </template>
 
@@ -138,17 +131,6 @@
             }      
         },
     
-        computed: {
-            project_start_time() {
-                if(null == this.project || undefined == this.project.startTime) return "" ;
-                return Log.formatTime(this.project.startTime); 
-            },
-
-            project_end_time() {
-                if(null == this.project || undefined == this.project.endTime) return "" ;
-                return Log.formatTime(this.project.endTime); 
-            }
-        },
 
     mounted() {
         console.log("this log is " + this.pid)
@@ -161,10 +143,8 @@
             // this.show_right_pop = true;
             if(type === 0) {
                 this.$router.push("/project/remind/remind_list/" + this.pid);
-
             }else {
                 this.$router.push("/project/task/task_list/" + this.pid);
-                
             }
         },
 
@@ -176,9 +156,9 @@
         require_project_detail() {
                let url = this.pid + "/projects";
                this.$http.get(url).then(response => {
-                   Log.L(response);
-                   let newResult = response.data; 
+                   Log.L(response.data);
 
+                   let newResult = response.data; 
                    let result = newResult.code;
                    if(result == 200 ) {
                        this.project = newResult.data ;
@@ -196,21 +176,16 @@
             let url = this.user_id +  "/usermessage";
             var params = {params:{
                               projectId:this.pid,
-                              pageSize: Log.PAGE_SIZE(),
+                              pageSize: 2,
                               isActive:"-1",
                               pageIndex:1}}
 
             this.$http.get(url, params).then(response => {
-                Log.L(response.data);
+                Log.L2("good",response.data);
 
                 let result = response.data;
                 if(result.code == 200) {
-                    if(null != result.data) {
-                        for(let i = 0 ; i < Math.min(2, result.data.length) ; i++) {
-                            this.remindList[this.remindList.length]  = result.data[i];
-                        }
-                    }
-                    
+                    this.remindList = result.data || [] ;
                 }else {
                     this.remindList = [];
                 }
@@ -224,7 +199,7 @@
           let url = this.pid + "/projecttask" ;
           var params = {
               params:{projectId:this.pid,
-                      pageSize: Log.PAGE_SIZE(),
+                      pageSize: 2,
                       isActive:"0",
                       pageIndex:1}}
 
@@ -233,12 +208,7 @@
 
              let result = response.data;
              if(result.code == 200 ){
-                if(null != result.data && result.data.length > 0) {
-                    for(let i = 0 ; i < Math.min(2, result.data) ; i++) {
-                        this.taskList[this.taskList.length] = result.data[i];
-                    }
-                }
-
+                 this.taskList =  result.data || [] ;
               } else {
                  this.taskList = [];
              }
@@ -274,6 +244,24 @@
      margin-top: 12px;
      margin-bottom: 12px;
      width: 90%;
+ }
+
+ hr {
+    height:2px;
+    border:none;
+    border-top:1px dotted #185598;
+ }
+
+ .product-remind-title {
+     text-align:left;
+     font-size:15px;
+     padding:2px;
+ }
+ .product-remind-right{
+     text-align:right;
+     font-size:13px;
+     color:#464646;
+     padding-right:4px;
  }
 
   .content {

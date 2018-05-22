@@ -65,17 +65,12 @@ import Log from '../../common/Log';
 import * as qiniu from 'qiniu-js'
 
 export default {
-
-    props: {
-        pid : {
-            type : String,
-            require :true
-        }
-    },
-
+    
     data() {
         return {
-            dialogTableVisible : false ,
+            pid : this.$route.params.id,
+
+            dialogTableVisible : true ,
 
             //提醒角色列表
             remindRoleList:[] ,
@@ -284,8 +279,6 @@ export default {
     },
 
     mounted () {
-        this.pid = "860";
-        
         Log.L("-----get data-------1");
         this.request_role_list();
         this.request_task_list();

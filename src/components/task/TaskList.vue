@@ -40,9 +40,13 @@
                 <div v-show="this.currentType == '1'" >
                         <TaskItem :taskList="this.allList"></TaskItem>
                 </div>
-
             </div>    
+
+            <div v-if="can_load_more">
+                <button @click="request_task_list()">加载更多</button>
+            </div>
         </div>
+
 </template>
 
 <script>
@@ -66,6 +70,11 @@ export default {
 
             unReadPageIndex : 1 ,
             allPageIndex : 1,
+
+            can_load_more: false,
+
+            unReadLoadMore : false,
+            allLoadMore:false
         }
     } ,
 
@@ -84,14 +93,12 @@ export default {
           }
         } ,
         
-
         action_add_new() {
             //TODO
+            this.$router.push('/project/task/add/' + this.pid);
         },
 
-        action_close_pop() {
-
-        },
+        action_close_pop() {},
 
         //请求提醒列表
          request_task_list(){
@@ -110,18 +117,26 @@ export default {
                 let result = response.data;
                 Log.L(result);
 
+                if(isUnRead){
+                   self.unReadLoadMore = result.data != null && result.data.length >= Log.PAGE_SIZE();
+                   self.can_load_more = self.unReadLoadMore;
+
+                }else {
+                   self.allLoadMore = result.data != null && result.data.length >= Log.PAGE_SIZE();
+                   self.can_load_more = self.allLoadMore;
+                }
+
                 if(result.code == 200 && result.data != null) {
                     if(isUnRead) {
                         self.unReadList.push.apply(self.unReadList,result.data);
                         self.unReadPageIndex ++ ;
-
                     }else {
                         self.allList.push.apply(self.allList, result.data);
                         self.allPageIndex ++ ;
                     }
                 }
             })
-        }
+        } 
     },
 
     created() {

@@ -80,7 +80,7 @@ export default {
         text-align: left;
     }
 
-    img {
+    .img {
         width: 100%;
     }
 </style>

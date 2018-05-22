@@ -1,30 +1,21 @@
 <template>
         <div>
-            <div class="remind-item" v-for="(item,index) in this.remindList" :key="index" v-if="index < 2"  @click="getRemindDetail(item.id)">
-                <el-row >
-                    <el-col :span="1"> 
-                        <div style="text-align: center; height:40px;">
-                                                <div class="product-remind-dot"/>
-                        </div>
-                    </el-col>
-
-                    <el-col :span="2">
+            <div class="remind-item" v-for="(item,index) in this.remindList" :key="index"  @click="getRemindDetail(item.id)">
+                
+                    <div class="remind-img"> 
                         <img :src='get_remind_avatar(item)' class="project-remind-avatar"/>
-                    </el-col>
+                        <div class="img-dot"></div>
+                    </div>
 
-                    <el-col :span="15">
-                        <div class="product-remind-item">
-                            <div class="product-remind-item-title">{{ item.from }}</div>
-                            <div class="product-remind-item-content"> {{ parse_remind_detail(item.detail) }}</div>
-                        </div>
-                    </el-col>
+                    <div class="remind-list-desc">
+                         <div class="product-remind-item-title">{{ item.from }}</div>
+                         <div class="product-remind-item-content"> {{ parse_remind_detail(item.detail) }}</div>
+                    </div>
 
-                    <el-col :span="6">
-                        <div class="product-remind-item-time">
-                            <span class="product-remind-time-content"> {{ item.startTime | formatDate}}</span>
-                        </div>
-                    </el-col>
-                </el-row>
+                    <div>
+                        <span class="product-remind-time-content"> {{ item.startTime | formatDate}}</span>
+                    </div>   
+
             </div>
         </div>
 </template>
@@ -52,7 +43,7 @@ export default {
             this.$router.push("/project/remind/detail/" + id)
         },
 
-    
+        
         get_remind_avatar(item) {
             if(item == null || item == undefined || item.createUser == null || item.createUser.avatar == undefined) 
                 return Log.DEFAULT_IMAGE();
@@ -71,11 +62,31 @@ export default {
 </script>
 
 <style scope>
-
 .remind-item{
     border-bottom: #f2f2f2 1px solid;
-    padding-bottom: 8px;
-    padding-top: 8px;
+    padding: 8px;
+    text-align:center;
+    display:flex;
+    justify-content:space-between;
+}
+
+.remind-img{
+    display: flex;
+}
+
+.img-dot{
+    width:10px;
+    height:10px;
+    background-color:#F00;
+    border-radius:5px;
+}
+
+
+.remind-list-desc{
+    flex-grow:1;
+    padding-left:12px;
+    padding-right:12px;
+    text-align:left;
 }
 
 .product-remind-dot {
@@ -84,19 +95,19 @@ export default {
 	background-color: #f23131;
 	border-radius: 3px;
     text-align: center;
+    margin-top:16px;
 }
 
 .project-remind-avatar{
     width: 40px;
 	height: 40px;
-	border-radius: 20px;
-}
-
-.product-remind-item{
-    text-align: left;
+    border-radius: 20px;
     
 }
 
+.product-remind-item{
+    text-align: left;   
+}
 
 .product-remind-item-title{
     font-size: 14px;
