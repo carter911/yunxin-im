@@ -42,7 +42,7 @@ export default {
     }
   }
 </script>
-<style>
+<style scoped>
   .el-header{
       text-align: center;
       height: 4rem;
@@ -52,12 +52,7 @@ export default {
       border: solid 0rem #ededed;
   }
 
-  .el-footer{
-    display:none;
-    height: 0px;
-    line-height: 0px;
-  }
-  
+ 
   .el-main {
     background-color: #E9EEF3;
     color: #333;

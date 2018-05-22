@@ -1,0 +1,76 @@
+<template>
+  <el-col class="message-info" :span="24" >
+    <el-col :span="3">
+        <img class="avatar" :onerror="avatar(item.avatar)" v-bind:src="item.avatar"/>
+    </el-col>
+    <el-col :span="17">
+        <div  @click='chatInfo(item)' class="grid-content bg-purple-dark ">
+            <h2>{{item.name}}</h2>
+            <p>{{item.lastMsgShow}}</p>
+        </div>
+    </el-col>
+    <el-col class='time' :span="4">
+       {{item.updateTimeShow}}
+    </el-col>
+  </el-col>
+</template>
+<script>
+import util from '../../utils'
+import store from '../../store';
+export default {
+    props: ['item'],
+    methods:{
+        chatInfo(item){
+            console.log('提醒 列表 -----------------', item);
+            //this.$store.state.currSessionId = item.id;
+            this.$store.state.currentChatId = item.id;
+            
+            // store.commit('updateCurrSessionId', {
+            //     type: 'init',
+            //     item
+            // })
+            // alert(this.$store.state.currentChatId);
+        },
+        avatar(avatar){
+            this.item.avatar = "http://images.e-shigong.com/ic_home_head.png";
+        }
+    }
+
+}
+</script>
+<style scoped>
+  .message-info{
+        cursor:pointer ;
+        text-align: left;
+        margin-bottom: 5px;
+        border-bottom: 1px solid #ddd;
+        padding:3px 10px 3px 20px;
+        height:50px;
+    }
+    .message-info .avatar{
+        height:28px;
+        width: 28px;
+        margin-top: 4px;
+    }
+    .message-info h2{
+        color: #000;
+        font-size: 13px;
+        margin-top: 0px;
+        font-weight: normal;
+    }
+    .message-info p{
+        margin-top: -10px;
+        font-size: 11px;
+        display: -webkit-box;
+        -webkit-box-orient: vertical;
+        -webkit-line-clamp: 1;
+        overflow: hidden;
+        color: #999;
+        
+    }
+    .time{
+        margin-top: 14px;
+        font-size: 11px;
+        color: #999;
+    }
+</style>

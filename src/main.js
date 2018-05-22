@@ -4,13 +4,13 @@ import Vue from 'vue'
 import Vuex from 'vuex'
 import App from './pages/App'
 import router from './router'
-
 import axios from 'axios'
 import VueAxios from 'vue-axios'
 import Qs from 'qs'
-
 import ElementUI from 'element-ui'
 import 'element-ui/lib/theme-chalk/index.css'
+import store from './store'
+
 Vue.use(ElementUI, { size: 'small' })
 
 import { formatDate } from '@/common/date.js'
@@ -18,13 +18,18 @@ import { formatDate } from '@/common/date.js'
 
 Vue.use(Vuex)
 var axios_instance = axios.create({
-  baseURL: 'http://dev.e-shigong.com/',
+  baseURL: 'http://api.e-shigong.com/',
   transformRequest: [function (data) {
     return Qs.stringify(data)
   }],
-  headers: { userid: '1585', 
+  headers: { userid: '1585',
              platform: 'web', 
             'Content-Type': 'application/x-www-form-urlencoded' }
+  headers: {
+      'userid': '530',
+      'platform': 'web',
+      'Content-Type': 'application/x-www-form-urlencoded'
+  }
 })
 
 Vue.use(VueAxios, axios_instance)
@@ -77,7 +82,7 @@ Vue.component('remote-script',{
             error: function (event) {
                 self.$emit('error', event);
             },
-            
+
             readystatechange: function (event) {
                 if (this.readyState == 'complete') {
                     self.$emit('load', event);
@@ -97,9 +102,9 @@ props: {
 
 //时间格式化
 Vue.filter('formatDate', function(time) {
-  let date = new Date(time * 1000) 
+  let date = new Date(time * 1000)
   return formatDate(date, "yyyy-MM-dd")
-}) 
+})
 
 
 var vm = new Vue({
