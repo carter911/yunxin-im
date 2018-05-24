@@ -19,13 +19,13 @@ import { formatDate } from '@/common/date.js'
 
 Vue.use(Vuex)
 var axios_instance = axios.create({
-  baseURL: 'http://dev.e-shigong.com/',
+  baseURL: 'http://test.e-shigong.com/',
 
   transformRequest: [function (data) {
     return Qs.stringify(data)
   }],
 
-  headers: { userid: '1585',
+  headers: { userid: '530',
              platform: 'web', 
             'Content-Type': 'application/x-www-form-urlencoded' }
 })
