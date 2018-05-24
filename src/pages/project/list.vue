@@ -173,12 +173,12 @@ export default {
     this.get_list();
   },
 
-  // mounted:function(){
-    
+  // mounted:function(){    
   // }
-
 }
+
 </script>
+
 <style scoped>
 .pannel-left
 {
