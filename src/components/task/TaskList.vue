@@ -1,10 +1,10 @@
 <!-- 任务列表 -->
 
 <template>
-            <div>
+            <div class="task-content">
                 <div class="remind-title"> 
                     <el-row>
-                            <el-col :span="20">
+                            <el-col :span="22">
                                 <div >
                                     <el-menu :default-active="this.currentType"
                                              :router="false" 
@@ -17,11 +17,11 @@
                                 </div>
                             </el-col>
 
-                            <el-col :span="2" class="remind-external">
+                            <!-- <el-col :span="2" class="remind-external">
                                 <div v-on:click="action_add_new()">
                                     <img src="../../../static/ic_add_remind.png" /> 
                                 </div>
-                            </el-col>
+                            </el-col> -->
 
                             <el-col :span="2" class="remind-external">
                                     <div v-on:click="action_close_pop()">
@@ -34,11 +34,13 @@
             <div class="block">
 
                 <div v-show="this.currentType == '0'" >
-                        <TaskItem :taskList="this.unReadList"></TaskItem>
+                        <TaskItem :taskList="this.unReadList" 
+                                  @getTaskDetail="this.getTaskDetail"></TaskItem>
                 </div>
 
                 <div v-show="this.currentType == '1'" >
-                        <TaskItem :taskList="this.allList"></TaskItem>
+                        <TaskItem :taskList="this.allList" 
+                                  @getTaskDetail="this.getTaskDetail"></TaskItem>
                 </div>
             </div>    
 
@@ -60,9 +62,16 @@ export default {
         TaskItem
     },
 
+    props: {
+        pid : {
+            type:Number,
+            require:true
+        }
+    },
+
+
     data() {
         return {
-            pid : this.$route.params.id ,
             currentType : '0' ,
 
             unReadList : [] ,
@@ -79,6 +88,10 @@ export default {
     } ,
 
     methods : {
+        getTaskDetail(taskId){
+            this.$emit("getTaskDetail",taskId);
+        },
+
         handleSelect(type)  {
             this.currentType = type ;
 
@@ -95,10 +108,12 @@ export default {
         
         action_add_new() {
             //TODO
-            this.$router.push('/project/task/add/' + this.pid);
+            // this.$router.push('/project/task/add/' + this.pid);
         },
 
-        action_close_pop() {},
+        action_close_pop() {
+            this.$emit("closeRightPannel");
+        },
 
         //请求提醒列表
          request_task_list(){
@@ -146,6 +161,11 @@ export default {
 }
 </script>
 
-<style>
+<style scope>
+.task-content {
+    background-color: #FFF;
+
+
+}
 
 </style>

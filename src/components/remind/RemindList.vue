@@ -4,7 +4,7 @@
         <div class="remind-list-content">
                 <div class="remind-title"> 
                     <el-row>
-                            <el-col :span="20">
+                            <el-col :span="22">
                                 <div >
                                     <el-menu :default-active="this.currentType"
                                              :router="false" 
@@ -17,11 +17,11 @@
                                 </div>
                             </el-col>
 
-                            <el-col :span="2" class="remind-external">
+                            <!-- <el-col :span="2" class="remind-external">
                             <div v-on:click="action_add_new()">
                                 <img src="../../../static/ic_add_remind.png" /> 
                             </div>
-                        </el-col>
+                            </el-col> -->
 
                             <el-col :span="2" class="remind-external">
                                     <div v-on:click="action_close_pop()">
@@ -34,13 +34,12 @@
             <div class="block">
 
                 <div v-if="this.currentType == '0'" >
-                        <RemindItem :remindList="this.unReadList"></RemindItem>
+                        <RemindItem :remindList="this.unReadList" @getRemindDetail="getRemindDetail"></RemindItem>
                 </div>
 
                 <div v-if="this.currentType == '1'" >
-                        <RemindItem :remindList="this.allList"></RemindItem>
+                        <RemindItem :remindList="this.allList" @getRemindDetail="getRemindDetail"></RemindItem>
                 </div>
-
             </div>    
 
         </div>
@@ -55,13 +54,19 @@ import RemindItem from "../../components/project/RemindItem.vue"
 export default {
 
   components : {
-        RemindItem
+        RemindItem,
    },
+
+    props: {
+        pid : {
+            type: Number,
+            require:true
+        }
+    },
 
     data() {
         return {
-            pid : this.$route.params.id ,    
-
+         
             //未读提醒
             unReadList:[],
             //全部提醒
@@ -92,23 +97,28 @@ methods : {
                 this.request_remind_list();
             }
         }
-
     },
 
+    getRemindDetail(remindId) {
+        this.$emit("getRemindDetail", remindId);
+    },
+
+
     action_add_new() {
-            //进入添加任务
-            this.$router.push('/project/remind/add/' + this.pid);
+        //进入添加任务
+        //this.$router.push('/project/remind/add/' + this.pid);
+        this.showNewRemind = true ;
     },
 
     action_close_pop() {
-
+        this.$emit("closeRightPannel");
     },
 
     //请求提醒列表
     request_remind_list(){
         let self = this;
         //uid = 530 ;
-        let url =  "1585/usermessage";
+        let url =  this.pid + "/usermessage";
 
         let isUnRead = self.currentType === '0';
         let params = { params : {

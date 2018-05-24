@@ -1,7 +1,8 @@
 <template>
+
   <div>
     <el-container>
-      <el-aside v-bind:style="{height: heightData}"  class="pannel-left" width="21rem">
+      <el-aside  class="pannel-left" width="22rem">
 
       <el-menu :router="false"   :default-active="this.status"  class="el-menu-demo" mode="horizontal" @select="handleSelect">
           <el-menu-item index="-1">全部</el-menu-item>
@@ -13,7 +14,7 @@
       <div class="block">
 
         <!-- 主体展示container -->
-        <el-main class='project_content_class' v-loading='request_data_loading' >
+        <el-main class='project_content_class' v-bind:style="{'height' : (this.$store.state.windowClientHeight - 121) + 'px'}" v-loading='request_data_loading'>
           <div v-for="item in project_list" class="project_list" :key="item.id" v-if="!data_is_empty" @click="onItemClick(item)">
             <div>{{item.name}}</div>
 
@@ -43,14 +44,16 @@
         </div>
       </el-aside>
 
-      <el-main v-bind:style="{height: heightData}" class="pannel-right">
+      <el-main class="pannel-right" v-bind:style="{'height' : (this.$store.state.windowClientHeight - 60) + 'px'}">
         
        <ProjectDetail :pid="current_pid"></ProjectDetail>
         
       </el-main>
     </el-container>
   </div>
+
 </template>
+
 <script>
 
 import _project_detail from './project_detail.vue'
@@ -58,13 +61,12 @@ import _project_detail from './project_detail.vue'
 export default {
 
   components : {
-    "ProjectDetail" : _project_detail
+    "ProjectDetail" : _project_detail,
   },
 
   data(){
       return {
         status:'-1',
-        heightData :(document.documentElement.clientHeight)+'px',
         project_list : [],
         currentIndex:1,
         currentStatus:0,
@@ -78,7 +80,7 @@ export default {
         //加载数据是否为空
         data_is_empty:false,
 
-        current_pid : ""
+        current_pid : 0
       }
   },
 
@@ -114,7 +116,7 @@ export default {
               this.project_list = result.data;
               if(result.data != null){
                 //获取当前pid
-                this.current_pid = "" + result.data[0].id;
+                this.current_pid =  result.data[0].id;
 
                 this.projectTotal = parseInt(result.data[0]['count']);
               }
@@ -162,7 +164,7 @@ export default {
       },
 
       onItemClick(item) {
-          this.current_pid = "" + item.id ;
+          this.current_pid = item.id ;
           console.log("----the current_pid-----" + this.current_pid);
       }
   },
@@ -174,7 +176,6 @@ export default {
   // mounted:function(){
     
   // }
-
 
 }
 </script>
@@ -193,6 +194,7 @@ export default {
   float: right;
   height: 100%;
   width: 100%;
+  min-width: 200px;
 }
 .project{
   padding: 0px;

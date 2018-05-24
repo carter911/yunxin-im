@@ -2,10 +2,9 @@
 <template>
 
     <div class="task-add">
-        
-        <el-form ref="form" label-width="120px" :rules="this.form_rules">
+          <el-dialog title="新任务" :visible.sync="dialogTableVisible" width="80%" >
 
-                <h1>添加任务</h1>
+            <el-form ref="form" label-width="120px" :rules="this.form_rules">
 
                 <el-form-item label="任务名称" prop="name">
                         <el-input v-model="form.name"></el-input>
@@ -38,11 +37,11 @@
                         <el-button>取消</el-button>
                 </el-form-item>
 
-        </el-form>
-
+            </el-form>
+        </el-dialog>
 
     </div>
-    
+
 </template>
 
 <script>
@@ -50,11 +49,17 @@
 import Log from '../../common/Log';
 
 export default {
+    props : {
+        pid : {
+            type:Number,
+            required:true
+        }
+    },
 
     data()  {
         return {
-            pid : this.$route.params.id,
-        
+            dialogTableVisible: true ,
+
             taskRoleList : [] ,
             taskRelateList : [] ,
 

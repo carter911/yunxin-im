@@ -1,5 +1,5 @@
 <template>
- <el-aside class="nav" width="5rem" v-bind:style="{height: heightData}">
+ <el-aside class="nav" width="5rem" v-bind:style="{'height' : this.$store.state.windowClientHeight + 'px'}">
     <div class="logo"><img src="../../../static/logo.png"/></div>   
     <el-menu 
       :default-active="$route.path"
@@ -26,15 +26,22 @@ export default {
         heightData :document.documentElement.clientHeight+'px',
       }
     },
+
     ready: function () {
-      window.addEventListener('resize', this.handleResize)
+      // window.addEventListener('resize', this.handleResize)
     },
-    mouted:{
+
+    mouted() {
+      
     },
+
     methods: {
       handleResize (event) {
         this.heightData = document.documentElement.clientHeight+'px'
+
+        console.log("heightData:" + this.heightData);
       },
+
       handleSelect(key, keyPath){
         console.log(key);
         //console.log( keyPath);

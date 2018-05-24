@@ -4,7 +4,7 @@
                 
                     <div class="remind-img"> 
                         <img :src='get_remind_avatar(item)' class="project-remind-avatar"/>
-                        <div class="img-dot"></div>
+                        <div class="img-dot" v-if="item.isLike == 0"></div>
                     </div>
 
                     <div class="remind-list-desc">
@@ -12,8 +12,8 @@
                          <div class="product-remind-item-content"> {{ parse_remind_detail(item.detail) }}</div>
                     </div>
 
-                    <div>
-                        <span class="product-remind-time-content"> {{ item.startTime | formatDate}}</span>
+                    <div class="remind-item-time">
+                        <span> {{ item.startTime | formatDate}}</span>
                     </div>   
 
             </div>
@@ -40,7 +40,8 @@ export default {
 
     methods : {
         getRemindDetail(id) {
-            this.$router.push("/project/remind/detail/" + id)
+            //this.$router.push("/project/remind/detail/" + id)
+            this.$emit("getRemindDetail",id);
         },
 
         
@@ -64,9 +65,9 @@ export default {
 <style scope>
 .remind-item{
     border-bottom: #f2f2f2 1px solid;
-    padding: 8px;
+    padding: 2px;
     text-align:center;
-    display:flex;
+     display:flex;  
     justify-content:space-between;
 }
 
@@ -127,6 +128,19 @@ export default {
 	letter-spacing: 0px;
 	color: #999999;
 }
+
+.remind-item-time {
+    margin: auto;
+    font-size: 12px;
+	font-weight: normal;
+	font-stretch: normal;
+	line-height: 48px;
+	letter-spacing: 0px;
+	color: #999999;
+    min-width: 100px;
+}
+
+
 .product-remind-item-content {
     font-size: 12px;
 	font-weight: normal;

@@ -1,31 +1,22 @@
 <template>
         <div>
-             <div class="remind-item" v-for="(item,index) in taskList" :key="index"  @click="gotoDetail(item.id)" >
-                   <el-row>
-                        <el-col :span="1"> <div>
-                                            <div class="product-remind-dot"/>
-                                    </div>
-                        </el-col>
+             <div class="task-item-class" v-for="(item,index) in taskList" :key="index"  @click="gotoDetail(item.id)" >
 
-                        <el-col :span="3">
-                                    <img :src="get_task_avatar(item)" class="project-remind-avatar"/>
-                                </el-col>
-
-                                <el-col :span="16">
-                                        <div class="product-remind-item">
-                                            <div class="product-remind-item-title"> {{ item.name}}</div>
-                                            <div class="product-remind-item-content"> {{ parse_task_detail(item.detail) }}</div>
-                                        </div>
-                                </el-col>
-
-                                <el-col :span="4">
-                                        <div class="product-remind-item-time">
-                                            <span class="product-remind-time-content"> {{ item.startTime | formatDate}}</span>
-                                        </div>
-                                </el-col>
-                        </el-row>
-                            
+                   <div class="task-item-img"> 
+                        <img :src='get_task_avatar(item)' class="project-task-avatar"/>
+                        <div class="task-img-dot" v-if="item.isActive == 1"></div>
                     </div>
+
+                    <div class="task-list-desc">
+                         <div class="product-task-item-title">{{ item.name }}</div>
+                         <div class="product-task-item-content"> {{ parse_task_detail(item.detail) }}</div>
+                    </div>
+
+                    <div class="product-task-time-content">
+                        <span > {{ item.startTime | formatDate}}</span>
+                    </div>   
+
+             </div>
         </div>
 
 </template>
@@ -44,7 +35,8 @@ export default {
 
     methods : {
         gotoDetail(id) {
-            this.$router.push("/project/task/detail/" + id);
+           // this.$router.push("/project/task/detail/" + id);
+           this.$emit("getTaskDetail",id);
         },
 
         get_task_avatar(item ) {
@@ -63,32 +55,44 @@ export default {
 
 <style scope> 
 
-.remind-item{
+.task-item-class {
     border-bottom: #f2f2f2 1px solid;
-    padding-bottom: 8px;
-    padding-top: 8px;
+    padding: 2px;
+    text-align:center;
+     display:flex;  
+    justify-content:space-between;
 }
 
-.product-remind-dot {
-	width: 6px;
-	height: 6px;
-	background-color: #f23131;
-	border-radius: 3px;
-    text-align: center;
+.task-item-img{
+    display: flex;
 }
 
-.project-remind-avatar{
+.task-img-dot{
+    width:10px;
+    height:10px;
+    background-color:#F00;
+    border-radius:5px;
+}
+
+.task-list-desc{
+    flex-grow:1;
+    padding-left:12px;
+    padding-right:12px;
+    text-align:left;
+}
+
+.project-task-avatar{
     width: 40px;
 	height: 40px;
 	border-radius: 20px;
 }
 
-.product-remind-item{
+.product-task-item{
     text-align: left;   
 }
 
 
-.product-remind-item-title{
+.product-task-item-title{
     font-size: 14px;
 	font-weight: normal;
 	font-stretch: normal;
@@ -97,7 +101,7 @@ export default {
 	color: #333333;
 }
 
-.product-remind-time-content{
+.product-task-time-content{
     margin: auto;
     font-size: 12px;
 	font-weight: normal;
@@ -105,8 +109,10 @@ export default {
 	line-height: 48px;
 	letter-spacing: 0px;
 	color: #999999;
+    min-width: 100px;
 }
-.product-remind-item-content {
+
+.product-task-item-content {
     font-size: 12px;
 	font-weight: normal;
 	font-stretch: normal;

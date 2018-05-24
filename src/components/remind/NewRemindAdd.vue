@@ -65,11 +65,18 @@ import Log from '../../common/Log';
 import * as qiniu from 'qiniu-js'
 
 export default {
+
+    props : {
+        pid :{
+            type : Number,
+            required:true
+        }
+    },
     
+
     data() {
         return {
-            pid : this.$route.params.id,
-
+            
             dialogTableVisible : true ,
 
             //提醒角色列表

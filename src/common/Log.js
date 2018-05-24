@@ -45,3 +45,24 @@ Log.getImageSuffix = function() {
 Log.getRandomImageFileName = function(){
     return "web/" + (new Date().getTime())+ "_" + Math.floor((Math.random() * 80000) + 1)  + ".jpg";
 }
+
+//各种权限设置
+//任务上传图片
+Log.TASK_UPLOAD_PICTURE = function() {
+    return "307";
+}
+
+//任务上传权限
+Log.TASK_UP_LOAD = function(){
+    return "302";
+}
+
+//内部任务审核
+Log.TASK_INNER_TASK_CHECK = function(){
+    return "306";
+}
+
+//业主任务审核
+Log.TASK_CHECK_OUTER_CHECK = function(){
+    return "305";
+}

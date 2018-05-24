@@ -10,7 +10,8 @@
                         <el-col :span="18">
                             <div class="project-detail">
                             <span class="project-title">{{project.name + " " + project.door}}</span><br/>
-                            <span class="project-detail">施工时间：{{project.startTime | formatDate }}&nbsp;至&nbsp;{{ project.endTime | formatDate}}</span><br/>
+                            <span class="project-detail">施工时间：{{project.startTime | formatDate }}&nbsp;至&nbsp;
+                                                        {{ project.endTime | formatDate}}</span><br/>
                             <span class="project-detail">施工单位：{{project.company}}</span>
                         </div>
                        </el-col>
@@ -28,13 +29,14 @@
                   <el-row>
                     <el-col :span="18">
                         <div class="product-remind-title">
-                                <span>提醒</span>
+                            <span>提醒</span>
                         </div>
                             
                     </el-col>
 
                     <el-col :span="6" class="product-remind-right">    
-                            <span v-on:click="getMore(0)">更多</span>
+                           <span v-on:click="this.addNewRemind">添加</span>
+                           <span v-on:click="getMore(0)">更多</span>
                     </el-col>
                     
                   </el-row>
@@ -42,7 +44,9 @@
 
                   <div>
 
-                    <RemindItem :remindList="this.remindList"></RemindItem>
+                    <RemindItem :remindList="this.remindList"
+                                @getRemindDetail="this.getRemindDetail"
+                    ></RemindItem>
     
                  </div>
 
@@ -61,13 +65,16 @@
                             </el-col>
 
                             <el-col :span="6" class="product-remind-right">    
-                                    <span v-on:click="getMore(1)">更多</span>
+                                   <span v-on:click="this.addNewTask">添加</span> 
+                                   <span v-on:click="getMore(1)">更多</span>
                             </el-col>
                     </el-row>
                     <hr/>
 
                     <div>
-                        <TaskItem :taskList="this.taskList"></TaskItem>
+                        <TaskItem :taskList="this.taskList" 
+                                  @getTaskDetail="this.getTaskDetail"
+                        ></TaskItem>
                   </div>
                </div>
 
@@ -75,46 +82,82 @@
             <!-- 任务 结束 -->
                 
              <!-- 材料商 开始 -->
-            <el-card class="content-box-card">
-                
-            </el-card>
+            <!-- <el-card class="content-box-card"></el-card> -->
             <!-- 材料商 结束 -->
-            
+
     </div>
 
     <!-- 右侧显示详情界面 -->
-    <!-- <div id="left-popup" class="left-popup" :style="{'right' : show_right_pop ? '0px' : '-100%' }"> 
-             <TaskAndRemindList :pid="this.pid" 
-                                :pType="this.show_pop_type"
-                                @action_close_pop="action_close_pop"></TaskAndRemindList>
-    </div> -->
+    <div id="left-popup" class="left-popup" 
+         :style="{'right' : show_right_pop ? '0px' : '-100%', 'height' : (this.$store.state.windowClientHeight - 60) + 'px' }"> 
+            <RightPannel :projectId="this.pid"  
+                         :remindId="this.currentRemindId"
+                         :taskId="this.currentTaskId"
+                         :showType="this.rightPannelShowType"
+                         @getRemindDetail="this.getRemindDetail"
+                         @getTaskDetail="this.getTaskDetail"
+                         @closeRightPannel="this.closeRightPannel">
+            </RightPannel>
+    </div>
 
+    <div id="left-popup" class="left-popup" 
+         :style="{'right' : '0px' , 'height' : (this.$store.state.windowClientHeight - 60) + 'px'}" v-if="this.show_right_detail_pop"> 
+            <RightDetailPannel :showType="this.show_right_detail_type" 
+                               :remindId="this.currentRemindId"
+                               :taskId="this.currentTaskId"
+                               @closeDetailRightPannel="closeDetailRightPannel">
+
+            </RightDetailPannel>
+    </div>
+
+    <!-- 添加新提醒 -->
+    <div v-if="this.showAddNewRemind">
+        <NewRemindAdd :pid="this.pid"></NewRemindAdd>
+    </div>
+
+    <div v-if="this.showAddNewTask">
+        <NewTaskAdd :pid="this.pid"></NewTaskAdd>
+    </div>
+    
     </div>
        
-
 </template>
 
 <script>
     /* eslint-disable key-spacing */
     import Log from '../../common/Log';
 
-    import TaskAndRemindList from  './TaskAndRemindList.vue'
     import RemindItem from "../../components/project/RemindItem.vue"
     import TaskItem from "../../components/project/TaskItem.vue"
     import NewRemindAdd from "../../components/remind/NewRemindAdd.vue"
+    import NewTaskAdd from "../../components/task/NewTaskAdd.vue"
+
+    import RightPannel from "./RightPannel.vue"
+    import RightDetailPannel from "./RightDetailPannel.vue"
+
 
     let date = new Date();
     export default {
         components : {
-            TaskAndRemindList,
             RemindItem,
             TaskItem,
-            NewRemindAdd
+            NewRemindAdd,
+            NewTaskAdd,
+            RightPannel,
+            RightDetailPannel
+        },
+
+        computed: {
+            getWindowClientHeight(){
+                console.log("----getWindowClientheight-----" + this.$store.state.windowClientHeight);
+                
+                return this.$store.state.windowClientHeight;
+            }
         },
 
         props:{
             pid : {
-                type:String,
+                type:Number,
                 required:true
             }
         },
@@ -127,7 +170,29 @@
                 user_id : 530,
 
                 show_right_pop : false,
+
+                //当前点击提醒的id
+                currentRemindId : 0 ,
+
+                //当前点击的任务Id
+                currentTaskId : 0 ,
+
                 show_pop_type : 0 ,
+
+                //又面板显示类型
+                rightPannelShowType : 0 ,
+
+                //显示提醒&任务 详情
+                show_right_detail_pop: false ,
+
+                show_right_detail_type : 0 ,
+
+            
+                //是否显示当前添加提醒
+                showAddNewRemind: false,
+                
+                //是否显示当前新增任务
+                showAddNewTask:false
             }      
         },
     
@@ -137,18 +202,44 @@
     },
 
     methods: {
-        getMore(type) {
-            // Log.L("----->>get More----->>" + type )
-            // this.show_pop_type = type; 
-            // this.show_right_pop = true;
-            if(type === 0) {
-                this.$router.push("/project/remind/remind_list/" + this.pid);
-            }else {
-                this.$router.push("/project/task/task_list/" + this.pid);
-            }
+        addNewRemind() {
+            this.showAddNewRemind = true;
         },
 
+        addNewTask(){
+            this.showAddNewTask = true ;
+        },
+        
+        getMore(type) {
+            this.show_right_detail_pop = false ;
+            this.rightPannelShowType = type;
+            this.show_right_pop = true;
+        },
+
+        //获取提醒详情
+        getRemindDetail(remindId) {
+            this.show_right_detail_type = 0 ;
+            this.currentRemindId = remindId;
+            this.show_right_detail_pop = true ;
+        },
+
+        //获取任务详情
+        getTaskDetail(taskId) {
+            this.show_right_detail_type = 1;
+            this.currentTaskId = taskId;
+            this.show_right_detail_pop = true ;
+        },
+
+        closeDetailRightPannel(){
+            this.show_right_detail_pop = false;
+        },
+        
         action_close_pop() {
+            this.show_right_pop = false;
+        },
+
+        //关闭外层面板
+        closeRightPannel(){
             this.show_right_pop = false;
         },
 
@@ -178,7 +269,7 @@
                               projectId:this.pid,
                               pageSize: 2,
                               isActive:"-1",
-                              pageIndex:1}}
+                              pageIndex: 0}}
 
             this.$http.get(url, params).then(response => {
                 Log.L2("good",response.data);
@@ -218,7 +309,6 @@
             
          })             
       },
-
     },
 
     //事件监听
@@ -333,6 +423,7 @@
     top: 60px; 
     height: 640px; 
     display: block;
+    overflow:auto;
 }
 
 </style>

@@ -13,6 +13,9 @@ import TaskDetail from  "@/components/task/TaskDetail.vue"
 import remindList from "@/components/remind/RemindList.vue"
 import TaskList from "@/components/task/TaskList.vue"
 import NewRemindAdd from "@/components/remind/NewRemindAdd.vue"
+import CopyList from "@/pages/project/CopyList.vue"
+
+
 
 import Chat from '@/pages/chat/index.vue'
 Vue.use(Router)
@@ -97,7 +100,6 @@ export default new Router({
       meta : {auth : true }
     },
 
-
     // 提醒详情
     {
       path : '/project/remind/detail/:id',
@@ -120,6 +122,13 @@ export default new Router({
       meta : {auth : true}
     },
 
+    {
+      path : '/project/other',
+      name : 'Other',
+      component:CopyList,
+      meta : {auth : true} ,
+
+    },
 
     {
       path: '*',
