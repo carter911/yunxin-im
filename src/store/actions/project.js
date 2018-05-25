@@ -1,7 +1,7 @@
 import store from '../'
 import http from '../../utils/http'
 
-export function updateCurrSessionProjectInfo({state, commit}, SessionId) {
+export function updateCurrSessionProjectInfo ({state, commit}, SessionId) {
 
     let chatType = SessionId.slice(0, 4)
     if (chatType === 'team') {

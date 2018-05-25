@@ -13,6 +13,8 @@ import App from './pages/App'
 
 Vue.use(ElementUI, { size: 'small' })
 
+import { formatDate } from '@/common/date.js'
+
 Vue.use(Vuex)
 var axios_instance = axios.create({
   baseURL: 'http://test.e-shigong.com/',
@@ -44,11 +46,18 @@ router.beforeEach((to, from, next) => {
   }
 })
 
+// 时间格式化
+Vue.filter('formatDate', function (time) {
+  let date = new Date(time * 1000)
+  return formatDate(date, "yyyy-MM-dd")
+})
+
 var vm = new Vue({
   el: '#app',
   router,
   store,
   components: { App },
   template: '<App/>',
-  render: h => h(App)
+  render: h => h(App),
+
 })

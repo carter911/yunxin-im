@@ -36,7 +36,7 @@ function checkCode (res) {
 }
 
 export default {
-  post (url, data, headers) {
+  post (url, data) {
     var userInfo = cookie.readCookie('userinfo')
     var headers = {}
     if (userInfo) {
@@ -65,7 +65,7 @@ export default {
       }
     )
   },
-  get (url, params, headers) {
+  get (url, params) {
     var userInfo = JSON.parse(cookie.readCookie('userinfo'))
     var headers = {}
     if (userInfo) {

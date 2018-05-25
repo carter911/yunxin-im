@@ -1,31 +1,21 @@
 <template>
         <div>
-            <div class="remind-item" v-for="(item,index) in this.remindList"  v-if="index < 2">
-                <el-row>
-                    <el-col :span="1"> 
-                        <div style="text-align: center; height:40px;">
-                                                <div class="product-remind-dot"/>
-                        </div>
-                    </el-col>
-
-                    <el-col :span="2">
+            <div class="remind-item" v-for="(item,index) in this.remindList" :key="index"  @click="getRemindDetail(item)">
+                
+                    <div class="remind-img"> 
                         <img :src='get_remind_avatar(item)' class="project-remind-avatar"/>
-                    </el-col>
+                        <div class="img-dot" v-if="item.isLike == 0"></div>
+                    </div>
 
-                    <el-col :span="15">
-                        <div class="product-remind-item">
-                            <div class="product-remind-item-title">{{item.from}}</div>
-                            <div class="product-remind-item-content"> {{ parse_remind_detail(item.detail) }}</div>
-                        </div>
+                    <div class="remind-list-desc">
+                         <div class="product-remind-item-title">{{ item.from }}</div>
+                         <div class="product-remind-item-content"> {{ parse_remind_detail(item.detail) }}</div>
+                    </div>
 
-                    </el-col>
+                    <div class="remind-item-time">
+                        <span> {{ item.startTime | formatDate}}</span>
+                    </div>   
 
-                    <el-col :span="6">
-                        <div class="product-remind-item-time">
-                            <span class="product-remind-time-content">2018-02-23</span>
-                        </div>
-                    </el-col>
-                </el-row>
             </div>
         </div>
 </template>
@@ -49,6 +39,11 @@ export default {
     },
 
     methods : {
+        getRemindDetail(item) {
+            //this.$router.push("/project/remind/detail/" + id)
+            item.isLike = 1 ;
+            this.$emit("getRemindDetail",item.id);
+        },
 
         get_remind_avatar(item) {
             if(item == null || item == undefined || item.createUser == null || item.createUser.avatar == undefined) 
@@ -58,6 +53,7 @@ export default {
 
         parse_remind_detail(detail) {
             if(detail == null || detail == undefined) return "";
+    
             let dd= detail.replace(/<\/?.+?>/g,"");
             let dds= dd.replace(/ /g,"");//dds为得到后的内容
             return dds.length >= 50 ? dds.substring(0,50) + "..." : dds ;
@@ -68,11 +64,31 @@ export default {
 </script>
 
 <style scope>
-
 .remind-item{
     border-bottom: #f2f2f2 1px solid;
-    padding-bottom: 8px;
-    padding-top: 8px;
+    padding: 2px;
+    text-align:center;
+     display:flex;  
+    justify-content:space-between;
+}
+
+.remind-img{
+    display: flex;
+}
+
+.img-dot{
+    width:10px;
+    height:10px;
+    background-color:#F00;
+    border-radius:5px;
+}
+
+
+.remind-list-desc{
+    flex-grow:1;
+    padding-left:12px;
+    padding-right:12px;
+    text-align:left;
 }
 
 .product-remind-dot {
@@ -81,19 +97,19 @@ export default {
 	background-color: #f23131;
 	border-radius: 3px;
     text-align: center;
+    margin-top:16px;
 }
 
 .project-remind-avatar{
     width: 40px;
 	height: 40px;
-	border-radius: 20px;
-}
-
-.product-remind-item{
-    text-align: left;
+    border-radius: 20px;
     
 }
 
+.product-remind-item{
+    text-align: left;   
+}
 
 .product-remind-item-title{
     font-size: 14px;
@@ -113,6 +129,19 @@ export default {
 	letter-spacing: 0px;
 	color: #999999;
 }
+
+.remind-item-time {
+    margin: auto;
+    font-size: 12px;
+	font-weight: normal;
+	font-stretch: normal;
+	line-height: 48px;
+	letter-spacing: 0px;
+	color: #999999;
+    min-width: 100px;
+}
+
+
 .product-remind-item-content {
     font-size: 12px;
 	font-weight: normal;

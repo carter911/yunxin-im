@@ -1,7 +1,8 @@
 <template>
+
   <div>
     <el-container>
-      <el-aside v-bind:style="{height: heightData}"  class="pannel-left" width="21rem">
+      <el-aside  class="pannel-left" width="22rem">
 
       <el-menu :router="false"   :default-active="this.status"  class="el-menu-demo" mode="horizontal" @select="handleSelect">
           <el-menu-item index="-1">全部</el-menu-item>
@@ -11,164 +12,304 @@
       </el-menu>
 
       <div class="block">
+            <!-- 主体展示container -->
+            <el-main class='project_content_class' v-bind:style="{'height' : (this.$store.state.windowClientHeight - 121) + 'px'}" v-loading='request_data_loading'>
+              <div v-for="item in this.getTargetArray()" 
+                   :style="{'background-color': current_pid == item.id ? '#f2f2f2' : '#fff'}"
+                   class="project_list" :key="item.id" 
+                   v-if="!checkPageDataEmpty()" 
+                   @click="onItemClick(item)">
 
-        <!-- 主体展示container -->
-        <el-main class='project_content_class' v-loading='request_data_loading' >
-          <div v-for="item in project_list" class="project_list" v-if="!data_is_empty" @click="onItemClick(item)">
-            <div>{{item.name}}</div>
+                <div>{{item.name}}</div>
 
-            <el-progress :percentage="item.schedule" v-if="currentStatus <= 0" ></el-progress>
-            <span class='project_statuc_desc' v-if="currentStatus >0 ">{{ find_status_msg() }}</span>
-          </div>
+                <el-progress :percentage="item.schedule" v-if="currentStatus <= 0" ></el-progress>
+                <span class='project_statuc_desc' v-if="currentStatus >0 ">{{ find_status_msg() }}</span>
+              </div>
 
-          <div v-if="data_is_empty">
-              暂无数据
-          </div>
+              <div v-if="checkPageDataEmpty()">
+                  <img class="data-img-empty" src="../../../static/pic_content_empty.png"/>
+              </div>
 
-        </el-main>
-
-        <div v-if="pageShow == 1">
-            <el-pagination
-              :current-page="this.currentIndex"
-              @size-change="handleSizeChange"
-              @current-change="handleCurrentChange"
-              :page-size="this.pageSize"
-              small
-              layout="prev, pager, next"
-              background
-              :total="this.projectTotal">
-            </el-pagination>
-          </div>
-         
+              <div v-if="this.shouldShowLoadMore()">
+                  <BottomLoading :loadingType="this.buttomLoadingType" 
+                                 @loadingMore="loadingMore">
+                  </BottomLoading>
+              </div>
+            </el-main>
         </div>
       </el-aside>
-
-      <el-main v-bind:style="{height: heightData}" class="pannel-right">
+      <el-main class="pannel-right" v-bind:style="{'height' : (this.$store.state.windowClientHeight - 60) + 'px'}">
         
        <ProjectDetail :pid="current_pid"></ProjectDetail>
         
       </el-main>
     </el-container>
   </div>
+
 </template>
+
 <script>
 
 import _project_detail from './project_detail.vue'
-
+import BottomLoading from "../../components/common/BottomLoading.vue"
+import http from "../../utils/http"
 export default {
 
   components : {
-    "ProjectDetail" : _project_detail
+    "ProjectDetail" : _project_detail,
+    BottomLoading
   },
 
   data(){
       return {
-        status:'-1',
-        heightData :(document.documentElement.clientHeight)+'px',
-        project_list : [],
-        currentIndex:1,
-        currentStatus:0,
+        temp : true,
+
+        status:"-1",
+        currentStatus: -1,  //默认先加载全部
         pageShow :0,
         pageSize:15,
         projectTotal:0,
 
         // 数据加载状态
         request_data_loading:true,
-        
-        //加载数据是否为空
-        data_is_empty:false,
+      
+        current_pid : 0,
 
-        current_pid : ""
+        buttomLoadingType: 0 ,  //底部加载更多状态
+        
+        buttomShowloadMore: false,  //底部加载是否显示
+
+        allProject : new ProjectListEntity(), //全部
+        
+        projectGoing: new ProjectListEntity() , //进行中
+
+        projectDealy: new ProjectListEntity() , //已延期
+
+        projectOver: new ProjectListEntity(), //已结束   
+
       }
   },
 
+
   methods: {
+
+      /**
+       * 检查页面是否为空
+       */
+      checkPageDataEmpty(){
+          switch(this.currentStatus) {
+              default:
+              case -1:
+                  return this.allProject.dataIsEmpty;
+              case 0:
+                  return this.projectGoing.dataIsEmpty;
+              case 3:
+                  return this.projectDealy.dataIsEmpty;
+              case 5:
+                  return this.projectOver.dataIsEmpty;
+          }
+      },
+
+      shouldShowLoadMore(){
+        switch(this.currentStatus) {
+            default:
+            case -1:
+                return this.allProject.canLoadMore;
+            case 0:
+                return this.projectGoing.canLoadMore;
+            case 3:
+                return this.projectDealy.canLoadMore;
+            case 5:
+                return this.projectOver.canLoadMore;
+        }
+      },
+
+      getTargetArray(){
+          switch(this.currentStatus) {
+            default:
+            case -1 :
+              return this.allProject.list;           
+            case 0 :
+                return this.projectGoing.list;
+            case 3 :
+                return this.projectDealy.list;
+            case 5:
+                return this.projectOver.list;
+          }
+      },
+
+      dataHasBeenLoaded(){
+          switch(this.currentStatus) {
+            default:
+            case -1 :
+              return this.allProject.hasBeenLoading;           
+            case 0 :
+                return this.projectGoing.hasBeenLoading;
+            case 3 :
+                return this.projectDealy.hasBeenLoading;
+            case 5:
+                return this.projectOver.hasBeenLoading;
+          }
+      },
+
       find_status_msg() {
           if (this.currentStatus == 3) return "已延期";
           if (this.currentStatus == 5) return "已结束" ;
           return "" ;
       } ,
 
-      get_list(status =0 ,pageIndex = 1){
-        console.log("----->>" + status)
+      loadingMore(){
+        //显示加载中
+        this.get_list(this.currentStatus, false);
+      },
+
+      get_list(status = 0, isRefresh = true){
+        console.log("----->>" + status);
+        if(this.dataHasBeenLoaded() && isRefresh) return;
+
         var url = 'projectlists';
-        
+        let pageIndex = this.getCurrentPageIndex();  
         if(pageIndex == 1) {
-          this.project_list = [] ;
           this.request_data_loading = true;
         }
 
+        this.buttomLoadingType = 1 ;
         var params = {params:{status:status,
                               pageSize:this.pageSize,
-                              pageIndex:this.currentIndex}}
+                              pageIndex:pageIndex}}
 
         var user = JSON.parse(sessionStorage.getItem('user'));
-        this.$http.get(url, params).then(response => {
-            var result = response.data
+        http.get(url, params).then(response => {
+            var result = response
             console.log(result)
-
             //数据请求结束
             this.request_data_loading = false;
-
             if(result.code == 200){
-              this.project_list = result.data;
-              if(result.data != null){
-                this.projectTotal = parseInt(result.data[0]['count']);
-              }
-              
-              if(result.data != null && result.data.length == this.pageSize){
-                this.pageShow = 1
-              }else{
-                this.pageShow = 0
-              }
-
-              //判断数据是否为空
-              this.data_is_empty = this.project_list == null || this.project_list.length == 0;
-
-              this.$message({
-                message: result.message,
-                type: 'success'
-              });
-
+               this.parseProjectInfo(status,pageIndex, result.data);
             }else{
-              this.project_list = [];
               this.$message({
                 message: result.message,
                 type: 'error'
               });
             }
+
+            this.buttomLoadingType = 0 ;
         }, response => {
             // error callback
+            this.buttomLoadingType = 0 ;
         })
       },
-      
-      handleSelect(key, keyPath){
-        this.currentIndex = 1 ;
-        this.currentStatus = key;
-        this.get_list(key,1);
-        // alert(key)
+
+      parseProjectInfo(status , pageIndex, data){
+          switch(status) {
+              case -1 :  //全部
+                this.innerParseData(this.allProject,pageIndex, data);
+                break;
+
+              case 0 :
+                this.innerParseData(this.projectGoing , pageIndex, data);
+                break ;
+
+              case 3: 
+                this.innerParseData(this.projectDealy, pageIndex, data);
+                break; 
+
+              case 5 :
+                this.innerParseData(this.projectOver, pageIndex, data);
+                break;  
+          }
       },
+
+      innerParseData(obj , pageIndex, data){
+          if(pageIndex == 1) {
+              obj.list = [] ;
+          }
+
+          obj.currentPageIndex = pageIndex + 1 ;
+          obj.hasBeenLoading = true ;
+          if(data != null && data != undefined) {
+            obj.list = obj.list.concat(data);
+            obj.canLoadMore = data.length >= this.pageSize;
+
+            //单独设置pid
+            if(pageIndex == 1) {
+              this.current_pid = data[0].id;
+            }
+
+          }else{
+               obj.canLoadMore = false;
+          }
+          
+          obj.dataIsEmpty = !(obj.list != null && obj.list.length) ;
+      },
+
+      getCurrentPageIndex(){
+          switch(this.currentStatus) {
+              case -1:
+                      return this.allProject.currentPageIndex;
+              case 0:
+                      return this.projectGoing.currentPageIndex;
+              case 3:
+                      return this.projectDealy.currentPageIndex;
+              case 5:
+                     return this.projectOver.currentPageIndex;
+            }
+              return 1;
+      },
+
+  
+      handleSelect(key, keyPath){
+        this.status =  key;
+        this.currentStatus = parseInt(key);
+        this.get_list(this.currentStatus);
+      },
+
       handleSizeChange(val){
         alert(val)
         this.get_list(this.currentStatus,val);
       },
       
       handleCurrentChange(val){
-       this.currentIndex = val;
         this.get_list(this.currentStatus,val);
       },
 
       onItemClick(item) {
-          this.current_pid = "" + item.id ;
+          this.current_pid = item.id ;
           console.log("----the current_pid-----" + this.current_pid);
       }
   },
-  mounted:function(){
-        this.get_list();
-  }
+
+  created() {
+    this.get_list(-1);  //先加载全部数据
+  },
+
+  // mounted:function(){    
+  // }
 }
+
+
+//创建
+class ProjectListEntity {
+    constructor() {
+      this.list = [],  //数组集合
+      this.canLoadMore = false,  //是否可加载更多
+      this.currentPageIndex = 1  //当前加载页面
+      this.hasBeenLoading = false   //是否加载过
+      this.dataIsEmpty = false      //数据是否为null
+    }
+}
+
+
 </script>
+
 <style scoped>
+
+.data-img-empty{
+    width:160px;
+    height: 160px;
+    margin-top: 80px;
+}
+
 .pannel-left
 {
   margin: 0px;
@@ -183,6 +324,7 @@ export default {
   float: right;
   height: 100%;
   width: 100%;
+  min-width: 200px;
 }
 .project{
   padding: 0px;
@@ -197,8 +339,8 @@ export default {
   margin-bottom: .2rem;
   line-height: 30px;
   text-align: left;
-  margin-left:.7rem;
-  margin-right:.7rem;
+  padding-left:.7rem;
+  padding-right:.7rem;
   border-bottom: 1px solid #f2f2f2;
 }
 

@@ -1,6 +1,6 @@
 
 <template>
-    <div >
+    <div>
         <el-container>
             <el-aside width="19rem" v-bind:style="{height: heightData}">
                 <div class="grid-content bg-purple chatBar">
@@ -9,13 +9,13 @@
                         <el-menu-item index="project">项目列表</el-menu-item>
                     </el-menu>
                 </div>
-                <el-col  :span="24" class="pannel-left" v-bind:style="{height: heightData}">
+                <el-col  :span="24" class="pannel-left" v-bind:style="{height: chatHeight}">
                     <div>
                         <div v-if="isLoad" class="load">正在加载中.....</div>
                         <el-row   v-if="this.defaultActive == 'message'">
-                            <projectMessage 
-                                v-for="item in sessionlist"
-                                :item='item'
+                            <projectMessage
+                                v-for = 'item in sessionlist'
+                                :item ='item'
                                 />
                         </el-row>
                         <el-row v-if="this.defaultActive == 'project'">
@@ -26,7 +26,6 @@
                         </el-row>
                     </div>
                 </el-col>
-                
             </el-aside>
         <el-main>
             <div v-if="isChat">
@@ -62,8 +61,8 @@ export default {
             defaultActive:"message",
             defaultChat:'worker',
             teamType: 'advanced',
-            heightData :(document.documentElement.clientHeight-70)+'px',
-            chatHeight :(document.documentElement.clientHeight-110)+'px',
+            heightData :(document.documentElement.clientHeight-121)+'px',
+            chatHeight :(document.documentElement.clientHeight-130)+'px',
             showWorker:0,
             showOwner:0,
             workName:"施工群",
@@ -301,7 +300,7 @@ export default {
     }
 </style>
 <style>
-.el-tabs--border-card>.el-tabs__content{
-        padding: 0px;
+.el-tabs--border-card .el-tabs__content{
+    padding: 0px;
 }
 </style>

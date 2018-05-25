@@ -30,33 +30,58 @@ export default {
         this.$store.dispatch("connect");
         this.$store.dispatch("updateRefreshState");
   },
+
   updated() {
       // 提交sdk连接请求
       this.$store.dispatch("connect");
       this.$store.dispatch("updateRefreshState");
   },
+
+  mounted() {
+    this.dynamicCalucatewindowHeight();
+  },
+
+  methods : {
+      dynamicCalucatewindowHeight() {
+        this.windowHeightData = document.documentElement.clientHeight ;
+        const that = this;
+        window.onresize = function temp() {
+               //console.log("-----onresize--->>" + typeof(`${document.documentElement.clientHeight}`) + "-----"+ typeof(document.documentElement.clientHeight));
+                that.windowHeightData = document.documentElement.clientHeight;    
+                that.$store.commit("changeWindowClienHeight" , that.windowHeightData);
+            };
+
+        this.$store.commit("changeWindowClienHeight" , this.windowHeightData);
+    }    
+  }
+
+
 }
 </script>
 
 <style >
+
 #app {
   font-family: 'PingFang SC', 'Avenir', Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   color: #2c3e50;
 }
+
 body,{
   padding: 0px;
   margin: 0px;
   background: #f0f2f7;
   overflow:-Scroll;overflow-y:hidden
 }
+
 .el-main{
   padding: 0px;
   margin: 0px;
   background: #f0f2f7;
 }
 </style>
+
 <style scoped>
  .el-footer{
     display:none;

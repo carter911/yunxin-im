@@ -104,8 +104,10 @@ export default {
   currChatroomInfo: {},
   // 聊天室成员列表
   currChatroomMembers: [],
-  currentChatId : null,
+  currentChatId: null,
   userInfo: {},
-  sgbUserinfo:{},
+  sgbUserinfo: null,
+  changeWindowClienHeight: 0,
+  isLogin: false
 
 }
