@@ -31,22 +31,22 @@
                     </el-row> 
                 </div>
 
-            <div class="block">
+            <div class="block" v-loading='request_data_loading'>
 
-                <div v-show="this.currentType == '0'" >
-                        <TaskItem :taskList="this.unReadList" 
-                                  @getTaskDetail="this.getTaskDetail"></TaskItem>
+                <div>
+                    <TaskItem :taskList="get_current_task_list()" @getTaskDetail="this.getTaskDetail"></TaskItem>
                 </div>
 
-                <div v-show="this.currentType == '1'" >
-                        <TaskItem :taskList="this.allList" 
-                                  @getTaskDetail="this.getTaskDetail"></TaskItem>
-                </div>
+                <div v-if="checkPageDataEmpty()">
+                    <img class="data-img-empty" src="../../../static/pic_content_empty.png"/>
+                  </div>
+
+                  <div v-if="this.shouldShowLoadMore()">
+                        <BottomLoading :loadingType="this.buttomLoadingType" 
+                                        @loadingMore="loadingMore">
+                        </BottomLoading>
+                  </div>
             </div>    
-
-            <div v-if="can_load_more">
-                <button @click="request_task_list()">加载更多</button>
-            </div>
         </div>
 
 </template>
@@ -55,11 +55,13 @@
 
 import Log from '../../common/Log';
 import TaskItem from "../../components/project/TaskItem.vue"
+import BottomLoading from '../common/BottomLoading.vue'
 
 export default {
 
    components : {
-        TaskItem
+        TaskItem,
+        BottomLoading
     },
 
     props: {
@@ -69,21 +71,14 @@ export default {
         }
     },
 
-
     data() {
         return {
             currentType : '0' ,
+            allTaskEntity : new TaskListEntity(),
+            unReadTaskEntity : new TaskListEntity(),
+            buttomLoadingType: 0 ,
 
-            unReadList : [] ,
-            allList : [] ,
-
-            unReadPageIndex : 1 ,
-            allPageIndex : 1,
-
-            can_load_more: false,
-
-            unReadLoadMore : false,
-            allLoadMore:false
+            request_data_loading : false
         }
     } ,
 
@@ -94,16 +89,7 @@ export default {
 
         handleSelect(type)  {
             this.currentType = type ;
-
-        if(this.currentType === '0') {  //未读消息
-            if(null == this.unReadList || this.unReadList.length == 0) {
-                this.request_task_list();
-            }
-        } else {  //全部消息
-            if(null == this.allList || this.allList.length == 0) {
-                this.request_task_list();
-            }
-          }
+            this.request_task_list();
         } ,
         
         action_add_new() {
@@ -115,57 +101,142 @@ export default {
             this.$emit("closeRightPannel");
         },
 
+        shouldShowLoadMore(){
+             if(this.currentType == '0') return this.unReadTaskEntity.canLoadMore;
+             return this.allTaskEntity.canLoadMore;
+        },
+
+        checkPageDataEmpty(){
+            if(this.currentType == '0') return this.unReadTaskEntity.dataIsEmpty;
+            return this.allTaskEntity.dataIsEmpty;
+        },
+
+        get_data_has_loaded(){
+            if(this.currentType == '0') return this.unReadTaskEntity.hasBeenLoading;
+            return this.allTaskEntity.hasBeenLoading;
+        },
+
+        get_current_task_list(){
+            if(this.currentType == '0') return this.unReadTaskEntity.list;
+            return this.allTaskEntity.list;
+        },
+
+        get_current_page(){
+            if(this.currentType == '0') return this.unReadTaskEntity.currentPageIndex;
+            return this.allTaskEntity.currentPageIndex;
+        },
+
         //请求提醒列表
-         request_task_list(){
+         request_task_list(refresh = true){
+            if(this.get_data_has_loaded() && refresh) return;
+
+            this.buttomLoadingType = 1 ;
             let self = this;
-            //uid = 530 ;
             let url =  this.pid + "/projecttask";
+            let pageIndex = this.get_current_page();
+
+            if(pageIndex == 1) {
+                this.request_data_loading = true ;
+            }
 
             let isUnRead = self.currentType === '0';
             let params = { params : {
                     pageSize  : Log.PAGE_SIZE(),
-                    pageIndex : isUnRead ? self.unReadPageIndex : self.allPageIndex,
+                    pageIndex : pageIndex,
                     isActive :  isUnRead ? '1' : '0'  
             }}
 
             this.$http.get(url,params).then(response => {
+                this.buttomLoadingType = 0 ;
+                this.request_data_loading = false ;
+
                 let result = response.data;
                 Log.L(result);
-
-                if(isUnRead){
-                   self.unReadLoadMore = result.data != null && result.data.length >= Log.PAGE_SIZE();
-                   self.can_load_more = self.unReadLoadMore;
-
+                if(result.code == 200){
+                    this.parseTaskList(pageIndex, result.data);
                 }else {
-                   self.allLoadMore = result.data != null && result.data.length >= Log.PAGE_SIZE();
-                   self.can_load_more = self.allLoadMore;
+                    //TODO 
                 }
 
-                if(result.code == 200 && result.data != null) {
-                    if(isUnRead) {
-                        self.unReadList.push.apply(self.unReadList,result.data);
-                        self.unReadPageIndex ++ ;
-                    }else {
-                        self.allList.push.apply(self.allList, result.data);
-                        self.allPageIndex ++ ;
-                    }
-                }
-            })
-        } 
+        }, error => {
+            this.buttomLoadingType = 0 ;
+            //this.request_data_loading = false ;
+            //TODO
+        })
     },
 
-    created() {
+    parseTaskList(pageIndex,data){
+        if(this.currentType == '0') {
+            this.parseInnerList(this.unReadTaskEntity, pageIndex, data);
+        }else {
+            this.parseInnerList(this.allTaskEntity, pageIndex, data);
+        }
+    },
+
+    parseInnerList(obj, pageIndex, data) {
+         if(pageIndex == 1) {
+              obj.list = [] ;
+          }
+
+          obj.currentPageIndex = pageIndex + 1 ;
+          obj.hasBeenLoading = true ;
+          if(data != null && data != undefined) {
+               obj.list = obj.list.concat(data);
+               obj.canLoadMore = data.length >= this.pageSize;
+          }else{
+               obj.canLoadMore = false;
+          }
+
+          obj.dataIsEmpty = !(obj.list != null && obj.list.length) ;
+    }
+  },
+
+created() {
         this.request_task_list();
+},
+
+watch : {
+     pid : function(oldOne, newOne) {
+         console.log("---tasklist---" + oldOne + "--" + newOne);
+
+         //TODO 
+         if(oldOne !== newOne) {
+             this.unReadTaskEntity.clear() ;
+             this.allTaskEntity.clear();
+
+             this.currentType = '0';
+             this.request_task_list();
+        }
+        }
+    }
+}
+
+class TaskListEntity {
+    constructor() {
+        this.clear();
     }
 
+    clear(){
+        this.list = [] //数组集合
+        this.canLoadMore = false  //是否可加载更多
+        this.currentPageIndex = 1  //当前加载页面
+        this.hasBeenLoading = false   //是否加载过
+        this.dataIsEmpty = false      //数据是否为null
+    }
 }
+
+
 </script>
 
 <style scope>
 .task-content {
     background-color: #FFF;
+}
 
-
+.data-img-empty{
+    width:180px;
+    height: 180px;
+    margin-top: 80px;
 }
 
 </style>

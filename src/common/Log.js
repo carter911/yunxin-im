@@ -66,3 +66,14 @@ Log.TASK_INNER_TASK_CHECK = function(){
 Log.TASK_CHECK_OUTER_CHECK = function(){
     return "305";
 }
+
+//创建新任务
+Log.CREATE_NEW_TASK = function(){
+    return "303";
+}
+
+// --------- 项目状态 ----------- 
+//项目完成
+Log.PROJECT_TYPE_COMPLETED = function(){
+    return 5;
+}

@@ -2,39 +2,41 @@
 <template>
 
     <div class="task-add">
-          <el-dialog title="新任务" :visible.sync="dialogTableVisible" width="80%" >
+          <el-dialog title="新任务" :visible.sync="dialogTableVisible" width="80%"  
+                                    :closeOnClickModal="false" 
+                                    :showClose="false">
 
-            <el-form ref="form" label-width="120px" :rules="this.form_rules">
+            <el-form ref="form" :model="form" label-width="120px" :rules="this.form_rules">
 
                 <el-form-item label="任务名称" prop="name">
                         <el-input v-model="form.name"></el-input>
                 </el-form-item>
 
-                <el-form-item label="提醒时间">
+                <el-form-item label="任务时间" prop="startTime">
                         <el-col :span="8">
                         <el-date-picker type="date" v-model="form.startTime" value-format="timestamp" placeholder="选择日期"  style="width: 100%;"></el-date-picker>
                         </el-col>
                 </el-form-item>
 
-                <el-form-item label="参与人" prop="type">
+                <el-form-item label="参与人" prop="workId">
                         <el-checkbox-group  style="text-align:left;" v-model="form.workId">
                                 <el-checkbox v-for="(item,index) in taskRoleList" :key="index" :label="item.work_id || item.role_id"> {{ item.name }}</el-checkbox> 
                         </el-checkbox-group>
                 </el-form-item>
 
-                <el-form-item label="关联阶段" style="text-align:left;">
+                <el-form-item label="关联阶段" style="text-align:left;" prop="circleId">
                         <el-select placeholder="请选择关联阶段" v-model="form.circleId">
                              <el-option v-for="(item,index) in taskRelateList" :key="index" v-bind:label="item.name" :value="item.id"></el-option>    
                         </el-select>
                 </el-form-item>
         
-                <el-form-item label="任务描述">
+                <el-form-item label="任务描述" prop="detail">
                         <el-input type="textarea" v-model="form.detail"  rows="4"></el-input>
                 </el-form-item> 
 
                 <el-form-item style="text-align:left;">
                         <el-button type="primary" @click="onSubmit">立即创建</el-button>
-                        <el-button>取消</el-button>
+                        <el-button @click="resetFormAndClose">取消</el-button>
                 </el-form-item>
 
             </el-form>
@@ -74,8 +76,24 @@ export default {
             
             form_rules: {
                 name : [
-                    { require:true, message:'请输入任务名称', trigger:'blur'},
-                    {min : 5, message:'请输入至少5个字符', trigger:'blur'}
+                    { required :true,  message:'请输入任务名称', trigger:'blur'},
+                    { min : 5,         message:'请输入至少5个字符', trigger:'blur'}
+                ],
+
+                startTime : [
+                    { required : true , message:'请选择任务时间', trigger: 'change' }
+                ],
+
+                workId : [
+                      { type : 'array' , required : true , message : '请选择参与人' , trigger:'change'}
+                ],
+
+                circleId : [
+                     { required : true , message : '请选择关联阶段' , trigger:'change'}
+                ],
+
+                detail : [
+                    { required : true , message : '请填写任务描述' , trigger : 'blur' }
                 ]
             }
         }
@@ -89,9 +107,28 @@ export default {
             })
         },
 
-        onSubmit() {
-            //TODO 验证表单
+        beforeDialogClose(action, instance, done){
+            console.log(action + "---" + instance + "---" + done);
+        },
 
+        resetFormAndClose() {
+            this.$refs["form"].resetFields();
+            this.$emit("closeTaskAddDialog");
+        },
+
+        //表单验证
+        doCheckForm(formName){
+
+            this.$refs[formName].validate((valid) => {
+                if(valid){
+                    this.onSubmit();
+                }else {
+                    return false;                    
+                }
+            })
+        } ,
+
+        onSubmit() {
             let url = "task";
             let params = {
                 projectId:this.pid,
@@ -108,7 +145,7 @@ export default {
                 Log.L(result);
                 if(result.code == 200) {
                     this.showMsg("success", result.message);
-                    this.$ref['form'].resetFields();
+                    this.resetFormAndClose();
                 }else {
                     this.showMsg("error", result.message)
                 }

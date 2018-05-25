@@ -1,6 +1,6 @@
 <template>
         <div>
-            <div class="remind-item" v-for="(item,index) in this.remindList" :key="index"  @click="getRemindDetail(item.id)">
+            <div class="remind-item" v-for="(item,index) in this.remindList" :key="index"  @click="getRemindDetail(item)">
                 
                     <div class="remind-img"> 
                         <img :src='get_remind_avatar(item)' class="project-remind-avatar"/>
@@ -39,12 +39,12 @@ export default {
     },
 
     methods : {
-        getRemindDetail(id) {
+        getRemindDetail(item) {
             //this.$router.push("/project/remind/detail/" + id)
-            this.$emit("getRemindDetail",id);
+            item.isLike = 1 ;
+            this.$emit("getRemindDetail",item.id);
         },
 
-        
         get_remind_avatar(item) {
             if(item == null || item == undefined || item.createUser == null || item.createUser.avatar == undefined) 
                 return Log.DEFAULT_IMAGE();
@@ -53,6 +53,7 @@ export default {
 
         parse_remind_detail(detail) {
             if(detail == null || detail == undefined) return "";
+    
             let dd= detail.replace(/<\/?.+?>/g,"");
             let dds= dd.replace(/ /g,"");//dds为得到后的内容
             return dds.length >= 50 ? dds.substring(0,50) + "..." : dds ;

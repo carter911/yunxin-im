@@ -7,19 +7,18 @@
             <!-- 项目详情 开始 -->
             <el-card class="content-box-card">
                    <el-row>
-                        <el-col :span="18">
+                        <el-col :span="16">
                             <div class="project-detail">
-                            <span class="project-title">{{project.name + " " + project.door}}</span><br/>
-                            <span class="project-detail">施工时间：{{project.startTime | formatDate }}&nbsp;至&nbsp;
-                                                        {{ project.endTime | formatDate}}</span><br/>
+                            <span class="project-title">{{(project.name || '') + " " + (project.door || '')}}</span><br/>
+                            <span class="project-detail">施工时间：{{project.startTime | formatDate }} &nbsp;至&nbsp;
+                                                         {{ project.endTime | formatDate}}</span><br/>
                             <span class="project-detail">施工单位：{{project.company}}</span>
                         </div>
                        </el-col>
 
-                    <el-col :span="6">
-
+                        <el-col :span="8">
                         <div class="project-status">
-                            <span class="project-status-span"> {{ project.statusMessage }}</span>
+                            <span class="project-status-span" v-bind:style="{'background-color': getProjectStatusColor()}"> {{ project.statusMessage }}</span>
                         </div>
                     </el-col>
                   </el-row> 
@@ -35,7 +34,7 @@
                     </el-col>
 
                     <el-col :span="6" class="product-remind-right">    
-                           <span v-on:click="this.addNewRemind">添加</span>
+                           <span class="project-remind-add" v-on:click="this.addNewRemind">添加</span>
                            <span v-on:click="getMore(0)">更多</span>
                     </el-col>
                     
@@ -65,7 +64,7 @@
                             </el-col>
 
                             <el-col :span="6" class="product-remind-right">    
-                                   <span v-on:click="this.addNewTask">添加</span> 
+                                   <span v-if="checkNewTaskAddAuth()" class="project-remind-add" v-on:click="this.addNewTask">添加</span> 
                                    <span v-on:click="getMore(1)">更多</span>
                             </el-col>
                     </el-row>
@@ -112,11 +111,16 @@
 
     <!-- 添加新提醒 -->
     <div v-if="this.showAddNewRemind">
-        <NewRemindAdd :pid="this.pid"></NewRemindAdd>
+        <NewRemindAdd :pid="this.pid" 
+                      @closeNewRemindAddDialog='closeNewRemindAddDialog'>
+        </NewRemindAdd>
+
     </div>
 
     <div v-if="this.showAddNewTask">
-        <NewTaskAdd :pid="this.pid"></NewTaskAdd>
+        <NewTaskAdd :pid="this.pid"
+                    @closeTaskAddDialog="closeTaskAddDialog">
+        </NewTaskAdd>
     </div>
     
     </div>
@@ -202,6 +206,30 @@
     },
 
     methods: {
+        closeNewRemindAddDialog(){
+            this.showAddNewRemind = false;
+        },
+
+        closeTaskAddDialog(){
+              this.showAddNewTask = false ;
+        },
+
+        //检查是否存在创建人物权限
+        checkNewTaskAddAuth() {
+            if(this.project == null || this.project == undefined) return false;
+            let auth = this.project.auth.indexOf(Log.CREATE_NEW_TASK()) >= 0;
+            let operationId = this.project.optionRoleId == this.project.roleId;
+            let projectStatus = this.project.statusCode != Log.PROJECT_TYPE_COMPLETED();
+            return auth && operationId && projectStatus;
+        },
+
+        getProjectStatusColor(){
+            if(this.project == null) return '#FFF';
+            if(this.project.statusCode == 0) return "#12bd83" ;
+            if(this.project.statusCode == 3) return "#f32234" ;
+            if(this.project.statusCode == 5) return "#464646";
+        },
+
         addNewRemind() {
             this.showAddNewRemind = true;
         },
@@ -269,7 +297,7 @@
                               projectId:this.pid,
                               pageSize: 2,
                               isActive:"-1",
-                              pageIndex: 0}}
+                              pageIndex: 1}}
 
             this.$http.get(url, params).then(response => {
                 Log.L2("good",response.data);
@@ -342,10 +370,18 @@
     border-top:1px dotted #185598;
  }
 
+ .project-remind-add{
+     color: #F92309;
+     cursor: hand;
+     padding-left: 8px;
+     padding-right: 8px;
+ }
+
  .product-remind-title {
      text-align:left;
      font-size:15px;
      padding:2px;
+     cursor:hand;
  }
  .product-remind-right{
      text-align:right;
@@ -380,7 +416,7 @@
  }
 
  .project-status {
-     text-align: center;
+     text-align: right;
      padding-top: 30px;
      padding-bottom: 30px;
      height: 100%;
@@ -414,7 +450,7 @@
     z-index: 999;
     right: -100%;
     top: 0px;
-    width: 600px;
+    width: 540px;
     max-width: 100%;
     background: #fff;
     display: none;

@@ -3,40 +3,35 @@
 <template>
 
     <div class="content">
-        <el-dialog title="新提醒" :visible.sync="dialogTableVisible" width="80%" >
-            <el-form ref="form" :model="form" :rules="form_rules"   label-width="120px">
+        <el-dialog title="新提醒" :visible.sync="dialogTableVisible" width="80%" :closeOnClickModal="closeOnClickModal" :showClose="false">
+            <el-form ref="remindForm" :model="form" label-width="120px" :rules="form_rules">
 
-                <el-form-item hidden>
-                         <el-input v-model="form.projectId" name="id"></el-input>
-                </el-form-item>
-
-                <el-form-item label="提醒时间">
+                <el-form-item label="提醒时间" prop="startTime">
                         <el-col :span="8">
                         <el-date-picker type="date" value-format="timestamp" placeholder="选择日期" v-model="form.startTime" style="width: 100%;"></el-date-picker>
                         </el-col>
 
                 </el-form-item>
 
-                <el-form-item label="被提醒人" prop="type">
+                <el-form-item label="被提醒人" prop="workId">
                         <el-checkbox-group v-model="form.workId" style="text-align:left;">
                                 <el-checkbox v-for="(item,index) in remindRoleList" :key="index" :label="item.work_id || item.role_id"> {{ item.name }}</el-checkbox> 
                         </el-checkbox-group>
                 </el-form-item>
 
-                <el-form-item label="提醒内容">
+                <el-form-item label="提醒内容" prop="detail">
                         <el-input type="textarea" v-model="form.detail" rows="4"></el-input>
                 </el-form-item>
 
-                <el-form-item label="关联任务" style="text-align:left;">
+                <el-form-item label="关联任务" style="text-align:left;" prop="taskId">
                         <el-select v-model="form.taskId" placeholder="请选择关联任务" >
-
                              <el-option v-for="(item,index) in taskRelateList" :key ="index" v-bind:label="item.name" :value="item.id"></el-option>    
-
                         </el-select>
                 </el-form-item>
 
                 <el-form-item label="添加图片" style="text-align:left;" multiple="true">
                        <el-upload
+                            ref="upload"
                             action=""
                             :before-remove="this.onFileDelete"
                             :http-request="this.onFileUpload"
@@ -48,8 +43,8 @@
                 </el-form-item>
 
                 <el-form-item style="text-align:left;">
-                        <el-button type="primary" @click="onSubmit">立即创建</el-button>
-                        <el-button>取消</el-button>
+                        <el-button type="primary" @click="formOnSubmit('remindForm')">立即创建</el-button>
+                        <el-button @click="clearAndReset('remindForm')">取消</el-button>
                 </el-form-item>
             </el-form>
         </el-dialog>
@@ -76,9 +71,9 @@ export default {
 
     data() {
         return {
-            
-            dialogTableVisible : true ,
+            closeOnClickModal : false,
 
+            dialogTableVisible : true ,
             //提醒角色列表
             remindRoleList:[] ,
 
@@ -87,33 +82,33 @@ export default {
 
             form: {
                 projectId: this.pid,
-                startTime:"",
+                startTime:'', 
                 workId:[],
-                taskId:"",
-                detail:"",
-                image:"",       
-                name:"",         
+                taskId:'',
+                detail:'', 
+                image:'',       
+                name:'',         
             },
 
             form_rules : {
                 startTime : [
-                    {require:true, message:'请填写提醒时间', trigger:'blur'} 
+                    { required: true, message: '请选择日期', trigger: 'blur'} 
                 ],
 
                 workId : [
-                    {type : 'array' , require : true , message:'请选择任务提醒人' , trigger:'change'}
+                    { type : 'array' , required : true , message:'请至少选择一个任务提醒人' , trigger: 'change'}
                 ],
 
                 taskId : [
-                    { require : true , message : '请选择关联任务' , trigger:'blur'}
+                    { required : true , message : '请选择关联任务' , trigger:'change'}
                 ],
 
                 detail : [
-                    { require : true , message : '请填写提醒详情' , trigger:'blur'}
+                    { required : true , message : '请填写提醒详情' , trigger:'blur'}
                 ],
 
                 name : [
-                    { require : true , message : '请填写提醒名称' , trigger:'blur'}
+                    { required : true , message : '请填写提醒名称' , trigger:'blur'}
                 ]
             } ,
 
@@ -136,11 +131,30 @@ export default {
             })
         },
 
+        closeNewRemindAddDialog(){
+            this.$emit("closeNewRemindAddDialog")
+        },
 
-        onSubmit() {
-            //检测表单完整性
-            //TODO 
-        
+        clearAndReset(formName){
+            this.$refs[formName].resetFields();
+            this.$refs.upload.clearFiles();
+            this.closeNewRemindAddDialog();
+        },
+
+        formOnSubmit(formName) {
+            // this.$refs['form'].resetFields();
+            console.log(this.$refs);
+            this.$refs[formName].validate((valid) => {
+                if(valid){
+                    this.gotoSubmitForm();
+                }else {
+                    return false;                    
+                }
+            })
+        },
+
+        gotoSubmitForm(){
+
             //转换图片地址
             let imageList = "" ;
             this.imageUploadMap.forEach(item => {
@@ -161,7 +175,7 @@ export default {
 
                 if(response.data.code == 200) {
                     this.showMsg("success","添加提醒成功");
-                    
+                    this.clearAndReset('remindForm');
                 }else {
                     this.showMsg("error","添加提醒失败，请稍后重试");
                 }
@@ -172,7 +186,6 @@ export default {
                 this.showMsg("error","添加提醒失败，请稍后重试");
             }) ;
         },
-
 
         parse_role_data(result) {
             let tempArray = [] ;

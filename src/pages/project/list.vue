@@ -242,6 +242,12 @@ export default {
           if(data != null && data != undefined) {
             obj.list = obj.list.concat(data);
             obj.canLoadMore = data.length >= this.pageSize;
+
+            //单独设置pid
+            if(pageIndex == 1) {
+              this.current_pid = data[0].id;
+            }
+
           }else{
                obj.canLoadMore = false;
           }
