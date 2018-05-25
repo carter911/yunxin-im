@@ -34,7 +34,7 @@ export default {
     },
     methods: {
       handleResize (event) {
-        this.heightData = document.documentElement.clientHeight+'px'
+        this.heightData = (document.documentElement.clientHeight)+'px'
 
         console.log("heightData:" + this.heightData);
       },

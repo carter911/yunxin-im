@@ -352,6 +352,7 @@ export default {
     width:100%;
     height: 200px;
     resize:none;
+    border: 0px solid #ccc;
     overflow-x:visible;overflow-y:visible;
   }
 </style>

@@ -9,10 +9,9 @@
                         <el-menu-item index="project">项目列表</el-menu-item>
                     </el-menu>
                 </div>
-                <el-col  :span="24" class="pannel-left" v-bind:style="{height: chatHeight}">
+                <el-col  :span="24" class="pannel-left" v-bind:style="{height: listHeight}">
                     <div>
-                        <div v-if="isLoad" class="load">正在加载中.....</div>
-                        <el-row   v-if="this.defaultActive == 'message'">
+                        <el-row  v-if="this.defaultActive == 'message'">
                             <projectMessage
                                 v-for = 'item in sessionlist'
                                 :item ='item'
@@ -61,8 +60,9 @@ export default {
             defaultActive:"message",
             defaultChat:'worker',
             teamType: 'advanced',
-            heightData :(document.documentElement.clientHeight-121)+'px',
-            chatHeight :(document.documentElement.clientHeight-130)+'px',
+            heightData :(document.documentElement.clientHeight-60)+'px',
+            chatHeight :(document.documentElement.clientHeight-102)+'px',
+            listHeight : (document.documentElement.clientHeight-200)+'px',
             showWorker:0,
             showOwner:0,
             workName:"施工群",
