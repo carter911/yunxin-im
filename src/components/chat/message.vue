@@ -4,11 +4,11 @@
       <div class='invalidHint' v-if='scene==="team" && teamInvalid'>
         {{`您已退出该${teamInfo && teamInfo.type==='normal' ? '讨论组':'群'}`}}
       </div>
-      <div class="chat_list" v-bind:style="{height: chat_list_heihgt}">
-        <chat-list type="session" :msglist="msglist" :userInfos="userInfos" :myInfo="myInfo" :isRobot="isRobot" @msgs-loaded="msgsLoaded"></chat-list>
+      <div :id="chatType" class="chat_list" v-bind:style="{height: chat_list_heihgt}">
+        <ChatList type="session" :msglist="msglist" :userInfos="userInfos" :myInfo="myInfo" :isRobot="isRobot" @msgs-loaded="msgsLoaded"/>
       </div>
       <div class="">
-        <chat-editor type="session" :scene="scene" :to="to" :isRobot="isRobot" :invalid="teamInvalid || muteInTeam" :invalidHint="sendInvalidHint" :advancedTeam="teamInfo && teamInfo.type === 'advanced'"></chat-editor>
+        <ChatEditor type="session" :scene="scene" :to="to" :isRobot="isRobot" :invalid="teamInvalid || muteInTeam" :invalidHint="sendInvalidHint" :advancedTeam="teamInfo && teamInfo.type === 'advanced'"/>
       </div>
     </div>
   </div>
@@ -26,30 +26,20 @@ export default {
         ChatEditor,
         ChatList
     },
+    props:['chatType'],
     // 进入该页面，文档被挂载
     mounted() {
-        this.$store.dispatch("showLoading");
-        // 此时设置当前会话
         this.$store.dispatch("setCurrSession", this.sessionId);
-        pageUtil.scrollChatListDown();
-
-        setTimeout(() => {
-            this.$store.dispatch("hideLoading");
-        }, 1000);
-
-        // 获取群成员
-        if (this.scene === "team") {
-            var teamMembers = this.$store.state.teamMembers[this.to];
-            if (
-                teamMembers === undefined ||
-                teamMembers.length < this.teamInfo.memberNum
-            ) {
-                this.$store.dispatch("getTeamMembers", this.to);
-            }
-        }
     },
     updated() {
-        pageUtil.scrollChatListDown();
+        console.log('更新当前数据',this.chatType)
+        if(this.chatType == 'worker'){
+            pageUtil.scrollChatListDown();
+        }
+        if(this.chatType == 'owner'){
+            pageUtil.scrollChatOwnerDown()
+        }
+        
     },
     // 离开该页面，此时重置当前会话
     destroyed() {
@@ -64,11 +54,22 @@ export default {
             }
         };
     },
+    watch:{
+        sessionId(){
+            //pageUtil.scrollChatListDown();
+            if(this.chatType == 'worker'){
+                pageUtil.scrollChatListDown();
+            }
+            if(this.chatType == 'owner'){
+                pageUtil.scrollChatOwnerDown()
+            }
+        }
+    },
     computed: {
         sessionId() {
-            //let sessionId = "team-487717925";
-            let sessionId = this.$store.state.currentChatId
-            //alert(this.$store.state.currSessionId)
+            let sessionId = this.$store.state.currSessionId
+            pageUtil.scrollChatListDown();
+            console.log('切换聊天1111' + sessionId)
             return sessionId;
         },
         sessionName() {
@@ -101,9 +102,15 @@ export default {
             }
         },
         scene() {
+            if(this.sessionId == null){
+                return null;
+            }
             return util.parseSession(this.sessionId).scene;
         },
         to() {
+            if(this.sessionId == null){
+                return null;
+            }
             return util.parseSession(this.sessionId).to;
         },
         // 判断是否是机器人
@@ -171,6 +178,29 @@ export default {
         }
     },
     methods: {
+        init(){
+            // this.$store.dispatch("showLoading");
+            // 此时设置当前会话
+            console.log('初始化聊天详情start')
+            console.log(this.sessionId)
+            console.log('初始化聊天详情end')
+            this.$store.dispatch("setCurrSession", this.sessionId);
+            pageUtil.scrollChatListDown();
+            // setTimeout(() => {
+            //     this.$store.dispatch("hideLoading");
+            // }, 1000);
+
+            // // 获取群成员
+            if (this.scene === "team") {
+                var teamMembers = this.$store.state.teamMembers[this.to];
+                if (
+                    teamMembers === undefined ||
+                    teamMembers.length < this.teamInfo.memberNum
+                ) {
+                    this.$store.dispatch("getTeamMembers", this.to);
+                }
+            }
+        },
         onClickBack() {
             // location.href = '#/contacts'
             window.history.go(-1);
@@ -240,6 +270,7 @@ export default {
 }
 
 .chat_list {
+    background: #f2f2f2;
     overflow: auto;
 }
 </style>

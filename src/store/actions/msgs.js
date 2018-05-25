@@ -134,7 +134,16 @@ export function sendMsg ({state, commit}, obj) {
   const nim = state.nim
   obj = obj || {}
   let type = obj.type || ''
+  let currSessionProjectInfo = state.currSessionProjectInfo
   store.dispatch('showLoading')
+  var userinfo = {
+     'platform': 'web',
+     'user_icon_url': '',
+     'user_name': '',
+     'user_project_id': currSessionProjectInfo.id,
+     'user_project_role' : currSessionProjectInfo.roleId,
+  }
+  var user = JSON.stringify(userinfo);
   switch (type) {
     case 'text':
       nim.sendText({
@@ -142,7 +151,8 @@ export function sendMsg ({state, commit}, obj) {
         to: obj.to,
         text: obj.text,
         done: onSendMsgDone,
-        needMsgReceipt: obj.needMsgReceipt || false
+        needMsgReceipt: obj.needMsgReceipt || false,
+        custom:user,
       })
       break
     case 'custom':

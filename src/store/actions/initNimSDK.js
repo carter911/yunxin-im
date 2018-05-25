@@ -15,19 +15,16 @@ import {onRoamingMsgs, onOfflineMsgs, onMsg} from './msgs'
 import {onSysMsgs, onSysMsg, onSysMsgUnread, onCustomSysMsgs} from './sysMsgs'
 import { onTeams, onSynCreateTeam, onCreateTeam, onUpdateTeam, onTeamMembers, onUpdateTeamMember, onAddTeamMembers, onRemoveTeamMembers, onUpdateTeamManagers, onDismissTeam, onUpdateTeamMembersMute, onTeamMsgReceipt} from './team'
 
-
-console.log(config.sdk)
 const SDK = require('@/sdk/NIM_Web_SDK_v5.0.0.js')
-
 // 重新初始化 NIM SDK
 export function initNimSDK ({ state, commit, dispatch }, loginInfo) {
   if (state.nim) {
     state.nim.disconnect()
   }
-  dispatch('showLoading')
+  
   // 初始化SDK
   window.nim = state.nim = SDK.NIM.getInstance({
-    // debug: true && { api: 'info', style: 'font-size:12px;color:blue;background-color:rgba(0,0,0,0.1)' },
+    //debug: true && { api: 'info', style: 'font-size:12px;color:blue;background-color:rgba(0,0,0,0.1)' },
     appKey: config.appkey,
     account: loginInfo.uid,
     token: loginInfo.sdktoken,
@@ -36,14 +33,12 @@ export function initNimSDK ({ state, commit, dispatch }, loginInfo) {
     syncRobots: true,
     autoMarkRead: true, // 默认为true
     onconnect: function onConnect (event) {
+      console.log('建立云信连接')
       if (loginInfo) {
-        // 连接上以后更新uid
-        console.log('update user id', loginInfo);
         commit('updateUserUID', loginInfo)
       }
     },
     onerror: function onError (event) {
-      // alert(JSON.stringify(event))
       debugger
       alert('网络连接状态异常')
       location.href = config.loginUrl

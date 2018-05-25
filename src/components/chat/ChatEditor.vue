@@ -1,13 +1,13 @@
 <template>
   <div class="m-chat-editor" @click="hideRobotList">
-    <chat-emoji
+    <ChatEmoji
       v-bind:type="type"
       v-bind:scene="scene"
       v-bind:to="to"
       v-show="isEmojiShown"
       v-on:add-emoji="addEmoji"
       v-on:hide-emoji="hideEmoji"
-    ></chat-emoji>
+    ></ChatEmoji>
     <group v-show="isRobotListShown" class="m-chat-emoji m-chat-robot">
       <cell v-for="robot in robotslist" :title="robot.nick" :key="robot.account" @click.native="chooseRobot(robot)">
         <img class="icon u-circle" slot="icon" width="20" height="20" :src="robot.avatar">
@@ -19,7 +19,7 @@
           <span v-if="!isRobot" class="u-editor-icon" @click.stop="showEmoji">
             <i class="u-icon-img"><img :src="icon1"></i>
           </span>
-          <span v-if="!isRobot" class="u-editor-icon" @change="sendFileMsg">
+          <span v-if="!isRobot" class="u-editor-icon img" @change="sendFileMsg">
             <i class="u-icon-img"><img :src="icon2"></i>
             <input type="file" ref="fileToSent">
           </span>
@@ -32,7 +32,7 @@
         </span>
       </div>
        <div class="u-editor-input">
-         <el-input type="textarea" :rows="4" resize="none" v-model="msgToSent" @focus='onInputFocus'></el-input>
+         <el-input placeholder="请输入聊天消息" type="textarea" :rows="4" resize="none" v-model="msgToSent" @focus='onInputFocus'></el-input>
         <!-- <textarea v-model="msgToSent" @focus='onInputFocus'></textarea> -->
         </div>
     </div>
@@ -244,38 +244,6 @@ export default {
       }
       this.msgToSent = ''
     },
-    sendPlayMsg () {
-      if (this.invalid) {
-        this.$toast(this.invalidHint)
-        return
-      }
-      // 发送猜拳消息
-      if (this.type === 'session') {
-        this.$store.dispatch('sendMsg', {
-          type: 'custom',
-          scene: this.scene,
-          to: this.to,
-          pushContent: '[猜拳]',
-          content: {
-            type: 1,
-            data: {
-              value: Math.ceil(Math.random()*3)
-            }
-          }
-        })
-      } else if (this.type === 'chatroom') {
-        this.$store.dispatch('sendChatroomMsg', {
-          type: 'custom',
-          pushContent: '[猜拳]',
-          content: {
-            type: 1,
-            data: {
-              value: Math.ceil(Math.random()*3)
-            }
-          }
-        })
-      }
-    },
     sendFileMsg () {
       if (this.invalid) {
         this.$toast(this.invalidHint)
@@ -362,6 +330,18 @@ export default {
     height:40px;
     line-height: 40px;
   }
+  .img{
+    position: relative;
+  }
+  .img input{
+    position:absolute;
+    left: 5px;
+    width:30px;
+    height: 40px;
+    top:15px;
+    opacity:0;
+    cursor:pointer;
+  }
 
   .u-editor-send{
     float:right;
@@ -375,3 +355,8 @@ export default {
     overflow-x:visible;overflow-y:visible;
   }
 </style>
+
+<style>
+
+</style>
+

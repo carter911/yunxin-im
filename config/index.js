@@ -3,17 +3,28 @@
 // see http://vuejs-templates.github.io/webpack for documentation.
 
 const path = require('path')
-
 module.exports = {
+  wx_url : "https://open.weixin.qq.com/connect/oauth2/authorize?",
+  wx_id : 'wx68c972e31acbb4a0',
+  wx_redirect_url : '',
+  wx_appsecret :'',
+  baseURL: 'https://some-domain.com/api/',
   dev: {
-
     // Paths
     assetsSubDirectory: 'static',
     assetsPublicPath: '/',
-    proxyTable: {},
-
+    proxyTable: {
+      '/apis': {
+        // 测试环境
+        target: 'http:test.e-shigong.com',  // 接口域名
+        changeOrigin: true,  //是否跨域
+        pathRewrite: {
+            '^/apis': ''   //需要rewrite重写的,
+        }              
+      }
+    },
     // Various Dev Server settings
-    host: 'localhost', // can be overwritten by process.env.HOST
+    host: '127.0.0.1', // can be overwritten by process.env.HOST
     port: 8080, // can be overwritten by process.env.PORT, if port is in use, a free one will be determined
     autoOpenBrowser: false,
     errorOverlay: true,

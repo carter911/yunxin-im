@@ -10,10 +10,10 @@
       :router=true
       active-text-color="#000">
         <el-menu-item index="/admin/project" >
-          <img class="menu" src="../../../static/tab_icon_home_selected.png"/>
+          <img class="menu" :src="home_url"/>
         </el-menu-item>
         <el-menu-item index="/admin/chat">
-          <img class="menu" src="../../../static/tab_icon_chat_unselected.png"/>
+          <img class="menu" :src="chat_url"/>
         </el-menu-item>
     </el-menu>
 
@@ -23,13 +23,23 @@
 export default {
     data(){
       return {
+        home_url:'../../../static/tab_icon_home_selected.png',
+        chat_url:'../../../static/tab_icon_chat_unselected.png',
         heightData :document.documentElement.clientHeight+'px',
       }
     },
     ready: function () {
       window.addEventListener('resize', this.handleResize)
     },
+    watch: {
+      home_url() {
+        console.log('首页')
+      }
+    },
     mouted:{
+      home_url() {
+        let home_url = this.home_url
+      }
     },
     methods: {
       handleResize (event) {
@@ -37,6 +47,25 @@ export default {
       },
       handleSelect(key, keyPath){
         console.log(key);
+        if(key == '/admin/chat'){
+          if(this.$store.state.sessionlist.length>0){
+            this.chat_url = "../../../static/tab_icon_chat_selected.png"
+            this.home_url = "../../../static/tab_icon_home_unselected.png"
+            console.log("初始化",this.$store.state.sessionlist[0].id)
+            let sessionId = this.$store.state.sessionlist[0].id;
+            this.$store.commit('updateCurrSessionId', {
+                type: 'init',
+                sessionId:sessionId
+                });
+                this.$store.commit('updateCurrSessionMsgs', {
+                    type: 'init',
+                    sessionId: sessionId
+                });
+          }
+        }else{
+              this.chat_url = "../../../static/tab_icon_chat_unselected.png"
+              this.home_url = "../../../static/tab_icon_home_selected.png"
+          }
         //console.log( keyPath);
       },
     }

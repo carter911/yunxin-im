@@ -17,6 +17,8 @@ import {sendChatroomMsg, sendChatroomRobotMsg, sendChatroomFileMsg, getChatroomH
 import {initChatroomInfos, getChatroomInfo, getChatroomMembers, clearChatroomMembers} from './chatroomInfos'
 import { delegateTeamFunction, onTeamNotificationMsg, enterSettingPage, getTeamMembers, checkTeamMsgReceipt, getTeamMsgReads} from './team'
 
+import {updateCurrSessionProjectInfo} from './project'
+
 function connectNim ({state, commit, dispatch}, obj) {
   let {force} = Object.assign({}, obj)
   // 操作为内容页刷新页面，此时无nim实例
@@ -25,11 +27,13 @@ function connectNim ({state, commit, dispatch}, obj) {
       uid: cookie.readCookie('uid'),
       sdktoken: cookie.readCookie('sdktoken')
     }
+    
     if (!loginInfo.uid) {
       // 无cookie，直接跳转登录页
       pageUtil.turnPage('无历史登录记录，请重新登录', 'login')
     } else {
       // 有cookie，重新登录
+      console.log('----连接云信用户信息------', loginInfo)
       dispatch('initNimSDK', loginInfo)
     }
   }
@@ -153,5 +157,7 @@ export default {
   checkTeamMsgReceipt,
   // 查询群消息回执已读列表
   getTeamMsgReads,
+
+  updateCurrSessionProjectInfo
 
 }

@@ -1,10 +1,17 @@
 <template>
-  <el-col class="message-info" :span="24" >
+  <el-col
+    :class="{
+        'active':item.id == this.sessionId,
+        'message-info' : 1===1,
+        } "
+        :span="24" >
     <el-col :span="3">
         <img class="avatar" :onerror="avatar(item.avatar)" v-bind:src="item.avatar"/>
     </el-col>
     <el-col :span="17">
-        <div  @click='chatInfo(item)' class="grid-content bg-purple-dark ">
+        <div
+         @click='chatInfo(item)'
+         class="grid-content bg-purple-dark">
             <h2>{{item.name}}</h2>
             <p>{{item.lastMsgShow}}</p>
         </div>
@@ -18,18 +25,29 @@
 import util from '../../utils'
 import store from '../../store';
 export default {
+    data :{
+    },
     props: ['item'],
+    computed: {
+        sessionId() {
+            
+            let sessionId = this.$store.state.currSessionId
+            console.log('切换聊天' + sessionId)
+            return sessionId;
+        }
+    },
     methods:{
         chatInfo(item){
-            console.log('提醒 列表 -----------------', item);
-            //this.$store.state.currSessionId = item.id;
-            this.$store.state.currentChatId = item.id;
-            
-            // store.commit('updateCurrSessionId', {
-            //     type: 'init',
-            //     item
-            // })
-            // alert(this.$store.state.currentChatId);
+            let sessionId = item.id
+            console.log('请求的sesiionid' + sessionId);
+            this.$store.commit('updateCurrSessionId', {
+                type: 'init',
+                sessionId:sessionId
+            });
+            this.$store.commit('updateCurrSessionMsgs', {
+                type: 'init',
+                sessionId: sessionId
+            });
         },
         avatar(avatar){
             this.item.avatar = "http://images.e-shigong.com/ic_home_head.png";
@@ -42,7 +60,6 @@ export default {
   .message-info{
         cursor:pointer ;
         text-align: left;
-        margin-bottom: 5px;
         border-bottom: 1px solid #ddd;
         padding:3px 10px 3px 20px;
         height:50px;
@@ -72,5 +89,8 @@ export default {
         margin-top: 14px;
         font-size: 11px;
         color: #999;
+    }
+    .message-info .active{
+        background: #f0f2f7;
     }
 </style>

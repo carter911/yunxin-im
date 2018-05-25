@@ -2,7 +2,6 @@
 // (runtime-only or standalone) has been set in webpack.base.conf with an alias.
 import Vue from 'vue'
 import Vuex from 'vuex'
-import App from './pages/App'
 import router from './router'
 import axios from 'axios'
 import VueAxios from 'vue-axios'
@@ -10,17 +9,18 @@ import Qs from 'qs'
 import ElementUI from 'element-ui'
 import 'element-ui/lib/theme-chalk/index.css'
 import store from './store'
+import App from './pages/App'
 
 Vue.use(ElementUI, { size: 'small' })
 
 Vue.use(Vuex)
 var axios_instance = axios.create({
-  baseURL: 'http://api.e-shigong.com/',
+  baseURL: 'http://test.e-shigong.com/',
   transformRequest: [function (data) {
     return Qs.stringify(data)
   }],
   headers: {
-      'userid': '530',
+      'userid': '0',
       'platform': 'web',
       'Content-Type': 'application/x-www-form-urlencoded'
   }
@@ -28,31 +28,17 @@ var axios_instance = axios.create({
 
 Vue.use(VueAxios, axios_instance)
 Vue.config.productionTip = false
-// const store = new Vuex.Store({
-//   state: {
-//     isLogin: 0,
-//     user_id: 0,
-//     deviceid: ''
-//   },
-//   mutations: {
-//     changeLogin (state, status) {
-//       state.isLogin = status
-//     }
-//   }
-// })
 
 router.beforeEach((to, from, next) => {
-  var isLogin = sessionStorage.getItem('isLogin')
-  console.log(to.path)
-  store.state.isLogin = isLogin
-  console.log(store.state.isLogin);
   if (to.matched.some(m => m.meta.auth)) {
-    if (store.state.isLogin == 1) {
-      next()
-    } else {
-      store.state.isLogin = 0
-      next({ path: '/login' })
-    }
+
+    // if (store.state.isLogin == 1) {
+    //   next()
+    // } else {
+    //   store.state.isLogin = 0
+    //   next({ path: '/login' })
+    // }
+    next()
   } else {
     next()
   }

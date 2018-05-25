@@ -2,8 +2,7 @@ import Vue from 'vue'
 import Router from 'vue-router'
 import ProjectList from '@/pages/project/list.vue'
 import ProjectInfo from '@/pages/project/info.vue'
-import Login from '@/pages/common/login.vue'
-import LoginOut from '@/pages/common/loginout.vue'
+import Login from '@/pages/Login.vue'
 import Notfind from '@/pages/common/notfind.vue'
 import Admin from '@/pages/Admin.vue'
 import Chat from '@/pages/chat/index.vue'
@@ -48,11 +47,6 @@ export default new Router({
       path: '/login',
       name: 'login',
       component: Login
-    },
-    {
-      path: '/loginout',
-      name: 'loginout',
-      component: LoginOut
     },
     {
       path: '/project/list',

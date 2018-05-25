@@ -3,18 +3,11 @@
     <div class="emoji-content">
       <div class="cnt" >
         <span class="emoji-item" :class="{'pinup-item':item.type==='pinup'}" v-for="item in currEmoji.list" @click.stop="selectEmoji(item)">
-          <img :src="item.img">
+          <img :src="item.img"/>
         </span>
       </div>
-    </div>
-    <!-- <div class="emoji-channel">
-      <span class="emoji-album" :class="{active: item.name==currAlbum}" v-for="item in emoji" @click.stop="selectAlbum(item)">
-        <img :src="item.album">
-      </span><span v-if="type==='session'" class="emoji-album" :class="{active: item.name==currAlbum}" v-for="item in pinup" @click.stop="selectAlbum(item)">
-        <img :src="item.album">
-      </span>
-    </div> -->
-  </div>
+   </div>
+   </div>
 </template>
 
 <script>
@@ -54,11 +47,13 @@ export default {
   data () {
     return {
       currType: 'emoji',
-      currAlbum: 'emoji'
+      currAlbum: 'emoji',
+      dialogVisible: false
     }
   },
   computed: {
     emoji () {
+      this.dialogVisible = true
       return genEmojiList('emoji', emojiObj.emojiList)
     },
     pinup () {
@@ -74,6 +69,9 @@ export default {
     }
   },
   methods: {
+    handleClose(done) {
+        this.dialogVisible = false
+    },
     selectAlbum (album) {
       this.currType = album.type
       this.currAlbum = album.name
@@ -116,71 +114,26 @@ export default {
   }
 }
 </script>
+<style >
 
-<style type="text/css">
-  .m-chat-emoji {
+  .m-chat-emoji{
+  }
+
+  .emoji-content{
+    z-index: 10000;
     position: absolute;
-    top: -12rem;
-    height: 12rem;
-    left: 0;
-    width: 100%;
-    border-top: 1px solid #ccc;
-    background-color: #fff;
-    .emoji-channel {
-      position: relative;
-      width: 100%;
-      height: auto;
-      margin: 0 1rem;
-      .emoji-album {
-        display: inline-block;
-        padding: 0.1rem;
-        width: 1.8rem;
-        height: 1.8rem;
-        border-right: 1px solid #f0f0f0;
-        img {
-          margin: 0;
-          display: block;
-          width: inherit;
-          height: inherit;
-        }
-        &.active {
-          background-color: #f0f0f0;
-        }
-      }
-    }
-    .emoji-content {
-      position: relative;
-      width: 100%;
-      height: 10rem;
-      background-color: #f0f0f0;
-      overflow-y: auto;
-      
-      .cnt {
-        position: relative;
-        display: block;
-        margin: 0.4rem auto;
-        text-align: left;
-        top: 100px;
-        background: red;
-      }
-      .emoji-item {
-        display: inline-block;
-        width: 28px;
-        height: 28px;
-        padding: 2px;
-        vertical-align: middle;
-        /*border: 1px solid #fff;*/
-        /*margin-left: -1px;*/
-        /*margin-bottom: -1px;*/
-        img {
-          width: inherit;
-          height: inherit;
-        }
-      }
-      .pinup-item {
-        width: 44px;
-        height: 44px;
-      }
-    }
+    border-radius: 10px;
+    border:3px solid #ddd;
+    padding: 15px;
+    background: #eee;
+    width:500px;
+    height: 400px;
+    left:-00px;
+    top:50px;
+  }
+  .emoji-item img{
+    padding: 3px;
+    width:30px;
+    height:30px;
   }
 </style>

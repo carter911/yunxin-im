@@ -29,7 +29,7 @@ let appConfig = {
   // 用户的appkey
   // 用于在web demo中注册账号异步请求demo 服务器中使用
   test: {
-    appkey: 'fe416640c8e8a72734219e1847ad2547',
+    appkey: '515d29958ef5afad5b609487e4b8f03a',
     postUrl: 'https://apptest.netease.im'
   },
   online: {

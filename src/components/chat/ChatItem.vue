@@ -22,11 +22,11 @@
     >
       
     <div class="msg-head" v-if="msg.avatar">
-      <img class="icon u-circle" :src="msg.avatar">
+      <img  class="icon u-circle" :src="msg.avatar">
     </div>
 
     <div class="msg_body" >
-        <p style="">{{msg.fromNick}}</p>
+        <p style="">{{msg.fromNick}}({{msg.role}})</p>
         <div class="msg_content">
           <span style="height:14px;width:14px;" v-if="msg.type==='text'" class="msg-text" v-html="msg.showText"></span>
           <span v-else-if="msg.type==='custom-type1'" class="msg-text" ref="mediaMsg"></span>
@@ -41,8 +41,6 @@
           <a v-if="teamMsgUnRead >=0" class='msg-unread' :href='`#/msgReceiptDetail/${msg.to}-${msg.idServer}`'>{{teamMsgUnRead>0 ? `${teamMsgUnRead}人未读`: '全部已读'}}</a>
         </div>
     </div>
-
-
     <el-dialog
       title="提示"
       :visible.sync="dialogVisible"
@@ -143,6 +141,12 @@
     },
     beforeMount () {
       let item = Object.assign({}, this.rawMsg)
+      item.role = ""
+      if(item.custom !== undefined && item.custom != ""){
+        var ext = JSON.parse(item.custom);
+        item.role = util.formatRole(ext.user_project_role);
+        item.avatar = ext.user_icon_url;
+      } 
       // 标记用户，区分聊天室、普通消息
       if (this.type === 'session') {
         
@@ -158,7 +162,7 @@
             item.link = `#/namecard/${item.from}`
             //todo  如果是未加好友的人发了消息，是否能看到名片
           } else {
-            console.log(this.myInfo.avatar)
+            
             item.avatar = this.myInfo.avatar
           }
         } else if (item.flow === 'out') {
@@ -448,11 +452,13 @@
     margin-top: 2px;
     float: left;
     width:40px;
+    
   }
   .item-you .msg_body{
     float: left;
     padding: 0px;
-    max-width: 90%;
+    max-width: 80%;
+    min-width: 10%;
   }
 
 
@@ -468,19 +474,26 @@
     width:40px;
   }
 
+  .msg-head img{
+    border-radius: 20px;
+    height: 35px;
+  }
+
   .item-me .msg_body{
+    margin-right: 10px;
     float: right;
     padding: 0px;
     max-width: 90%;
+    min-width: 10%;
   }
 
  .item-me .msg_content:after{
         content: "";
         position: absolute;
         top: 14px;
-        right: 16px;
+        right: 26px;
         margin: 20px;
-        background: #eee;
+        background: #1ab6ff;
         width: 10px; height: 10px; 
         transform: rotate(135deg);
         -o-transform: rotate(135deg);
@@ -490,10 +503,6 @@
   }
 
 
-  .msg-head img{
-    height: 35px;
-  }
-
   .item-time{
     border-radius: 10px;
   }
@@ -502,27 +511,32 @@
     font-size: 10px;
     color: #666;
     padding:1px 20px;
-    background: #eee;
+    background: #fff;
     border-radius: 9px;
   }
   
 
   .msg_body p{
+      font-size: 13px;
       margin-top:0px;
       margin-bottom:5px;
   }
 
   .item-you  .msg_content{
-    background: #eee;
+    background: #fff;
     /* border-radius: 10px; */
+    font-size: 14px;
     border-radius: 14px;
     padding: 10px;
   }
 
 
   .item-me  .msg_content{
-    background: #eee;
+
+    color: #fff;
+    background: #1ab6ff;
     /* border-radius: 10px; */
+    font-size: 14px;
     border-radius: 14px;
     padding: 10px;
 
@@ -534,7 +548,7 @@
         top: 14px;
         left: 16px;
         margin: 20px;
-        background: #eee;
+        background: #fff;
         width: 10px; height: 10px; 
         transform: rotate(135deg);
         -o-transform: rotate(135deg);
@@ -545,13 +559,24 @@
   
 </style>
 <style>
+  .msg-text{
+   cursor: pointer; 
+  }
   .msg-text img{
       height: 20px;
       width: 20px;
+      
   }
   .msg-image img{
     width: 40%;
     height: 40%;
-    max-width: 40%;
+    max-width: 60%;
+    min-width: 20%;
+  }
+  .el-textarea__inner{
+    border-radius:0px;
+    border: 0px solid #ccc;
+    border-top :1px solid #dcdfe6;
+
   }
 </style>

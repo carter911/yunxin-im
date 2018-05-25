@@ -2,9 +2,9 @@
   <div>
     <el-card class="box-card">
       <el-form ref="loginForm" :model="form" label-width="80px" :rules="rules">
-        <div class="logo"><img src="../../../static/logo_400_400_gaitubao_com_100x100.png"/></div>
+        <div class="logo"><img src="../../static/logo_400_400_gaitubao_com_100x100.png"/></div>
         <el-form-item label="" label-width='0px' prop="mobile">
-        <el-input  class="input"  prefix-icon="el-icon-mobile-phone" v-model="form.mobile" placeholder="请输入手机号码"></el-input>
+        <el-input  class="input" type="phone" maxlength="13"  prefix-icon="el-icon-mobile-phone" v-model="form.mobile" placeholder="请输入手机号码"></el-input>
         </el-form-item>
         <el-form-item label="" label-width='0px' prop="code">
         <el-col :span="14">
@@ -19,8 +19,8 @@
         <div class="login-outher">
           <div>其他登陆方式 </div>
           <div>
-            <span><img src='../../../static/qq.png' /></span>
-            <span><img src='../../../static/weichat.png' /></span>
+            <span><img src='../../static/qq.png' /></span>
+            <span><img src='../../static/weichat.png' /></span>
           </div>
         </div>
       </el-form>
@@ -33,10 +33,11 @@ import pageUtil from "../utils/page";
 export default {
   data() {
       return {
+        type: '',
         form: {
           mobile: '',
           code: '',
-
+          
         },
         show: true,
         count: '',
@@ -45,13 +46,25 @@ export default {
         rules: {
           mobile: [
             { required: true, message: '请输入手机号码', trigger: 'blur' },
-            { min: 11, max: 11, message: '手机长度不对', trigger: 'blur' }
+            { min: 13, max: 13, message: '手机长度不对', trigger: 'blur' }
           ],
           code: [
             { required: true, message: '请输入4位数字验证码', trigger: 'blur' },
             { min: 4, max: 4, message: '请输入4位数字验证码', trigger: 'blur' }
           ] 
         }
+      }
+    },
+    computed:{
+        wx_url (){
+          let base_url = ''
+          base_url += "appid=wx68c972e31acbb4a0" 
+        }
+    },
+    watch: {
+      'form.mobile'(newValue, oldValue) { // 监听
+        console.log(1111);
+        this.form.mobile = newValue.length > oldValue.length ? newValue.replace(/\s/g, '').replace(/(\d{3})(\d{0,4})(\d{0,4})/, '$1 $2 $3') : this.form.mobile.trim()
       }
     },
     methods: {
@@ -74,8 +87,8 @@ export default {
             return false;
         }
         this.disabled = true;
-        
-        var url = 'getcode?mobile='+this.form.mobile
+        let mobile = this.form.mobile.replace(/\s+/g, "");
+        var url = 'getcode?mobile='+mobile
         this.$http.get(url).then(response => {
             // success callback
             var result = response.data
@@ -110,20 +123,21 @@ export default {
       },
       loginApp(){
         var loginUrl = 'loginApp';
-        var param = {'mobile':this.form.mobile,'code':this.form.code}
+
+        let mobile = this.form.mobile.replace(/\s+/g, "");
+        var param = {'mobile':mobile,'code':this.form.code}
         this.$http.post(loginUrl,param).then(response => {
             var result = response.data
-            console.log(result)
+            
             if(result.code == 200){
-              cookie.setCookie("uid", "sgb"+result.data.user.id);
-              cookie.setCookie("sdktoken", 123456);
-              // sessionStorage.setItem('teoken',result.data.token);
-              // sessionStorage.setItem('user_id',result.data.user.id);
-              // sessionStorage.setItem('user',JSON.stringify(result.data.user));
-              // sessionStorage.setItem('isLogin',1);
-              // this.$store.commit('changeLogin','1')   
-              //console.log(this.$store.state.isLogin);
-              this.$router.push({name: 'home'});
+              //var yunxinUser = {uid: "sgb"+result.data.user.id, sdktoken: 123456}
+              //this.$store.commit('updateUserUID',yunxinUser)
+              
+              this.$store.commit('updateSgbUserInfo',result.data)
+              cookie.setCookie('uid', "sgb"+result.data.user.id)
+              cookie.setCookie('sdktoken', '123456')
+
+              this.$router.push({path: '/admin'});
             }else{
               this.$message({
                 message: result.message,
@@ -140,7 +154,7 @@ export default {
 <style scoped>
   .box-card{
     width: 300px;
-    margin: 200px auto 0 ;
+    margin: 100px auto 0 ;
     height: 400px;
 
   }

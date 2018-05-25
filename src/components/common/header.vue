@@ -1,34 +1,52 @@
 <template>
 <el-header>
-<div style="height:60px; line-height:60px;float:right;font-size:11px;">
-    <div style="display:inline-block;vertical-align: middle;height:2.7rem;"><img style="height:1.7rem;widht:1.7rem;border-radius: 1rem" src="../../../static/logo_400_400_gaitubao_com_100x100.png" />
+    <div style="height:60px; line-height:60px;float:right;font-size:11px;">
+        <div style="display:inline-block;vertical-align: middle;height:2.7rem;">
+            <img style="height:1.7rem;widht:1.7rem;border-radius: 1rem" :onerror="avatar" :src="userInfo.user.avatar" />
+        </div>
+        <div style="display:inline-block;vertical-align: middle;cursor: pointer;margin-right:1rem">{{userInfo.user.name}}</div>
+        <div v-on:click="logout" style="display:inline-block;vertical-align: middle;cursor: pointer;">退出登陆</div>
     </div>
-    <div style="display:inline-block;vertical-align: middle;cursor: pointer;margin-right:1rem">章三</div>
-    <div v-on:click="logout" style="display:inline-block;vertical-align: middle;cursor: pointer">退出登陆</div>
-</div>
 </el-header>
 </template>
 <script>
+import cookie from '../../utils/cookie.js'
 export default {
-  methods: {
-    logout () {
-        this.$confirm('确定要退出登陆吗？', '退出登陆', {
-          confirmButtonText: '回家吃饭咯',
-          cancelButtonText: '我的心里只有工作',
-          type: 'warning'
-        }).then(() => {
-            sessionStorage.setItem('teoken','');
-            sessionStorage.setItem('user_id',0);
-            sessionStorage.setItem('user','');
-            sessionStorage.setItem('isLogin',0);
-            that.$store.dispatch('logout')
-            this.$store.commit('changeLogin',0);
-            this.$router.push({path: '/login'});  
-        }).catch(() => {      
-        });
-     
+    data(){
+        return {
+
+        }
+    },
+    computed:{
+        userInfo(){
+            let userInfo = JSON.parse(cookie.readCookie('userinfo'))
+            return userInfo;
+        }
+    },
+    watch:{
+        userInfo(){
+
+        }
+    },
+    methods: {
+        avatar(){
+            this.userInfo.user.avatar = "http://images.e-shigong.com/ic_home_head.png"
+        },
+        logout () {
+            this.$confirm('确定要退出登陆吗？', '退出登陆', {
+            confirmButtonText: '回家吃饭咯',
+            cancelButtonText: '我的心里只有工作',
+            type: 'warning'
+            }).then(() => {
+                var yunxinUser = {uid: 0, sdktoken: 123456}
+                this.$store.commit('updateUserUID',yunxinUser)
+                this.$store.commit('updateSgbUserInfo',{})
+                this.$router.push({path: '/login'});
+            }).catch(() => {      
+            });
+        
+        }
     }
-  }
 }
 </script>
 <style scoped>

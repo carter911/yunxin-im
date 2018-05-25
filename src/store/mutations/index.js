@@ -6,8 +6,20 @@ import cookie from '../../utils/cookie'
 import util from '../../utils'
 import config from '../../configs'
 import Vue from 'Vue'
+import http from '../../utils/http'
 
 export default {
+
+  updateSgbUserInfo (state, UserInfo) {
+    cookie.setCookie('userinfo', JSON.stringify(UserInfo))
+    var userInfo = JSON.parse(cookie.readCookie('userinfo'))
+    console.log(userInfo)
+    cookie.setCookie('token', UserInfo.token)
+    state.sgbUserinfo = UserInfo
+  },
+  updateCurrentChatId (state, SessionId) {
+    state.currentChatId = SessionId
+  },
   updateRefreshState (state) {
     state.isRefresh = false
   },
@@ -30,8 +42,11 @@ export default {
   updateUserUID (state, loginInfo) {
     state.userUID = loginInfo.uid
     state.sdktoken = loginInfo.sdktoken
+    console.log('loginInfo-更新数据')
+    
     cookie.setCookie('uid', loginInfo.uid)
     cookie.setCookie('sdktoken', loginInfo.sdktoken)
+    console.log(cookie.readCookie('uid'))
   },
   updateMyInfo (state, myInfo) {
     state.myInfo = util.mergeObject(state.myInfo, myInfo)
@@ -116,7 +131,7 @@ export default {
     state.sessionlist.sort((a, b) => {
       return b.updateTime - a.updateTime
     })
-    state.sessionlist.forEach(item => {
+    state.sessionlist.forEach((item, index) => {
       state.sessionMap[item.id] = item
     })
   },
@@ -234,11 +249,14 @@ export default {
     if (type === 'destroy') {
       state.currSessionId = null
     } else if (type === 'init') {
-      if (obj.sessionId && (obj.sessionId !== state.currSessionId)) {
-        state.currSessionId = obj.sessionId
-      }
+      state.currSessionId = obj.sessionId
+      store.dispatch('updateCurrSessionProjectInfo', obj.sessionId)
     }
   },
+  updateCurrSessionProjectInfo (state, data) {
+    state.currSessionProjectInfo = data
+  },
+
   // 更新当前会话列表的聊天记录，包括历史消息、单聊消息等，不包括聊天室消息
   // replace: 替换idClient的消息
   updateCurrSessionMsgs (state, obj) {

@@ -12,7 +12,6 @@
 </template>
 
 <script>
-
 import Header from '@/components/common/header.vue'
 import Navagate from '@/components/common/navagate.vue'
 import Footers from '@/components/common/footer.vue'
@@ -21,22 +20,17 @@ import cookie from "../utils/cookie";
 import pageUtil from "../utils/page";
 
 export default {
-  data:function(){
-    return {
-      isLogin: this.$store.state.isLogin
-    }
-  },
+  data:function(){return {}},
   components:{
     Navagate,Header,Footers
   },
+
   created(){
-        console.log("-------连接云信1-----------");
         // 提交sdk连接请求
         this.$store.dispatch("connect");
         this.$store.dispatch("updateRefreshState");
   },
   updated() {
-      console.log("-------连接云信-----------");
       // 提交sdk连接请求
       this.$store.dispatch("connect");
       this.$store.dispatch("updateRefreshState");

@@ -39,6 +39,8 @@ export function formatUserInfo (obj) {
         mode: 'cover'
       }
     })
+    var url = obj.avatar.split('?')[0]
+    obj.avatar = url
     // obj.avatar += '?imageView&thumbnail=40x40&quality=85'
   } else {
     obj.avatar = config.defaultUserIcon
