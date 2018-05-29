@@ -76,6 +76,8 @@ export function onRemoveTeamMembers(obj) {
       obj.team.validToCurrentUser = false
       let team = [obj.team]
       onTeams(team)
+      console.log('我被移除群了', team)
+      store.commit('deleteSessions', [team[0]['teamId']])
     }
   })
   store.commit('removeTeamMembersByAccounts', {

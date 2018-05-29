@@ -76,6 +76,9 @@ export default {
         font-size: 13px;
         margin-top: 0px;
         font-weight: normal;
+        overflow:hidden;
+        text-overflow:ellipsis;
+        white-space:nowrap;
     }
     .message-info p{
         margin-top: -10px;

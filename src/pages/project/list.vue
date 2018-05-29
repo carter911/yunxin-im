@@ -1,6 +1,6 @@
 <template>
 
-  <div>
+  <div id="project">
     <el-container>
       <el-aside  class="pannel-left" width="22rem">
 
@@ -354,3 +354,9 @@ class ProjectListEntity {
 }
 
 </style>
+<style>
+  #project .el-menu-item{
+        line-height:58px;
+    }
+</style>
+

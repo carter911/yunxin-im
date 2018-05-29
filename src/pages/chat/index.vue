@@ -78,41 +78,45 @@ export default {
     },
     watch:{
         currSessionProjectInfo (){
+            console.log('更新tab。。。。。。。。')
             let sessionId = this.$store.state.currSessionId
             var auth = this.currSessionProjectInfo.auth;
             let workname = this.currSessionProjectInfo.name + this.currSessionProjectInfo.door +'(施工群)'
             let ownerName = this.currSessionProjectInfo.name + this.currSessionProjectInfo.door +'(业主群)'
-            for(var i in auth) {
-                if(auth[i] == 100){
-                    if(sessionId == "team-" + this.currSessionProjectInfo.chat1Id){
-                        this.defaultChat = 'owner';
-                    }else if(sessionId == "team-" + this.currSessionProjectInfo.chat2Id){
-                        this.defaultChat = 'worker';
-                    }
-                    this.isChat = true;
-                    this.showWorker = 1;
-                    this.showOwner = 1;
-                    this.workName = workname;
-                    this.ownerName = ownerName;
-                }else if(auth[i] == 101){
-                    console.log(11111111111111111111);
-                    if(sessionId == "team-" + this.currSessionProjectInfo.chat1Id){
-                        this.defaultChat = 'worker';
-                    }
-                    this.isChat = true;
-                    this.showWorker = 1;
-                    this.workName = workname;
-                }else if(auth[i] == 102){
-                    console.log(102);
-                    if(sessionId == "team-" + this.currSessionProjectInfo.chat2Id){
-                        this.defaultChat = 'owner';
-                    }
-                    this.isChat = true;
-                    this.showOwner = 1;
-                    this.ownerName = ownerName;
+            console.log('test-------------',auth);
+            if(auth.indexOf("100")>=0){
+                console.log(100);
+                if(sessionId == "team-" + this.currSessionProjectInfo.chat1Id){
+                    this.defaultChat = 'owner';
+                }else if(sessionId == "team-" + this.currSessionProjectInfo.chat2Id){
+                    this.defaultChat = 'worker';
                 }
+                this.isChat = true;
+                this.showWorker = 1;
+                this.showOwner = 1;
+                this.workName = workname;
+                this.ownerName = ownerName;
+            }else if(auth.indexOf("101")>=0){
+                //客户群 
+                console.log(101);
+                if(sessionId == "team-" + this.currSessionProjectInfo.chat2Id){
+                    this.defaultChat = 'owner';
+                }
+                this.isChat = true;
+                this.showWorker = 0;
+                this.showOwner = 1;
+                this.ownerName = ownerName;
+            }else if(auth.indexOf("102")>=0){
+                //施工群
+                console.log(102);
+                if(sessionId == "team-" + this.currSessionProjectInfo.chat1Id){
+                    this.defaultChat = 'worker';
+                }
+                this.isChat = true;
+                this.showOwner = 0;
+                this.showWorker = 1;
+                this.workName = workname;
             }
-            //／／console.log('实时监听', this.currSessionProjectInfo.auth)
         },
         currSessionId(){
         }
@@ -317,7 +321,7 @@ export default {
     
     #chat .el-menu-item{
         height: 45px;
-        line-height: 45px;
+        line-height: 43px;
         width: 50%;
     }
 </style>

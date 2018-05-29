@@ -14,7 +14,6 @@ import TaskList from "@/components/task/TaskList.vue"
 import NewRemindAdd from "@/components/remind/NewRemindAdd.vue"
 import Chat from '@/pages/chat/index.vue'
 Vue.use(Router)
-
 export default new Router({
   mode: 'history',
   routes: [
