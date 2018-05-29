@@ -96,7 +96,7 @@
         <el-row class="el-row-task">
             <el-col :span="4">
                  <div class="product-remind-title">
-                        <span> 任务状态:</span>
+                        <span> 操作状态:</span>
                  </div>                
             </el-col>
             
@@ -193,7 +193,7 @@ export default {
         //检查是否存在图片审核权限
         hasCheckPicAuth(){
             if(null == this.taskDetail || undefined == this.taskDetail.optionRoleId) return false;
-            return this.taskDetail.optionRoleId === this.taskDetail.roleId;
+            return this.taskDetail.optionRoleId == this.taskDetail.roleId;
         },
 
         //检查是否可以上传图片
@@ -206,9 +206,11 @@ export default {
         checkOptionTask() {
             if(null == this.taskDetail || undefined == this.taskDetail.auth) return false;
 
-            let taskOperation = this.taskDetail.optionRoleId === this.taskDetail.roleId;
+            let taskOperation = this.taskDetail.optionRoleId == this.taskDetail.roleId;
             let taskAuth = this.taskDetail.auth.indexOf(Log.TASK_UP_LOAD()) >= 0;
-            let taskStatus = this.taskDetail.status === 0 || this.taskDetail.status === 3 ;
+            let taskStatus = this.taskDetail.statusCode === 0 || this.taskDetail.statusCode === 3 ;
+
+            console.log("checkOptionTask",taskOperation , taskAuth , taskStatus);
 
             return taskOperation && taskAuth && taskStatus; 
         },
@@ -220,12 +222,14 @@ export default {
 
             //内部审核权限
             if(this.taskDetail.statusCode === 1) {
-                let taskInnerCheckAuth = this.taskDetail.auth.indexOf(Log.TASK_INNER_TASK_CHECK());
-                let taskCheckStatus    = this.taskDetail.checkRoleId === this.taskDetail.roleId;
-                let innerAuth          = taskInnerCheckAuth && taskCheckStatus;
+                let taskInnerCheckAuth          = this.taskDetail.auth.indexOf(Log.TASK_INNER_TASK_CHECK()) >= 0;
+                let taskCheckStatus             = this.taskDetail.checkRoleId == this.taskDetail.roleId;
+                let innerAuth                   = taskInnerCheckAuth && taskCheckStatus;
 
                 //业主权限
-                let taskOuterCheckStatus = this.taskDetail.auth.indexOf(Log.TASK_CHECK_OUTER_CHECK());
+                let taskOuterCheckStatus = this.taskDetail.auth.indexOf(Log.TASK_CHECK_OUTER_CHECK()) >= 0;
+                console.log("taskOuterCheckStatus" , innerAuth , taskOuterCheckStatus);
+
                 return innerAuth || taskOuterCheckStatus;
             }
 
@@ -258,7 +262,6 @@ export default {
             }, error => {
                 this.showMsg("error","审核任务失败，请刷新重试");
             })
-
         },
 
         //提交任务
@@ -267,7 +270,7 @@ export default {
 
             let url = this.taskId + "/puttask";
             http.post(url).then(response => {
-                let result = response;
+                let data = response;
                 
                 this.endLoading();
                 if(data.code == 200){
@@ -514,5 +517,12 @@ export default {
     margin: 0 8px 8px 0;
     display: inline-block;
 }
+
+.el-textarea__inner{
+    border-radius:1px;
+    border: 1px solid #ccc;
+    border-top :1px solid #dcdfe6;
+}
+
 
 </style>

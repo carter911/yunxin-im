@@ -13,14 +13,16 @@
                     <div>
                         <el-row  v-if="this.defaultActive == 'message'">
                             <projectMessage
-                                v-for = 'item in sessionlist'
+                                v-for = '(item,index) in sessionlist'
                                 :item ='item'
+                                :key="index"
                                 />
                         </el-row>
                         <el-row v-if="this.defaultActive == 'project'">
                             <projectList ref="projectList"
-                                v-for="item in teamList"
+                                v-for="(item,index) in teamList"
                                 :item='item'
+                                :key="index"
                                 />
                         </el-row>
                     </div>

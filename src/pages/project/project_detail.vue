@@ -10,7 +10,8 @@
                             <span class="project-title">{{(project.name || '') + " " + (project.door || '')}}</span><br/>
                             <span class="project-detail">施工时间：{{project.startTime | formatDate }} &nbsp;至&nbsp;
                                                          {{ project.endTime | formatDate}}</span><br/>
-                            <span class="project-detail">施工单位：{{project.company}}</span>
+                            <span class="project-detail">施工单位：{{project.company}}</span><br/>
+                            <span class="project-detail">当前角色：{{getCurrentRoleName()}}</span>
                         </div>
                        </el-col>
 
@@ -137,6 +138,7 @@
     import RightPannel from "./RightPannel.vue"
     import RightDetailPannel from "./RightDetailPannel.vue"
     import http from "../../utils/http"
+    import sgbUtils from "../../utils/sgbUtils"
 
     let date = new Date();
     export default {
@@ -150,9 +152,7 @@
         },
 
         computed: {
-            getWindowClientHeight(){
-                console.log("----getWindowClientheight-----" + this.$store.state.windowClientHeight);
-                
+            getWindowClientHeight(){       
                 return this.$store.state.windowClientHeight;
             }
         },
@@ -193,7 +193,6 @@
 
                 show_right_detail_type : 0 ,
 
-            
                 //是否显示当前添加提醒
                 showAddNewRemind: false,
                 
@@ -202,12 +201,16 @@
             }      
         },
     
-
     mounted() {
         console.log("this log is " + this.pid)
     },
 
     methods: {
+        getCurrentRoleName() {
+            if(null == this.project || undefined == this.project) return "";
+            return sgbUtils.getRoleNameById(this.project.roleId);         
+        },
+
         closeNewRemindAddDialog(){
             this.showAddNewRemind = false;
         },
@@ -404,7 +407,6 @@
      padding: 0px;
      /* width: 80%; */
      min-width: 240px;
-     height: 80px;
      line-height: 20px;
      text-align: left;
  }

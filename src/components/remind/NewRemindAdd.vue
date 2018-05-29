@@ -154,7 +154,7 @@ export default {
         },
 
         gotoSubmitForm(){
-
+            
             //转换图片地址
             let imageList = "" ;
             this.imageUploadMap.forEach(item => {
@@ -168,11 +168,10 @@ export default {
                           image : imageList,
                           taskId : this.form.taskId ,
                           detail : this.form.detail};
-                                    
+                                
             Log.L(params);
-            this.http.post(url , params).then(response => {
+            http.post(url , params).then(response => {
                 Log.L(response);
-
                 if(response.code == 200) {
                     this.showMsg("success","添加提醒成功");
                     this.clearAndReset('remindForm');
@@ -244,8 +243,7 @@ export default {
             let url = this.pid + "/projecttasks" ;
             var params = {params:{ type:"1"}};
 
-            http.get(url,params).
-            then(response => {
+            http.get(url,params).then(response => {
                 Log.L(response);
 
                 let result = response;
@@ -338,4 +336,12 @@ export default {
     margin: 0 8px 8px 0;
     display: inline-block;
 }
+
+.el-textarea__inner{
+    border-radius:1px;
+    border: 1px solid #dcdfe6;
+    border-top :1px solid #dcdfe6;
+}
+
+
 </style>

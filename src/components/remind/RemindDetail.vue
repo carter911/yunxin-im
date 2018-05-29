@@ -30,6 +30,7 @@
 
 <script>
 import Log      from '../../common/Log';
+import http from "../../utils/http"
 
 export default {
     
@@ -58,11 +59,11 @@ export default {
         request_remind_detail() {
             let self = this;
             let url = this.pid + '/message' ;
-            this.$http.get(url).then(response => {
+            http.get(url).then(response => {
                 Log.L(response);
 
-                if(response.data.code == 200) {
-                    this.remind = response.data.data;
+                if(response.code == 200) {
+                    this.remind = response.data;
                     let imageResult = this.remind.images;
 
                     Log.L2("----imageResult-----",imageResult);

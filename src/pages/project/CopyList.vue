@@ -82,38 +82,4 @@ export default {
 
 <style>
 
-.content {
-    display: flex;
-    flex-direction:row;
-    min-height: 100vh;
-    overflow: hidden;
-}
-
-.left-content{
-    background-color: #F00;
-}
-
-.right-content{
-    background-color: #0F0;
-    flex-grow:1;
-    flex-direction: column;
-}
-
-.right-content-header {
-    height: 4%;
-}
-
-.right-content-content {
-    height: 92% ;
-}
-
-.right-content-bottom {
-    height: 4%;
-}
-
-
-.main-content{
-    flex-grow: 1;
-}
-
 </style>

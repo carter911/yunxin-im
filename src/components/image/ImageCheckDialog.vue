@@ -5,6 +5,7 @@
                 <el-dialog
                     title="照片说明"
                     width="60%"
+                    :modal="false"
                     :visible.sync="this.dialogVisible"
                     :before-close="handleClose">
 
@@ -22,8 +23,8 @@
                                 </div>
 
                                 <div v-else>
-                                    <el-button type="success" @click="this.checkImage(true)">审核</el-button>
-                                    <el-button type="danger"  @click="this.checkImage(false)">取消审核</el-button> 
+                                    <el-button type="success" @click="checkImage(true)">审核</el-button>
+                                    <el-button type="danger"  @click="checkImage(false)">取消审核</el-button> 
                                 </div>
                         </div>
 
@@ -37,6 +38,8 @@
 </template>
 
 <script>
+import http from "../../utils/http"
+
 export default {
     props : {
        imageItem : {
@@ -95,16 +98,16 @@ export default {
             let self = this;
             let url = this.taskId + "/optiontaskimage";
             let params = {
-                id : imageItem.id ,
+                id : this.imageItem.id ,
                 status : isCheck ? 1 : 2 
             }
 
-            this.$http.post(url,params).then(response => {
-                let result = response.data;
+            http.post(url,params).then(response => {
+                let result = response;
                 if(result.code == 200) {
-                    self.imageItem.status = isCheck ? "1" : "2";
+                    self.imageItem.status = isCheck ? 1 : 2;
                     //TODO
-                    this.this.dialogVisible = false; 
+                    this.dialogVisible = false; 
 
                 }else {
                     this.showMsg("error",result.message);
@@ -123,10 +126,25 @@ export default {
   .image-content{
       text-align: center;
   }
-    .image {
+
+ .image {
         width: 100%;
         height: 300px;
-    }
+ }
+
+ .el-dialog__wrapper {
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    overflow: auto;
+    margin: 0;
+    z-index: 1000;
+    background-color:rgba(0,0,0,0.5);
+}
+
+
 
 
 </style>
