@@ -1,5 +1,5 @@
 <template>
- <el-aside class="nav" width="5rem" v-bind:style="{'height' : this.$store.state.windowClientHeight + 'px'}">
+ <el-aside class="nav" width="5rem"  :style="{'height' : this.$store.state.windowClientHeight + 'px'}">
     <div class="logo"><img src="../../../static/logo.png"/></div>   
     <el-menu 
       :default-active="$route.path"
@@ -97,9 +97,8 @@ export default {
 
   .nav{
     width: 5rem;
-	  height: 51rem;
-	  background-image: linear-gradient(180deg, 
-		#4a9afb 59%);
+	  /* height: 51rem; */
+	  background-image: linear-gradient(180deg, #4a9afb 59%);
   }
 
   .logo{

@@ -48,6 +48,8 @@ router.beforeEach((to, from, next) => {
 
 // 时间格式化
 Vue.filter('formatDate', function (time) {
+  if(time == undefined || time == null || time == 0 ) return "";
+  
   let date = new Date(time * 1000)
   return formatDate(date, "yyyy-MM-dd")
 })

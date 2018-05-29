@@ -167,8 +167,10 @@
         data(){
             return {
                 project: {
-                    auth:[]
+                   startTime : 0,  //这里主要是为了避免时间显示 NAN-NAN
+                   endTime : 0 
                 },
+
                 remindList :[] ,
                 taskList : [],
                 user_id : 530,
@@ -216,7 +218,7 @@
 
         //检查是否存在创建人物权限
         checkNewTaskAddAuth() {
-            if(this.project == null || this.project == undefined) return false;
+            if(this.project == null || this.project == undefined || null == this.project.auth) return false;
             let auth = this.project.auth.indexOf(Log.CREATE_NEW_TASK()) >= 0;
             let operationId = this.project.optionRoleId == this.project.roleId;
             let projectStatus = this.project.statusCode != Log.PROJECT_TYPE_COMPLETED();
@@ -400,7 +402,8 @@
 
  .project-detail{
      padding: 0px;
-     width: 80%;
+     /* width: 80%; */
+     min-width: 240px;
      height: 80px;
      line-height: 20px;
      text-align: left;

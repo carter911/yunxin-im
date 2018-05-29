@@ -107,7 +107,7 @@ export default {
   currentChatId: null,
   userInfo: {},
   sgbUserinfo: null,
-  changeWindowClienHeight: 0,
+  windowClientHeight: 0,  
   isLogin: false
 
 }
