@@ -31,7 +31,9 @@
                     </el-row> 
                 </div>
 
-            <div class="block" v-loading='request_data_loading'>
+            <div class="task_list_block" 
+                 :style="{height : (this.$store.state.windowClientHeight - 122 - 16) + 'px'}"  
+                 v-loading='request_data_loading'>
 
                 <div>
                     <TaskItem :taskList="get_current_task_list()" @getTaskDetail="this.getTaskDetail"></TaskItem>
@@ -228,6 +230,11 @@ class TaskListEntity {
 </script>
 
 <style scope>
+
+.task_list_block {
+    overflow:auto
+}
+
 .task-content {
     background-color: #FFF;
 }

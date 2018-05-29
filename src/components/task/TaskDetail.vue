@@ -1,7 +1,7 @@
 <!-- 任务详情  -->
 
 <template>
-    <div class="task_content">
+    <div id="id_task_detail" class="task_content">
 
         <div class="task-detail-title">
             <div class="task-detail-desc">
@@ -438,6 +438,52 @@ export default {
 }
 </script>
 
+<style>
+
+#id_task_detail .el-upload-class{
+    margin-top: 12px;
+}
+
+#id_task_detail .el-row-task{
+    padding: 12px;
+    font-size: 14px;
+    color: #494949;
+}
+
+#id_task_detail .el-upload--picture-card {
+    background-color: #fbfdff;
+    border: 1px dashed #c0ccda;
+    border-radius: 6px;
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box;
+    width: 100px;
+    margin: 0 8px 8px 0;
+    height: 100px;
+    line-height: 120px;
+    vertical-align: top;
+}
+
+#id_task_detail .el-upload-list--picture-card .el-upload-list__item {
+    overflow: hidden;
+    background-color: #fff;
+    border: 1px solid #c0ccda;
+    border-radius: 6px;
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box;
+    width: 100px;
+    height: 100px;
+    margin: 0 8px 8px 0;
+    display: inline-block;
+}
+
+#id_task_detail .el-textarea__inner{
+    border-radius:1px;
+    border: 1px solid #ccc;
+    border-top :1px solid #dcdfe6;
+}
+
+</style>
+
 <style scope>
 
 .task_content{
@@ -482,47 +528,5 @@ export default {
     color: #797979;
     font-size: 13px;
 }
-
-.el-row-task{
-    padding: 12px;
-    font-size: 14px;
-    color: #494949;
-}
-
-.el-upload-class{
-    margin-top: 12px;
-}
-
-.el-upload--picture-card {
-    background-color: #fbfdff;
-    border: 1px dashed #c0ccda;
-    border-radius: 6px;
-    -webkit-box-sizing: border-box;
-    box-sizing: border-box;
-    width: 100px;
-    margin: 0 8px 8px 0;
-    height: 100px;
-    line-height: 120px;
-    vertical-align: top;
-}
-.el-upload-list--picture-card .el-upload-list__item {
-    overflow: hidden;
-    background-color: #fff;
-    border: 1px solid #c0ccda;
-    border-radius: 6px;
-    -webkit-box-sizing: border-box;
-    box-sizing: border-box;
-    width: 100px;
-    height: 100px;
-    margin: 0 8px 8px 0;
-    display: inline-block;
-}
-
-.el-textarea__inner{
-    border-radius:1px;
-    border: 1px solid #ccc;
-    border-top :1px solid #dcdfe6;
-}
-
 
 </style>

@@ -118,6 +118,7 @@ export default {
 	font-stretch: normal;
 	line-height: 14px;
 	letter-spacing: 0px;
+    padding-bottom: 4px;
 	color: #666666;
 }
 

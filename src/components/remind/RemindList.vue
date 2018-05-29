@@ -31,7 +31,10 @@
                     </el-row> 
                 </div>
 
-            <div class="block">
+            <div class="remind_list_block" 
+                 :style="{height : (this.$store.state.windowClientHeight - 122 - 16) + 'px'}" 
+                 v-loading='request_data_loading'>
+
                 <RemindItem :remindList="get_current_remind_list()" 
                             @getRemindDetail="getRemindDetail"
                             v-if="!checkPageDataEmpty()"></RemindItem>
@@ -92,7 +95,9 @@ export default {
             //加载动作
             buttomLoadingType : 0 ,
 
-            pageSize : 20 
+            pageSize : 20 ,
+
+            request_data_loading : false
      }
  },
 
@@ -165,6 +170,10 @@ methods : {
         let isUnRead = self.currentType === '0';
         let pageIndex = this.get_current_page() ;
 
+        if(pageIndex == 1) {
+            this.request_data_loading = true ;
+        }
+
         let params = {
                 projectId : self.pid,
                 pageSize  : self.pageSize,
@@ -174,6 +183,7 @@ methods : {
 
         this.buttomLoadingType = 1 ;
         http.get(url,params).then(response => {
+            this.request_data_loading = false ;
             this.buttomLoadingType = 0 ;
             let result = response;
             Log.L(result);
@@ -184,6 +194,7 @@ methods : {
                 //TODO ...
             }
         }, error => {
+            this.request_data_loading = false ;
             this.buttomLoadingType = 0 ;
         })
     },
@@ -244,13 +255,17 @@ class RemindListEntity {
         this.hasBeenLoading = false   //是否加载过
         this.dataIsEmpty = false      //数据是否为null
     }
-    
 }
-
 
 </script>
 
 <style>
+
+.remind_list_block {
+    overflow:auto
+}
+
+
 .remind-list-content {
     padding:8px;
     background-color:#fff;

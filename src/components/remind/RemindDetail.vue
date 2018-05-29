@@ -69,8 +69,8 @@ export default {
                     Log.L2("----imageResult-----",imageResult);
                     if(null != imageResult && imageResult.length) {
                         imageResult = imageResult.split(",");
-
                         imageResult.forEach(element => {
+                            if(element == null || element.length <= '?imageslim'.length) return;
                             self.images += "<img style='width:100%;' src=" + element + "/>" ;
                         });
                     }

@@ -141,7 +141,6 @@ export default {
     min-width: 100px;
 }
 
-
 .product-remind-item-content {
     font-size: 12px;
 	font-weight: normal;
@@ -149,6 +148,7 @@ export default {
 	line-height: 14px;
 	letter-spacing: 0px;
 	color: #666666;
+    padding-bottom: 4px;
 }
 
 </style>

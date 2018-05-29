@@ -157,7 +157,6 @@ export default {
             let url = this.pid +  "/projectcircle"
             http.get(url).then(response => {
                     let result = response;
-
                     Log.L(result);
                     if(result.code === 200) {
                         this.taskRelateList = result.data;
@@ -172,11 +171,12 @@ export default {
         //请求任务参与人
         request_user_roleList() {
             let url = "getmessagerole";
-            var params = {params:{ projectId:this.pid }};
+            var params = {projectId:this.pid};
 
             http.get(url, params).then(response => {
-                
                 let result = response ;
+                Log.L(result);
+                
                 if(result.code == 200) {
                     //parse data
                     this.parse_role_data(result.data);

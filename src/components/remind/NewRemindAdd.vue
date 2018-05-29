@@ -2,7 +2,7 @@
 
 <template>
 
-    <div class="content">
+    <div class="content" id="id_remind">
         <el-dialog title="新提醒" :visible.sync="dialogTableVisible" width="80%" :closeOnClickModal="closeOnClickModal" :showClose="false">
             <el-form ref="remindForm" :model="form" label-width="120px" :rules="form_rules">
 
@@ -154,7 +154,6 @@ export default {
         },
 
         gotoSubmitForm(){
-            
             //转换图片地址
             let imageList = "" ;
             this.imageUploadMap.forEach(item => {
@@ -286,9 +285,8 @@ export default {
         //移除删除的文件
         onFileDelete(file,fileList) {
            if(null == file || undefined == file) return ;
-
+           
            this.imageUploadMap.forEach(ele => {
-            
                 if(null != ele && ele.obj.file == file.raw) {
                     this.imageUploadMap.splice(this.imageUploadMap.indexOf(ele),1);
                 }
@@ -307,12 +305,9 @@ export default {
 
 </script>
 
-<style scope>
-    .content {
-            line-height: 16px;
-    }
+<style>
 
-    .el-upload--picture-card {
+ #id_remind .el-upload--picture-card {
         background-color: #fbfdff;
         border: 1px dashed #c0ccda;
         border-radius: 6px;
@@ -324,7 +319,7 @@ export default {
         vertical-align: top;
     }
 
- .el-upload-list--picture-card .el-upload-list__item {
+   #id_remind .el-upload-list--picture-card .el-upload-list__item {
     overflow: hidden;
     background-color: #fff;
     border: 1px solid #c0ccda;
@@ -337,11 +332,16 @@ export default {
     display: inline-block;
 }
 
-.el-textarea__inner{
+#id_remind .el-textarea__inner{
     border-radius:1px;
     border: 1px solid #dcdfe6;
     border-top :1px solid #dcdfe6;
 }
 
+#id_remind  .content {
+    line-height: 16px;
+}
+
 
 </style>
+

@@ -6,7 +6,7 @@ import Log from '../../common/Log';
     <div class="content"> 
             <div v-for="(item,index) in items" :key="index" class="image-content-task-list" @click="onImageItemClick(item)">
                     <img :src="item.image + '?imageslim'" class="task_image_list"/>
-                     <img :src='get_image_status(item)' class="dot"/>      
+                     <img :src='get_image_status(item)' class="img_status_dot"/>      
             </div>
     </div>
 
@@ -32,7 +32,6 @@ export default {
     },
 
     methods : {
-
         get_image_status(item) {
             if(null == item || undefined == item) return '../../../static/ic_not_check.png' ;
             if(item.status === 0) return '../../../static/ic_question.png'
@@ -64,14 +63,16 @@ export default {
 }
 
 .task_image_list {
-    width:100%;
-    height:100%;
+    width:80%;
+    height:80%;
+    float: left;
 }
 
-.dot{
-    width: 40px;
-    height: 40px;
+.img_status_dot{
+    width: 20px;
+    height: 20px;
     z-index: 12;
+    position: relative;
 }
 
 </style>

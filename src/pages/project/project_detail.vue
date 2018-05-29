@@ -1,7 +1,8 @@
 <template>
     <!-- 中间显示具体项目 -->
     <div> 
-         <div class="content">
+         <div class="content"  v-loading='data_request_loading'>
+            
             <!-- 项目详情 开始 -->
             <el-card class="content-box-card">
                    <el-row>
@@ -79,50 +80,49 @@
             </el-card>
             <!-- 任务 结束 -->
                 
-             <!-- 材料商 开始 -->
-            <!-- <el-card class="content-box-card"></el-card> -->
+            <!-- 材料商 开始 -->
+                <!-- <el-card class="content-box-card"></el-card> -->
             <!-- 材料商 结束 -->
+        </div>
 
-    </div>
+        <!-- 右侧显示详情界面 -->
+        <div id="left-popup" class="left-popup" 
+            :style="{'right' : show_right_pop ? '0px' : '-100%', 'height' : (this.$store.state.windowClientHeight - 61) + 'px' }"> 
+                <RightPannel :projectId="this.pid"  
+                            :remindId="this.currentRemindId"
+                            :taskId="this.currentTaskId"
+                            :showType="this.rightPannelShowType"
+                            @getRemindDetail="this.getRemindDetail"
+                            @getTaskDetail="this.getTaskDetail"
+                            @closeRightPannel="this.closeRightPannel">
+                </RightPannel>
+        </div>
 
-    <!-- 右侧显示详情界面 -->
-    <div id="left-popup" class="left-popup" 
-         :style="{'right' : show_right_pop ? '0px' : '-100%', 'height' : (this.$store.state.windowClientHeight - 60) + 'px' }"> 
-            <RightPannel :projectId="this.pid"  
-                         :remindId="this.currentRemindId"
-                         :taskId="this.currentTaskId"
-                         :showType="this.rightPannelShowType"
-                         @getRemindDetail="this.getRemindDetail"
-                         @getTaskDetail="this.getTaskDetail"
-                         @closeRightPannel="this.closeRightPannel">
-            </RightPannel>
-    </div>
+        <div id="left-popup" class="left-popup" 
+            :style="{'right' : '0px' , 'height' : (this.$store.state.windowClientHeight - 61) + 'px'}" v-if="this.show_right_detail_pop"> 
+                <RightDetailPannel :showType="this.show_right_detail_type" 
+                                :remindId="this.currentRemindId"
+                                :taskId="this.currentTaskId"
+                                @closeDetailRightPannel="closeDetailRightPannel">
 
-    <div id="left-popup" class="left-popup" 
-         :style="{'right' : '0px' , 'height' : (this.$store.state.windowClientHeight - 60) + 'px'}" v-if="this.show_right_detail_pop"> 
-            <RightDetailPannel :showType="this.show_right_detail_type" 
-                               :remindId="this.currentRemindId"
-                               :taskId="this.currentTaskId"
-                               @closeDetailRightPannel="closeDetailRightPannel">
+                </RightDetailPannel>
+        </div>
 
-            </RightDetailPannel>
-    </div>
+        <!-- 添加新提醒 -->
+        <div v-if="this.showAddNewRemind">
+            <NewRemindAdd :pid="this.pid" 
+                        @closeNewRemindAddDialog='closeNewRemindAddDialog'>
+            </NewRemindAdd>
 
-    <!-- 添加新提醒 -->
-    <div v-if="this.showAddNewRemind">
-        <NewRemindAdd :pid="this.pid" 
-                      @closeNewRemindAddDialog='closeNewRemindAddDialog'>
-        </NewRemindAdd>
+        </div>
 
-    </div>
-
-    <div v-if="this.showAddNewTask">
-        <NewTaskAdd :pid="this.pid"
-                    @closeTaskAddDialog="closeTaskAddDialog">
-        </NewTaskAdd>
-    </div>
-    
-    </div>
+        <div v-if="this.showAddNewTask">
+            <NewTaskAdd :pid="this.pid"
+                        @closeTaskAddDialog="closeTaskAddDialog">
+            </NewTaskAdd>
+        </div>
+        
+        </div>
        
 </template>
 
@@ -197,7 +197,10 @@
                 showAddNewRemind: false,
                 
                 //是否显示当前新增任务
-                showAddNewTask:false
+                showAddNewTask:false ,
+
+                //数据请求中
+                data_request_loading : true ,
             }      
         },
     
@@ -236,6 +239,13 @@
         },
 
         addNewRemind() {
+            if(this.project == null) {
+                this.$message({
+                     message: "暂无项目",
+                     type: 'error'
+                   });
+                return;
+            }
             this.showAddNewRemind = true;
         },
 
@@ -278,8 +288,11 @@
 
         //获取产品详情
         require_project_detail() {
+               this.data_request_loading = true;
+
                let url = this.pid + "/projects";
                http.get(url).then(response => {
+                   this.data_request_loading = false;
                    Log.L(response);
 
                    let newResult = response; 
@@ -290,6 +303,7 @@
                        this.project = {}
                    }
                }, response => {
+                    this.data_request_loading = false;
                     this.project = {}
                     Log.success_msg("请求失败，稍后重试")
                });
