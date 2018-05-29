@@ -41,16 +41,11 @@
           <a v-if="teamMsgUnRead >=0" class='msg-unread' :href='`#/msgReceiptDetail/${msg.to}-${msg.idServer}`'>{{teamMsgUnRead>0 ? `${teamMsgUnRead}人未读`: '全部已读'}}</a>
         </div>
     </div>
-    <el-dialog
-      title="提示"
+    <el-dialog style="max-heihgt:100%"
       :visible.sync="dialogVisible"
-      width="80%"
+      width="70%"
       :before-close="handleClose">
-      <span>这是一段信息</span>
-      <span slot="footer" class="dialog-footer">
-        <el-button @click="dialogVisible = false">取 消</el-button>
-        <el-button type="primary" @click="dialogVisible = false">确 定</el-button>
-      </span>
+      <div style="text-align:center"><img width="100%" :src="fullImageUrl"/></div>
     </el-dialog>
 
       <!-- <div class="msg-head" v-if="msg.avatar">
@@ -123,7 +118,8 @@
         msg: '',
         isFullImgShow: false,
         currentAudio: null,
-        dialogVisible: false
+        dialogVisible: false,
+        fullImageUrl : '',
       }
     },
     computed: {
@@ -142,7 +138,7 @@
     beforeMount () {
       let item = Object.assign({}, this.rawMsg)
       item.role = ""
-      if(item.custom !== undefined && item.custom != ""){
+      if(item.custom != undefined && item.custom != ""){
         var ext = JSON.parse(item.custom);
         item.role = util.formatRole(ext.user_project_role);
         item.avatar = ext.user_icon_url;
@@ -158,7 +154,12 @@
             item.isRobot = true
             item.link = `#/namecard/${robotAccid}`
           } else if (item.from !== this.$store.state.userUID) {
-            item.avatar = (this.userInfos[item.from] && this.userInfos[item.from].avatar) || config.defaultUserIcon
+            if(item.custom != undefined && item.custom != ""){
+                 var custom = JSON.parse(item.custom);
+                 item.avatar = (custom && custom.user_icon_url) || config.defaultUserIcon
+            }else{
+                item.avatar = config.defaultUserIcon
+            }
             item.link = `#/namecard/${item.from}`
             //todo  如果是未加好友的人发了消息，是否能看到名片
           } else {
@@ -395,17 +396,15 @@
         this.$store.dispatch('continueRobotMsg', robotAccid)
       },
       handleClose(done) {
-        this.$confirm('确认关闭？')
-          .then(_ => {
-            done();
-          })
-          .catch(_ => {});
+        done();
       },
       showFullImg (src) {
+        
         this.dialogVisible = true;
-        this.$store.dispatch('showFullscreenImg', {
-          src
-        })
+        this.fullImageUrl = src
+        // this.$store.dispatch('showFullscreenImg', {
+        //   src
+        // })
       },
       playAudio (src) {
         if (!this.currentAudio) {

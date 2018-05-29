@@ -30,6 +30,7 @@
 <script>
 import cookie from "../utils/cookie";
 import pageUtil from "../utils/page";
+import http from "../utils/http";
 export default {
   data() {
       return {
@@ -63,7 +64,6 @@ export default {
     },
     watch: {
       'form.mobile'(newValue, oldValue) { // 监听
-        console.log(1111);
         this.form.mobile = newValue.length > oldValue.length ? newValue.replace(/\s/g, '').replace(/(\d{3})(\d{0,4})(\d{0,4})/, '$1 $2 $3') : this.form.mobile.trim()
       }
     },
@@ -89,9 +89,9 @@ export default {
         this.disabled = true;
         let mobile = this.form.mobile.replace(/\s+/g, "");
         var url = 'getcode?mobile='+mobile
-        this.$http.get(url).then(response => {
+       http.get(url).then(response => {
             // success callback
-            var result = response.data
+            var result = response
             if(result.code == 200){
               const TIME_COUNT = 60;
               if (!this.timer) {
@@ -123,20 +123,17 @@ export default {
       },
       loginApp(){
         var loginUrl = 'loginApp';
-
         let mobile = this.form.mobile.replace(/\s+/g, "");
         var param = {'mobile':mobile,'code':this.form.code}
-        this.$http.post(loginUrl,param).then(response => {
-            var result = response.data
-            
+        http.post(loginUrl,param).then(response => {
+            var result = response
             if(result.code == 200){
-              //var yunxinUser = {uid: "sgb"+result.data.user.id, sdktoken: 123456}
-              //this.$store.commit('updateUserUID',yunxinUser)
-              
               this.$store.commit('updateSgbUserInfo',result.data)
+              cookie.delCookie('uid')
+              cookie.delCookie('sdktoken')
               cookie.setCookie('uid', "sgb"+result.data.user.id)
               cookie.setCookie('sdktoken', '123456')
-
+              console.log('用户登陆信息', cookie.readCookie('uid'))
               this.$router.push({path: '/admin'});
             }else{
               this.$message({

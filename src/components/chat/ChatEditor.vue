@@ -8,11 +8,11 @@
       v-on:add-emoji="addEmoji"
       v-on:hide-emoji="hideEmoji"
     ></ChatEmoji>
-    <group v-show="isRobotListShown" class="m-chat-emoji m-chat-robot">
+    <!-- <group v-show="isRobotListShown" class="m-chat-emoji m-chat-robot">
       <cell v-for="robot in robotslist" :title="robot.nick" :key="robot.account" @click.native="chooseRobot(robot)">
         <img class="icon u-circle" slot="icon" width="20" height="20" :src="robot.avatar">
       </cell>
-    </group>
+    </group> -->
     <div class="m-chat-editor-main" :class="{robot:isRobot}">
       <div class="edit-bar">
         <span class="u-editor-icons">
@@ -32,7 +32,7 @@
         </span>
       </div>
        <div class="u-editor-input">
-         <el-input placeholder="请输入聊天消息" type="textarea" :rows="4" resize="none" v-model="msgToSent" @focus='onInputFocus'></el-input>
+         <el-input @keyup.enter.native="sendTextMsg" placeholder="请输入聊天消息" type="textarea" :rows="4" resize="none" v-model="msgToSent" @focus='onInputFocus'></el-input>
         <!-- <textarea v-model="msgToSent" @focus='onInputFocus'></textarea> -->
         </div>
     </div>
@@ -89,6 +89,7 @@ export default {
       if (this.isRobot) {
         return
       }
+
       let indexAt = this.msgToSent.indexOf('@')
       if (indexAt >= 0 && (indexAt === this.msgToSent.length - 1)) {
         if (this.robotslist && this.robotslist.length > 0) {
@@ -114,7 +115,13 @@ export default {
       return this.$store.state.continueRobotAccid
     },
     robotslist () {
+      console.log('消息列表11111------', this.$store.state.robotslist.length)
       return this.$store.state.robotslist
+    },
+    teamlist () {
+      let teamlist = this.$store.state.teamlist;
+      console.log('消息列表11111------', teamlist);
+      return teamlist
     },
     robotInfos () {
       return this.$store.state.robotInfos

@@ -24,13 +24,11 @@ export default {
   components:{
     Navagate,Header,Footers
   },
-
   created(){
         // 提交sdk连接请求
         this.$store.dispatch("connect");
         this.$store.dispatch("updateRefreshState");
   },
-
   updated() {
       // 提交sdk连接请求
       this.$store.dispatch("connect");

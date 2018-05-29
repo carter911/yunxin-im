@@ -24,13 +24,14 @@ export function initNimSDK ({ state, commit, dispatch }, loginInfo) {
   
   // 初始化SDK
   window.nim = state.nim = SDK.NIM.getInstance({
-    //debug: true && { api: 'info', style: 'font-size:12px;color:blue;background-color:rgba(0,0,0,0.1)' },
+    debug: true && { api: 'info', style: 'font-size:12px;color:blue;background-color:rgba(0,0,0,0.1)' },
     appKey: config.appkey,
     account: loginInfo.uid,
     token: loginInfo.sdktoken,
     db: false,
     syncSessionUnread: true,
     syncRobots: true,
+    isUnreadable: true,
     autoMarkRead: true, // 默认为true
     onconnect: function onConnect (event) {
       console.log('建立云信连接')
@@ -118,7 +119,6 @@ export function initNimSDK ({ state, commit, dispatch }, loginInfo) {
     oncustomsysmsg: onCustomSysMsgs,
     // // 同步完成
     onsyncdone: function onSyncDone () {
-      dispatch('hideLoading')
       // 说明在聊天列表页
       if (store.state.currSessionId) {
         dispatch('setCurrSession', store.state.currSessionId)

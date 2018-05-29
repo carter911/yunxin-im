@@ -10,7 +10,7 @@ import {initChatroomSDK, resetChatroomSDK} from './initChatroomSDK'
 import {updateBlack} from './blacks'
 import {updateFriend, addFriend, deleteFriend} from './friends'
 import {resetSearchResult, searchUsers, searchTeam} from './search'
-import {deleteSession, setCurrSession, resetCurrSession} from './session'
+import {deleteSession, setCurrSession, resetCurrSession, resetSessionUnread} from './session'
 import {sendMsg, sendFileMsg, sendMsgReceipt, sendRobotMsg, revocateMsg, getHistoryMsgs, resetNoMoreHistoryMsgs, continueRobotMsg} from './msgs'
 import {markSysMsgRead, resetSysMsgs, deleteSysMsgs, markCustomSysMsgRead} from './sysMsgs'
 import {sendChatroomMsg, sendChatroomRobotMsg, sendChatroomFileMsg, getChatroomHistoryMsgs} from './chatroomMsgs'
@@ -27,7 +27,7 @@ function connectNim ({state, commit, dispatch}, obj) {
       uid: cookie.readCookie('uid'),
       sdktoken: cookie.readCookie('sdktoken')
     }
-    
+    console.log('初始化用户信息', loginInfo)
     if (!loginInfo.uid) {
       // 无cookie，直接跳转登录页
       pageUtil.turnPage('无历史登录记录，请重新登录', 'login')
@@ -114,6 +114,7 @@ export default {
   setCurrSession,
   // 重置当前会话
   resetCurrSession,
+  resetSessionUnread,
   // 发送消息
   sendMsg,
   sendFileMsg,

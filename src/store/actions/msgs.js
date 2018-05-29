@@ -1,6 +1,7 @@
 import store from '../'
 import config from '../../configs'
 import util from '../../utils'
+import cookie from '../../utils/cookie';
 
 export function formatMsg (msg) {
   const nim = store.state.nim
@@ -29,7 +30,6 @@ export function onRoamingMsgs (obj) {
   let msgs = obj.msgs.map(msg => {
     return formatMsg(msg)
   })
-  console.log(msgs)
   store.commit('updateMsgs', msgs)
 }
 
@@ -37,18 +37,21 @@ export function onOfflineMsgs (obj) {
   let msgs = obj.msgs.map(msg => {
     return formatMsg(msg)
   })
+  
   store.commit('updateMsgs', msgs)
 }
 
 export function onMsg (msg) {
   msg = formatMsg(msg)
+  console.log('我更新了数据', msg)
   store.commit('putMsg', msg)
   if (msg.sessionId === store.state.currSessionId) {
     store.commit('updateCurrSessionMsgs', {
       type: 'put',
       msg
     })
-    // 发送已读回执
+    console.log('sendMsgReceipt', store.state.currSessionId)
+    // 发送已读回执s
     store.dispatch('sendMsgReceipt')
   }
   if (msg.scene === 'team' && msg.type ==='notification') {
@@ -116,7 +119,6 @@ export function onRevocateMsg (error, msg) {
   })
 }
 
-
 export function revocateMsg ({state, commit}, msg) {
   const nim = state.nim
   let {idClient} = msg
@@ -134,16 +136,7 @@ export function sendMsg ({state, commit}, obj) {
   const nim = state.nim
   obj = obj || {}
   let type = obj.type || ''
-  let currSessionProjectInfo = state.currSessionProjectInfo
-  store.dispatch('showLoading')
-  var userinfo = {
-     'platform': 'web',
-     'user_icon_url': '',
-     'user_name': '',
-     'user_project_id': currSessionProjectInfo.id,
-     'user_project_role' : currSessionProjectInfo.roleId,
-  }
-  var user = JSON.stringify(userinfo);
+  let custom = getCustom({state, commit})
   switch (type) {
     case 'text':
       nim.sendText({
@@ -152,7 +145,7 @@ export function sendMsg ({state, commit}, obj) {
         text: obj.text,
         done: onSendMsgDone,
         needMsgReceipt: obj.needMsgReceipt || false,
-        custom:user,
+        custom: custom,
       })
       break
     case 'custom':
@@ -166,6 +159,21 @@ export function sendMsg ({state, commit}, obj) {
   }
 }
 
+function getCustom ({state, commit}) {
+  let currSessionProjectInfo = state.currSessionProjectInfo
+  let myUserinfo = JSON.parse(cookie.readCookie('userinfo'))
+  console.log('用户信息' + myUserinfo.user.avatar)
+  store.dispatch('showLoading')
+  var userinfo = {
+     'platform': 'web',
+     'user_icon_url': myUserinfo.user.avatar,
+     'user_name': myUserinfo.user.name,
+     'user_project_id': currSessionProjectInfo.id,
+     'user_project_role' : currSessionProjectInfo.roleId,
+  }
+  return JSON.stringify(userinfo)
+}
+
 // 发送文件消息
 export function sendFileMsg ({state, commit}, obj) {
   const nim = state.nim
@@ -177,11 +185,13 @@ export function sendFileMsg ({state, commit}, obj) {
     type = 'video'
   }
   store.dispatch('showLoading')
+  let custom = getCustom({state, commit})
   nim.sendFile({
     scene,
     to,
     type,
     fileInput,
+    custom: custom,
     uploadprogress: function (data) {
       // console.log(data.percentageText)
     },
@@ -204,6 +214,7 @@ export function sendFileMsg ({state, commit}, obj) {
 // 发送机器人消息
 export function sendRobotMsg ({state, commit}, obj) {
   const nim = state.nim
+  let custom = getCustom({state, commit})
   let {type, scene, to, robotAccid, content, params, target, body} = obj
   scene = scene || 'p2p'
   if (type === 'text') {
@@ -216,7 +227,8 @@ export function sendRobotMsg ({state, commit}, obj) {
         content,
       },
       body,
-      done: onSendMsgDone
+      done: onSendMsgDone,
+      custom: custom,
     })
   } else if (type === 'welcome') {
     nim.sendRobotMsg({

@@ -9,26 +9,12 @@ import Qs from 'qs'
 import ElementUI from 'element-ui'
 import 'element-ui/lib/theme-chalk/index.css'
 import store from './store'
+import { formatDate } from '@/common/date.js'
 import App from './pages/App'
 
 Vue.use(ElementUI, { size: 'small' })
 
-import { formatDate } from '@/common/date.js'
-
 Vue.use(Vuex)
-var axios_instance = axios.create({
-  baseURL: 'http://test.e-shigong.com/',
-  transformRequest: [function (data) {
-    return Qs.stringify(data)
-  }],
-  headers: {
-      'userid': '0',
-      'platform': 'web',
-      'Content-Type': 'application/x-www-form-urlencoded'
-  }
-})
-
-Vue.use(VueAxios, axios_instance)
 Vue.config.productionTip = false
 
 router.beforeEach((to, from, next) => {

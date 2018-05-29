@@ -32,6 +32,7 @@ export function onUpdateSession (session) {
   let sessions = [session]
   updateSessionAccount(sessions)
   store.commit('updateSessions', sessions)
+  //console.error('当前的session----->', sessions)
 }
 
 export function deleteSession ({state, commit}, sessionId) {
@@ -85,7 +86,7 @@ export function setCurrSession ({state, commit, dispatch}, sessionId) {
         sessionId
       })
       // 发送已读回执
-      dispatch('sendMsgReceipt')
+    dispatch('sendMsgReceipt')
     }
   }
 }
@@ -97,3 +98,10 @@ export function resetCurrSession ({state, commit}) {
     type: 'destroy'
   })
 }
+
+export function resetSessionUnread ({state, commit, dispatch}, sessionId) {
+  const nim = state.nim
+  console.log('清除小红点', sessionId)
+  nim.resetSessionUnread(sessionId)
+}
+//nim.resetSessionUnread('sessionId')

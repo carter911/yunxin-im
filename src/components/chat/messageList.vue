@@ -17,7 +17,9 @@
         </div>
     </el-col>
     <el-col class='time' :span="4">
-       {{item.updateTimeShow}}
+       
+       <p>{{item.updateTimeShow}}</p>
+       <p v-if="item.unread>0"><span class="badge">{{item.unread}}</span></p>
     </el-col>
   </el-col>
 </template>
@@ -30,7 +32,6 @@ export default {
     props: ['item'],
     computed: {
         sessionId() {
-            
             let sessionId = this.$store.state.currSessionId
             console.log('切换聊天' + sessionId)
             return sessionId;
@@ -48,9 +49,10 @@ export default {
                 type: 'init',
                 sessionId: sessionId
             });
+            //this.$store.dispatch('sendMsgReceipt')
         },
         avatar(avatar){
-            this.item.avatar = "http://images.e-shigong.com/ic_home_head.png";
+            this.item.avatar = "../../../static/chat.png"
         }
     }
 
@@ -92,5 +94,13 @@ export default {
     }
     .message-info .active{
         background: #f0f2f7;
+    }
+    .badge{
+        background:#f13f37;
+        text-align: center;
+        border-radius: 15px;
+        color: #fff;
+        padding: 0px 5px;
+        font-size: 9px;
     }
 </style>

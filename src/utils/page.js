@@ -2,7 +2,7 @@ import config from '../configs'
 
 const pageMap = {
   'login': config.loginUrl,
-  'regist': config.registUrl,
+  //'regist': config.registUrl,
 }
 
 var scrollTimer = null

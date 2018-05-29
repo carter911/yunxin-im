@@ -49,7 +49,7 @@
 <script>
 
 import Log from '../../common/Log';
-
+import http from "../../utils/http"
 export default {
     props : {
         pid : {
@@ -139,8 +139,8 @@ export default {
                 detail: this.form.detail
             }
 
-            this.$http.post(url,params).then(response => {
-                let result = response.data;
+            http.post(url,params).then(response => {
+                let result = response;
 
                 Log.L(result);
                 if(result.code == 200) {
@@ -155,8 +155,8 @@ export default {
          //请求个阶段函数
          request_project_circleList() {
             let url = this.pid +  "/projectcircle"
-            this.$http.get(url).then(response => {
-                    let result = response.data;
+            http.get(url).then(response => {
+                    let result = response;
 
                     Log.L(result);
                     if(result.code === 200) {
@@ -174,10 +174,9 @@ export default {
             let url = "getmessagerole";
             var params = {params:{ projectId:this.pid }};
 
-            this.$http.get(url, params).then(response => {
-                Log.L(response.data);
-
-                let result = response.data ;
+            http.get(url, params).then(response => {
+                
+                let result = response ;
                 if(result.code == 200) {
                     //parse data
                     this.parse_role_data(result.data);

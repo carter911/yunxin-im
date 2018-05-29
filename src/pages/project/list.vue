@@ -174,11 +174,9 @@ export default {
         }
 
         this.buttomLoadingType = 1 ;
-        var params = {params:{status:status,
+        var params = {status:status,
                               pageSize:this.pageSize,
-                              pageIndex:pageIndex}}
-
-        var user = JSON.parse(sessionStorage.getItem('user'));
+                              pageIndex:pageIndex}
         http.get(url, params).then(response => {
             var result = response
             console.log(result)

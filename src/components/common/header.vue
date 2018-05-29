@@ -33,9 +33,9 @@ export default {
             this.userInfo.user.avatar = "http://images.e-shigong.com/ic_home_head.png"
         },
         logout () {
-            this.$confirm('确定要退出登陆吗？', '退出登陆', {
-            confirmButtonText: '回家吃饭咯',
-            cancelButtonText: '我的心里只有工作',
+            this.$confirm('确定要退出登录吗？', '退出', {
+            confirmButtonText: '确认',
+            cancelButtonText: '暂不退出',
             type: 'warning'
             }).then(() => {
                 var yunxinUser = {uid: 0, sdktoken: 123456}
@@ -44,7 +44,6 @@ export default {
                 this.$router.push({path: '/login'});
             }).catch(() => {      
             });
-        
         }
     }
 }

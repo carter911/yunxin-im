@@ -21,7 +21,7 @@ import util from '../../utils'
 export default {
     data(){
         return {
-            avatar : "http://images.e-shigong.com/ic_home_head.png"
+            avatar : "../../../static/chat.png"
         }
     },
     props: ['item'],
@@ -31,7 +31,7 @@ export default {
             if(sessionId !== null){
                 sessionId = sessionId.slice(5)
             }
-            console.log('------当前sessionid-----（'+sessionId)
+            //console.log('------当前sessionid-----（'+sessionId)
             return sessionId;
         }
     },

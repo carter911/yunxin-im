@@ -62,7 +62,7 @@ export default {
             teamType: 'advanced',
             heightData :(document.documentElement.clientHeight-60)+'px',
             chatHeight :(document.documentElement.clientHeight-102)+'px',
-            listHeight : (document.documentElement.clientHeight-200)+'px',
+            listHeight : (document.documentElement.clientHeight-150)+'px',
             showWorker:0,
             showOwner:0,
             workName:"施工群",
@@ -70,6 +70,9 @@ export default {
             isLoad : true,
             isChat : false,
         }
+    },
+    updated(){
+        console.log('我更新了');
     },
     watch:{
         currSessionProjectInfo (){
@@ -90,6 +93,7 @@ export default {
                     this.workName = workname;
                     this.ownerName = ownerName;
                 }else if(auth[i] == 101){
+                    console.log(11111111111111111111);
                     if(sessionId == "team-" + this.currSessionProjectInfo.chat1Id){
                         this.defaultChat = 'worker';
                     }
@@ -97,6 +101,7 @@ export default {
                     this.showWorker = 1;
                     this.workName = workname;
                 }else if(auth[i] == 102){
+                    console.log(102);
                     if(sessionId == "team-" + this.currSessionProjectInfo.chat2Id){
                         this.defaultChat = 'owner';
                     }
@@ -158,6 +163,7 @@ export default {
             let sessionlist = this.$store.state.sessionlist.filter(item => {
             item.name = ''
             item.avatar = ''
+            //console.log('未读条数',item)
             if (item.scene === 'p2p') {
             let userInfo = null
             if (item.to !== this.myPhoneId) {
@@ -220,7 +226,6 @@ export default {
             }else if(key == 'project'){
                 this.get_project_list();
             }
-            
         },
         ownerSelect(tab, event){
             let currSessionProjectInfo = this.$store.state.currSessionProjectInfo

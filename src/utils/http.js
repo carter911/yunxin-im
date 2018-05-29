@@ -37,20 +37,19 @@ function checkCode (res) {
 
 export default {
   post (url, data) {
-    var userInfo = cookie.readCookie('userinfo')
+    var userInfo = JSON.parse(cookie.readCookie('userinfo'))
     var headers = {}
     if (userInfo) {
-        console.log(userInfo)
-        headers = {
-            'userid': userInfo.userId,
-            'platform': 'web',
-            'teoken': userInfo.token,
-            'Content-Type': 'application/x-www-form-urlencoded'
-        }
+      headers = {
+          'userid': userInfo.userId,
+          'platform': 'web',
+          // 'teoken': userInfo.token,
+          'Content-Type': 'application/x-www-form-urlencoded'
+      }
     }
     return axios({
       method: 'post',
-      baseURL: 'http://test.e-shigong.com',
+      baseURL: 'http://api.e-shigong.com',
       url,
       data: qs.stringify(data),
       timeout: 10000,
@@ -69,7 +68,6 @@ export default {
     var userInfo = JSON.parse(cookie.readCookie('userinfo'))
     var headers = {}
     if (userInfo) {
-        console.log(userInfo)
         headers = {
             'userid': userInfo.userId,
             'platform': 'web',
@@ -77,10 +75,9 @@ export default {
             'Content-Type': 'application/x-www-form-urlencoded'
         }
     }
-    console.log(headers)
     return axios({
       method: 'get',
-      baseURL: 'http://test.e-shigong.com',
+      baseURL: 'http://api.e-shigong.com',
       url,
       params, // get 请求时带的参数
       timeout: 10000,

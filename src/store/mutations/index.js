@@ -128,6 +128,8 @@ export default {
   updateSessions (state, sessions) {
     const nim = state.nim
     state.sessionlist = nim.mergeSessions(state.sessionlist, sessions)
+
+    console.log('测试一下未读条数', state.sessionlist)
     state.sessionlist.sort((a, b) => {
       return b.updateTime - a.updateTime
     })
@@ -252,6 +254,7 @@ export default {
       state.currSessionId = obj.sessionId
       store.dispatch('updateCurrSessionProjectInfo', obj.sessionId)
     }
+    store.dispatch('resetSessionUnread', obj.sessionId)
   },
   updateCurrSessionProjectInfo (state, data) {
     state.currSessionProjectInfo = data
