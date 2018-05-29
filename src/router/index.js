@@ -12,7 +12,6 @@ import TaskDetail from  "@/components/task/TaskDetail.vue"
 import remindList from "@/components/remind/RemindList.vue"
 import TaskList from "@/components/task/TaskList.vue"
 import NewRemindAdd from "@/components/remind/NewRemindAdd.vue"
-
 import Chat from '@/pages/chat/index.vue'
 Vue.use(Router)
 
