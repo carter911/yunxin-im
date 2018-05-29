@@ -13,7 +13,6 @@ import { formatDate } from '@/common/date.js'
 import App from './pages/App'
 
 Vue.use(ElementUI, { size: 'small' })
-
 Vue.use(Vuex)
 Vue.config.productionTip = false
 
@@ -34,8 +33,7 @@ router.beforeEach((to, from, next) => {
 
 // 时间格式化
 Vue.filter('formatDate', function (time) {
-  if(time == undefined || time == null || time == 0 ) return "";
-  
+  if (time == undefined || time == null || time == 0 ) return "";
   let date = new Date(time * 1000)
   return formatDate(date, "yyyy-MM-dd")
 })
@@ -46,6 +44,6 @@ var vm = new Vue({
   store,
   components: { App },
   template: '<App/>',
-  render: h => h(App),
+  render: h => h(App)
 
 })

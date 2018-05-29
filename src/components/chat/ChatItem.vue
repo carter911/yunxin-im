@@ -527,14 +527,15 @@
     font-size: 14px;
     border-radius: 14px;
     padding: 10px;
+    min-width: 10%;
   }
 
 
   .item-me  .msg_content{
-
     color: #fff;
     background: #1ab6ff;
     /* border-radius: 10px; */
+
     font-size: 14px;
     border-radius: 14px;
     padding: 10px;
@@ -555,7 +556,8 @@
         -moz-transform: rotate(135deg);
         -ms-transform: rotate(135deg);
   }
-  
+
+
 </style>
 <style>
   .msg-text{
@@ -564,18 +566,19 @@
   .msg-text img{
       height: 20px;
       width: 20px;
-      
+  }
+  .msg-image{
+     width: 100%;
   }
   .msg-image img{
-    width: 40%;
-    height: 40%;
-    max-width: 60%;
-    min-width: 20%;
+      width: 300px;
+      max-width: 300px;
+      min-width: 100px;
+      height: 100%;
   }
-  .el-textarea__inner{
-    border-radius:0px;
-    border: 0px solid #ccc;
-    border-top :1px solid #dcdfe6;
 
-  }
+
+
+
+  
 </style>

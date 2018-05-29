@@ -1,6 +1,6 @@
 
 <template>
-    <div>
+    <div id="chat">
         <el-container>
             <el-aside width="19rem" v-bind:style="{height: heightData}">
                 <div class="grid-content bg-purple chatBar">
@@ -27,7 +27,7 @@
                 </el-col>
             </el-aside>
         <el-main>
-            <div v-if="isChat">
+            <div v-if="isChat" id="chat_info">
                 <el-tabs  v-model="defaultChat" @tab-click="ownerSelect" type="border-card">
                     <el-tab-pane v-bind:style="{height: chatHeight}" v-if="showWorker" v-bind:label="workName" name="worker">
                         <Message :chatType="worker" />
@@ -304,8 +304,18 @@ export default {
         font-size:11px;
     }
 </style>
+
 <style>
-.el-tabs--border-card .el-tabs__content{
-    padding: 0px;
-}
+    #chat_info .el-tabs--border-card .el-tabs__content{
+        padding: 0px;
+    }
+    #chat_info .el-tabs--border-card>.el-tabs__content{
+        padding: 0px;
+    }
+    
+    #chat .el-menu-item{
+        height: 45px;
+        line-height: 45px;
+        width: 50%;
+    }
 </style>

@@ -5,7 +5,7 @@
             <img style="height:1.7rem;widht:1.7rem;border-radius: 1rem" :onerror="avatar" :src="userInfo.user.avatar" />
         </div>
         <div style="display:inline-block;vertical-align: middle;cursor: pointer;margin-right:1rem">{{userInfo.user.name}}</div>
-        <div v-on:click="logout" style="display:inline-block;vertical-align: middle;cursor: pointer;">退出登陆</div>
+        <div v-on:click="logout" style="display:inline-block;vertical-align: middle;cursor: pointer;">退出登录</div>
     </div>
 </el-header>
 </template>

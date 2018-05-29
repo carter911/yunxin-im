@@ -85,7 +85,10 @@ export default {
         -webkit-line-clamp: 1;
         overflow: hidden;
         color: #999;
-        
+        overflow:hidden;
+        text-overflow:ellipsis;
+        white-space:nowrap;
+
     }
     .time{
         margin-top: 14px;

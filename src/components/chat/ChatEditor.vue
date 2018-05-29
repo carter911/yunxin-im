@@ -1,5 +1,5 @@
 <template>
-  <div class="m-chat-editor" @click="hideRobotList">
+  <div id="m-chat-editor" class="m-chat-editor" @click="hideRobotList">
     <ChatEmoji
       v-bind:type="type"
       v-bind:scene="scene"
@@ -355,16 +355,22 @@ export default {
     margin-top: 3px;
     margin-right: 10px;
   }
-  .u-editor-input .el-input{
-    width:100%;
-    height: 200px;
-    resize:none;
-    border: 0px solid #ccc;
-    overflow-x:visible;overflow-y:visible;
-  }
+
 </style>
 
 <style>
+    #m-chat-editor .el-input{
+      width:100%;
+      height: 200px;
+      resize:none;
+      border: 0px solid #ccc;
+      overflow-x:visible;overflow-y:visible;
+    }
 
+    #m-chat-editor .el-textarea__inner{
+      border-radius:0px;
+      border: 0px solid #ccc;
+      border-top :1px solid #dcdfe6;
+    }
 </style>
 

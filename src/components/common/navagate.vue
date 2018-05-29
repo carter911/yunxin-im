@@ -97,8 +97,7 @@ export default {
 
   .nav{
     width: 5rem;
-	  background-image: linear-gradient(180deg, 
-		#4a9afb 59%);
+	  background:#4a9afb
   }
 
   .logo{
