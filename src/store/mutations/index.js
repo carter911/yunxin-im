@@ -597,6 +597,8 @@ export default {
     state.teamMsgReadsDetail.readAccounts = obj.readAccounts
     state.teamMsgReadsDetail.unreadAccounts =  obj.unreadAccounts
   },
+
+  
   changeWindowClienHeight (state, currentHeight) {
     console.log("---curerntHeight----" + currentHeight)
     state.windowClientHeight = currentHeight 
