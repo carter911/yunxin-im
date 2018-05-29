@@ -456,8 +456,7 @@
   .item-you .msg_body{
     float: left;
     padding: 0px;
-    max-width: 80%;
-    min-width: 10%;
+    max-width: 60%;
   }
 
 
@@ -482,8 +481,7 @@
     margin-right: 10px;
     float: right;
     padding: 0px;
-    max-width: 90%;
-    min-width: 10%;
+    max-width: 60%;
   }
 
  .item-me .msg_content:after{
@@ -571,9 +569,8 @@
      width: 100%;
   }
   .msg-image img{
-      width: 300px;
+      width: 100%;
       max-width: 300px;
-      min-width: 100px;
       height: 100%;
   }
 

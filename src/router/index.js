@@ -12,9 +12,6 @@ import TaskDetail from  "@/components/task/TaskDetail.vue"
 import remindList from "@/components/remind/RemindList.vue"
 import TaskList from "@/components/task/TaskList.vue"
 import NewRemindAdd from "@/components/remind/NewRemindAdd.vue"
-import CopyList from "@/pages/project/CopyList.vue"
-
-
 
 import Chat from '@/pages/chat/index.vue'
 Vue.use(Router)
@@ -96,34 +93,25 @@ export default new Router({
 
     // 提醒详情
     {
-      path : '/project/remind/detail/:id',
-      name : "remindDetail",
-      component : RemindDetail,
-      meta : { auth : true }
+      path: '/project/remind/detail/:id',
+      name: 'remindDetail',
+      component: RemindDetail,
+      meta: { auth: true }
     },
 
     {
-      path : '/project/remind/remind_list/:id',
-      name : "remindList",
-      component : remindList,
-      meta : { auth : true }
+      path: '/project/remind/remind_list/:id',
+      name: 'remindList',
+      component: remindList,
+      meta: { auth: true }
     },
 
     {
-      path : '/project/remind/add/:id',
-      name:'newRemindAdd',
+      path: '/project/remind/add/:id',
+      name: 'newRemindAdd',
       component: NewRemindAdd,
-      meta : {auth : true}
+      meta: {auth: true}
     },
-
-    {
-      path : '/project/other',
-      name : 'Other',
-      component:CopyList,
-      meta : {auth : true} ,
-
-    },
-
     {
       path: '*',
       name: '404',
