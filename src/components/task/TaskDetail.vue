@@ -58,6 +58,7 @@
                                class="el-upload-class"
                                action=""
                                list-type="picture-card"
+                               :limit="9"
                                :auto-upload="false"
                                :multiple="true"
                                :on-change="onFileChange"
@@ -482,7 +483,7 @@ export default {
     vertical-align: top;
 }
 
-#id_task_detail .el-upload-list--picture-card .el-upload-list__item {
+#id_task_detail .el-upload-list__item {
     overflow: hidden;
     background-color: #fff;
     border: 1px solid #c0ccda;
@@ -493,6 +494,11 @@ export default {
     height: 100px;
     margin: 0 8px 8px 0;
     display: inline-block;
+}
+
+#id_task_detail .el-upload-list--picture-card .el-upload-list__item-thumbnail {
+    width: 100px;
+    height: 100px;    
 }
 
 #id_task_detail .el-textarea__inner{

@@ -48,17 +48,17 @@ export default {
         get_remind_avatar(item) {
             if(item == null || item == undefined || item.createUser == null || item.createUser.avatar == undefined) 
                 return Log.DEFAULT_IMAGE();
-                
+
             let avatar = item.createUser.avatar;
-            return (avatar == null || avatar.length == 0 ) ? Log.DEFAULT_IMAGE() : avatar;
+            return (avatar == null || avatar.length == 0 ) ? Log.DEFAULT_IMAGE() : avatar + Log.QINIU_PICTURE_SUFFIX();
         },
 
         parse_remind_detail(detail) {
             if(detail == null || detail == undefined) return "";
-    
-            let dd= detail.replace(/<\/?.+?>/g,"");
-            let dds= dd.replace(/ /g,"");//dds为得到后的内容
-            return dds.length >= 50 ? dds.substring(0,50) + "..." : dds ;
+            var dd = detail.replace(/<\/?.+?>/g,"");
+            var dds = dd.replace(/ /g,"");//dds为得到后的内容
+            
+            return dds.length >= 30 ? dds.substring(0,30) + "..." : dds ;
         }
     }
 
@@ -93,6 +93,7 @@ export default {
     flex-grow:1;
     padding-left:12px;
     padding-right:12px;
+    padding-top: 4px;
     text-align:left;
 }
 
@@ -106,10 +107,9 @@ export default {
 }
 
 .project-remind-avatar{
-    width: 36px;
-	height: 36px;
+    width: 40px;
+	height: 40px;
     border-radius: 50%;
-    
 }
 
 .product-remind-item{
@@ -132,7 +132,7 @@ export default {
 	font-stretch: normal;
 	line-height: 48px;
 	letter-spacing: 0px;
-	color: #999999;
+	color: #666666;
 }
 
 .remind-item-time {
@@ -153,7 +153,7 @@ export default {
 	line-height: 14px;
 	letter-spacing: 0px;
 	color: #666666;
-    padding-bottom: 4px;
+    padding-bottom: 8px;
 }
 
 </style>

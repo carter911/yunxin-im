@@ -43,12 +43,12 @@ export default {
         get_task_avatar(item) {
             if(null == item || null == item.taskUserImage) return Log.DEFAULT_IMAGE();
             let avatar = item.taskUserImage;
-            return avatar.length > 0 ? avatar : Log.DEFAULT_IMAGE();
+            return avatar.length > 0 ? avatar + Log.QINIU_PICTURE_SUFFIX() : Log.DEFAULT_IMAGE();
         },
 
         parse_task_detail(detail) {
         if(detail == null || detail == undefined) return "" ;
-        return detail.length >= 50 ? detail.substring(0,50) + "..." : detail;
+        return detail.length >= 30 ? detail.substring(0,30) + "..." : detail;
         }
     }
 
@@ -89,8 +89,8 @@ export default {
 }
 
 .project-task-avatar{
-     width: 36px;
-	height: 36px;  
+     width: 40px;
+	height: 40px;  
     border-radius: 50%;
 }
 
@@ -124,7 +124,7 @@ export default {
 	font-stretch: normal;
 	line-height: 14px;
 	letter-spacing: 0px;
-    padding-bottom: 4px;
+    padding-bottom: 8px;
 	color: #666666;
 }
 

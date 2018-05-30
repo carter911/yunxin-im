@@ -38,6 +38,7 @@
             </el-main>
         </div>
       </el-aside>
+
       <el-main class="pannel-right" v-bind:style="{'height' : (this.$store.state.windowClientHeight - 60) + 'px'}">
         
        <ProjectDetail :pid="current_pid"></ProjectDetail>
@@ -318,7 +319,7 @@ class ProjectListEntity {
 
 .pannel-right
 {
-  background: #ffffff;
+  background: #f0f2f7;
   float: right;
   height: 100%;
   width: 100%;

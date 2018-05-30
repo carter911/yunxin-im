@@ -2,6 +2,10 @@ export default Log ;
 
 function Log(){}
 
+Log.QINIU_PICTURE_SUFFIX = function(){
+    return "?imageslim";
+}
+
 Log.DEFAULT_IMAGE = function(){
     return "http://images.e-shigong.com/logo.png"
 }

@@ -133,8 +133,9 @@
 
 <script>
     /* eslint-disable key-spacing */
-    import Log from '../../common/Log';
+    import cookie from "../../utils/cookie";
 
+    import Log from '../../common/Log';
     import RemindItem from "../../components/project/RemindItem.vue"
     import TaskItem from "../../components/project/TaskItem.vue"
     import NewRemindAdd from "../../components/remind/NewRemindAdd.vue"
@@ -322,12 +323,17 @@
 
         //获取提醒信息
         require_remind_list() {
-            let url = this.user_id +  "/usermessage";
-            var params = {
-                              projectId:this.pid,
-                              pageSize: 2,
-                              isActive:"-1",
-                              pageIndex: 1}
+            let user_id = "" ;
+            var userInfo = JSON.parse(cookie.readCookie('userinfo'))
+            if(null != userInfo) {
+                user_id = userInfo.userId;
+            }
+            
+            let url = user_id +  "/usermessage";
+            var params = { projectId:this.pid,
+                           pageSize: 2,
+                           isActive:"-1",
+                           pageIndex: 1}
 
             http.get(url, params).then(response => {
                 Log.L2("good",response);
@@ -389,11 +395,11 @@
 <style scoped>
 
  .content-box-card {
-     margin-left: 5%;
-     margin-right: 5%;
-     margin-top: 12px;
-     margin-bottom: 12px;
-     width: 90%;
+     margin-left: 3%;
+     margin-right: 3%;
+     margin-top: 10px;
+     margin-bottom: 10px;
+     width: 94%;
  }
 
  hr {
@@ -436,7 +442,7 @@
   .content {
       line-height: 16px;
       width: 100%;
-      background-color: #ffffff;
+      background-color: #f0f2f7;
   }
 
  .project-detail{
@@ -503,6 +509,7 @@
     height: 640px; 
     display: block;
     overflow:auto;
+    box-shadow: 0px 4px 16px #888888;
 }
 
 </style>
