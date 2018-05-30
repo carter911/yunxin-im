@@ -40,8 +40,10 @@ export default {
            this.$emit("getTaskDetail",item.id);
         },
 
-        get_task_avatar(item ) {
-            return Log.DEFAULT_IMAGE();
+        get_task_avatar(item) {
+            if(null == item || null == item.taskUserImage) return Log.DEFAULT_IMAGE();
+            let avatar = item.taskUserImage;
+            return avatar.length > 0 ? avatar : Log.DEFAULT_IMAGE();
         },
 
         parse_task_detail(detail) {

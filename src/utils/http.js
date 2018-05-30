@@ -49,7 +49,7 @@ export default {
     }
     return axios({
       method: 'post',
-      baseURL: 'http://dev.e-shigong.com',
+      baseURL: 'http://api.e-shigong.com',
       url,
       data: qs.stringify(data),
       timeout: 10000,
@@ -79,7 +79,7 @@ export default {
     }
     return axios({
       method: 'get',
-      baseURL: 'http://dev.e-shigong.com',
+      baseURL: 'http://api.e-shigong.com',
       url,
       params, // get 请求时带的参数
       timeout: 10000,

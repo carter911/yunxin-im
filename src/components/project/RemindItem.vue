@@ -48,7 +48,9 @@ export default {
         get_remind_avatar(item) {
             if(item == null || item == undefined || item.createUser == null || item.createUser.avatar == undefined) 
                 return Log.DEFAULT_IMAGE();
-            return item.createUser.avatar ;
+                
+            let avatar = item.createUser.avatar;
+            return (avatar == null || avatar.length == 0 ) ? Log.DEFAULT_IMAGE() : avatar;
         },
 
         parse_remind_detail(detail) {
