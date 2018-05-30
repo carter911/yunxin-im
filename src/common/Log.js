@@ -77,3 +77,8 @@ Log.CREATE_NEW_TASK = function(){
 Log.PROJECT_TYPE_COMPLETED = function(){
     return 5;
 }
+
+//任务状态 任务审核完成
+Log.TASK_COMPLETED = function(){
+    return 2 ;
+}

@@ -123,6 +123,7 @@
 
     </div>
     
+    
 </template>
 
 <script>
@@ -199,7 +200,10 @@ export default {
         //检查是否可以上传图片
         checkRolePicAuth(){
             if(null == this.taskDetail || undefined == this.taskDetail.auth) return false;
-            return this.taskDetail.auth.indexOf(Log.TASK_UPLOAD_PICTURE()) >= 0;
+            
+            return this.taskDetail.auth.indexOf(Log.TASK_UPLOAD_PICTURE()) >= 0
+                   &&
+                   this.taskDetail.statusCode != Log.TASK_COMPLETED();
         },
 
         //检查是否存在提交任务提交权限
