@@ -13,7 +13,7 @@ export default {
   updateSgbUserInfo (state, UserInfo) {
     cookie.setCookie('userinfo', JSON.stringify(UserInfo))
     var userInfo = JSON.parse(cookie.readCookie('userinfo'))
-    console.log(userInfo)
+    //console.log(userInfo)
     cookie.setCookie('token', UserInfo.token)
     state.sgbUserinfo = UserInfo
   },

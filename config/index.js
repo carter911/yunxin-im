@@ -8,7 +8,7 @@ module.exports = {
   wx_id : 'wx68c972e31acbb4a0',
   wx_redirect_url : '',
   wx_appsecret :'314bc41786b117e2f922e35a78118055',
-  baseURL: 'https://some-domain.com/api/',
+  request_url: 'http://api.e-shigong.com/',
   dev: {
     // Paths
     assetsSubDirectory: 'static',

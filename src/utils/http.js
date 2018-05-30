@@ -2,6 +2,7 @@
 import axios from 'axios'
 import qs from 'qs'
 import cookie from './cookie'
+import config from './../../config'
 
 axios.interceptors.request.use(config => {
   // loading
@@ -47,9 +48,10 @@ export default {
           'Content-Type': 'application/x-www-form-urlencoded'
       }
     }
+    console.log('1111111111111', config.request_url)
     return axios({
       method: 'post',
-      baseURL: 'http://dev.e-shigong.com',
+      baseURL: config.request_url,
       url,
       data: qs.stringify(data),
       timeout: 10000,
@@ -77,9 +79,10 @@ export default {
             'Content-Type': 'application/x-www-form-urlencoded'
         }
     }
+    console.log('1111111111111', config)
     return axios({
       method: 'get',
-      baseURL: 'http://dev.e-shigong.com',
+      baseURL: config.request_url,
       url,
       params, // get 请求时带的参数
       timeout: 10000,
