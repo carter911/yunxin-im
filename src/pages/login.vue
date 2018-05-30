@@ -20,7 +20,7 @@
           <div>其他登陆方式 </div>
           <div>
             <!-- <span><img src='../../static/qq.png' /></span> -->
-            <span><img src='../../static/weichat.png' /></span>
+            <a :href="wx_url"><img src='../../static/weichat.png' /></a>
           </div>
         </div>
       </el-form>
@@ -59,7 +59,7 @@ export default {
     beforeCreate(){
       let appid = this.$route.params.openid
       const token = '123456'
-      if(appid != undefined ){
+      if(appid != undefined){
         var loginUrl = 'loginApp';
         var param = {type:'wx',appid:appid,token:token}
         http.post(loginUrl,param).then(response => {
@@ -84,9 +84,9 @@ export default {
       }
     },
     computed:{
-        wx_url (){
-          let base_url = ''
-          base_url += "appid=wx68c972e31acbb4a0" 
+        wx_url(){
+          let callbackUrl = 'http%3a%2f%2fdev.e-shigong.com%2fcallback'
+          return 'https://open.weixin.qq.com/connect/qrconnect?appid=wx68c972e31acbb4a0&redirect_uri='+callbackUrl+'&response_type=code&scope=snsapi_login&?state=123456#wechat_redirect'
         }
     },
     watch: {
