@@ -2,7 +2,7 @@
 
 <template>
     <div>
-            <el-dialog title="" :visible.sync="dialogVisible" width="40%" >
+            <el-dialog title="" :visible.sync="dialogVisible" width="40%"  :modal="false">
 
                 <div class="el-loading-mask" style="">
                     <div class="el-loading-spinner">

@@ -54,6 +54,7 @@
             <el-col :span="20">
                 <div>
                      <el-upload 
+                               ref="upload"
                                class="el-upload-class"
                                action=""
                                list-type="picture-card"
@@ -335,11 +336,17 @@ export default {
         },
 
         handle2upload(){   
-         this.startLoading();
-         
-         this.uploadFilePathUrl = [] ;
+            if(!this.uploadFileList.length){
+                this.$message({
+                     message: '暂无图片',
+                     type: 'warn'
+                   });
+                return;
+            }
 
-         this.realUploadFile();
+            this.startLoading();            
+            this.uploadFilePathUrl = [] ;
+            this.realUploadFile();
         },
         
         realUploadFile() {
@@ -368,8 +375,16 @@ export default {
                     if(result.code == 200) {
                         this.showMsg("success","图片上传成功");
 
+                        //文件清空
+                        this.uploadFileList = [];
+                        //上传文件清空
+                        this.$refs.upload.clearFiles();
+                        //图片集合清空
+                        this.uploadFilePathUrlArray = [];
+
                         //重新请求任务数据
                         this.request_task_detail();
+
                     }else{
                         this.showMsg("error", result.message);
                     }
