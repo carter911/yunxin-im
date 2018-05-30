@@ -19,7 +19,7 @@
         <div class="login-outher">
           <div>其他登陆方式 </div>
           <div>
-            <span><img src='../../static/qq.png' /></span>
+            <!-- <span><img src='../../static/qq.png' /></span> -->
             <span><img src='../../static/weichat.png' /></span>
           </div>
         </div>
@@ -54,6 +54,33 @@ export default {
             { min: 4, max: 4, message: '请输入4位数字验证码', trigger: 'blur' }
           ] 
         }
+      }
+    },
+    beforeCreate(){
+      let appid = this.$route.params.openid
+      const token = '123456'
+      if(appid != undefined ){
+        var loginUrl = 'loginApp';
+        var param = {type:'wx',appid:appid,token:token}
+        http.post(loginUrl,param).then(response => {
+            var result = response
+            if(result.code == 200){
+              this.$store.commit('updateSgbUserInfo',result.data)
+              cookie.delCookie('uid')
+              cookie.delCookie('sdktoken')
+              cookie.setCookie('uid', "sgb"+result.data.user.id)
+              cookie.setCookie('sdktoken', '123456')
+              console.log('用户登陆信息', cookie.readCookie('uid'))
+              this.$router.push({path: '/admin'});
+            }else{
+              this.$message({
+                message: result.message,
+                type: 'error'
+              });
+            }
+        }, response => {
+            // error callback
+        })
       }
     },
     computed:{
