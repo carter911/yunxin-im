@@ -1,9 +1,10 @@
 <template>
         <div>
-             <div class="task-item-class" v-for="(item,index) in taskList" :key="index"  @click="gotoDetail(item.id)" >
+             <div class="task-item-class" v-for="(item,index) in taskList" :key="index"  @click="gotoDetail(item)" >
 
-                   <div class="task-item-img"> 
+                   <div class="task-item-img">
                         <img :src='get_task_avatar(item)' class="project-task-avatar"/>
+                        
                         <div class="task-img-dot" v-if="item.isActive == 1"></div>
                     </div>
 
@@ -34,9 +35,9 @@ export default {
     },
 
     methods : {
-        gotoDetail(id) {
-           // this.$router.push("/project/task/detail/" + id);
-           this.$emit("getTaskDetail",id);
+        gotoDetail(item) {
+           item.isActive = 0 ;
+           this.$emit("getTaskDetail",item.id);
         },
 
         get_task_avatar(item ) {
@@ -59,12 +60,15 @@ export default {
     border-bottom: #f2f2f2 1px solid;
     padding: 2px;
     text-align:center;
-     display:flex;  
+    display:flex;  
     justify-content:space-between;
 }
 
 .task-item-img{
     display: flex;
+    padding-left: 8px;
+    padding-top: 4px;
+    padding-bottom: 4px;
 }
 
 .task-img-dot{
@@ -72,6 +76,7 @@ export default {
     height:10px;
     background-color:#F00;
     border-radius:5px;
+    margin-top: 4px;
 }
 
 .task-list-desc{
@@ -82,15 +87,14 @@ export default {
 }
 
 .project-task-avatar{
-    width: 40px;
-	height: 40px;
-	border-radius: 20px;
+     width: 36px;
+	height: 36px;  
+    border-radius: 50%;
 }
 
 .product-task-item{
     text-align: left;   
 }
-
 
 .product-task-item-title{
     font-size: 14px;

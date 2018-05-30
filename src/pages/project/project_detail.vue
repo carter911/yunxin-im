@@ -34,7 +34,10 @@
                     </el-col>
 
                     <el-col :span="6" class="product-remind-right">    
-                           <span class="project-remind-add" v-on:click="this.addNewRemind">添加</span>
+                           <span v-if="this.canAddRemindAuth()" 
+                                 v-on:click="this.addNewRemind"
+                                 class="project-remind-add">添加</span>
+
                            <span v-on:click="getMore(0)">更多</span>
                     </el-col>
                     
@@ -214,6 +217,12 @@
             return sgbUtils.getRoleNameById(this.project.roleId);         
         },
 
+        //项目未结束，才可以添加提醒
+        canAddRemindAuth(){
+            if(null == this.project || undefined == this.project) return false;
+            return this.project.statusCode != Log.PROJECT_TYPE_COMPLETED();
+        },
+
         closeNewRemindAddDialog(){
             this.showAddNewRemind = false;
         },
@@ -303,7 +312,7 @@
                        this.project = {}
                    }
                }, response => {
-                    this.data_request_loading = false;
+                   this.data_request_loading = false;
                     this.project = {}
                     Log.success_msg("请求失败，稍后重试")
                });

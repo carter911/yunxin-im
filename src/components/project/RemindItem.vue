@@ -74,6 +74,9 @@ export default {
 
 .remind-img{
     display: flex;
+    padding-left: 8px;
+    padding-top: 4px;
+    padding-bottom: 4px;
 }
 
 .img-dot{
@@ -101,9 +104,9 @@ export default {
 }
 
 .project-remind-avatar{
-    width: 40px;
-	height: 40px;
-    border-radius: 20px;
+    width: 36px;
+	height: 36px;
+    border-radius: 50%;
     
 }
 

@@ -127,6 +127,10 @@ export default {
             return this.allTaskEntity.currentPageIndex;
         },
 
+        loadingMore(){
+            this.request_task_list(false);
+        },
+
         //请求提醒列表
          request_task_list(refresh = true){
             if(this.get_data_has_loaded() && refresh) return;
@@ -183,7 +187,7 @@ export default {
           obj.hasBeenLoading = true ;
           if(data != null && data != undefined) {
                obj.list = obj.list.concat(data);
-               obj.canLoadMore = data.length >= this.pageSize;
+               obj.canLoadMore = data.length >= Log.PAGE_SIZE();
           }else{
                obj.canLoadMore = false;
           }

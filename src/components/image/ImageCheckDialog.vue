@@ -128,8 +128,8 @@ export default {
   }
 
  .image {
-        width: 100%;
-        height: 300px;
+    width: 350px;
+    height: 350px;
  }
 
  .el-dialog__wrapper {

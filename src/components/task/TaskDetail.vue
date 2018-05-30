@@ -102,13 +102,13 @@
             
             <el-col :span="20">    
 
-                    <div v-if="this.checkOptionTask()">
+                    <div v-if="checkOptionTask()">
                           <el-button type="primary" @click="this.commitTask"> 提交任务</el-button>
                     </div>
 
-                    <div v-if="this.checkCheckTask()">
-                        <el-button type="success" @click="this.checkTask(1)"> 审核通过</el-button>
-                        <el-button type="danger" @click="this.checkTask(0)"> 审核不通过</el-button> 
+                    <div v-if="checkCheckTask()">
+                        <el-button type="success" @click="checkTask(1)"> 审核通过</el-button>
+                        <el-button type="danger" @click="checkTask(0)"> 审核不通过</el-button> 
                     </div>
             </el-col>
         </el-row>

@@ -358,5 +358,16 @@ class ProjectListEntity {
   #project .el-menu-item{
         line-height:58px;
     }
+
+  #project .el-progress__text {
+    font-size: 12px;
+    color: #999999;
+    display: inline-block;
+    vertical-align: middle;
+    margin-left: 10px;
+    line-height: 1;
+}
+
+
 </style>
 

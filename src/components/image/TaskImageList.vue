@@ -56,8 +56,8 @@ export default {
 }
 
 .image-content-task-list {
-   width:100px;
-   height:100px;
+   width:90px;
+   height:90px;
    margin-right: 12px;
    display:flex;
 }

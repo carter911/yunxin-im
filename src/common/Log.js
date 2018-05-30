@@ -3,7 +3,7 @@ export default Log ;
 function Log(){}
 
 Log.DEFAULT_IMAGE = function(){
-    return "http://images.e-shigong.com/ic_launcher.png"
+    return "http://images.e-shigong.com/logo.png"
 }
 
 Log.PAGE_SIZE = function(){
