@@ -86,13 +86,13 @@
             </el-col>
         </el-row>
 
-        <el-row class="el-row-task">
+        <!-- <el-row class="el-row-task">
             <el-col :span="4">
                  <div class="product-remind-title">
                         <span> 产品评论:</span>
                  </div>                
             </el-col>     
-        </el-row>
+        </el-row> -->
 
         <el-row class="el-row-task">
             <el-col :span="4">

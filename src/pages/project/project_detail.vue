@@ -28,6 +28,7 @@
                   <el-row>
                     <el-col :span="18">
                         <div class="product-remind-title">
+                            <img src="../../../static/tab_icon_remind.png" class="remind-title-img"/>
                             <span>提醒</span>
                         </div>
                             
@@ -61,6 +62,7 @@
                     <el-row>
                             <el-col :span="18">
                                 <div class="product-remind-title">
+                                        <img src="../../../static/tab_icon_detail.png" class="remind-title-img"/>
                                         <span> 任务</span>
                                 </div>
                                     
@@ -412,7 +414,18 @@
      font-size:15px;
      padding:2px;
      cursor:hand;
+    display:flex;
+    flex-direction:row;
+    justify-content:flex-start;
+    align-items: center;
  }
+
+.remind-title-img{
+    width: 20px;
+    height: 20px;
+    margin-right: 8px;
+}
+
  .product-remind-right{
      text-align:right;
      font-size:13px;

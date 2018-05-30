@@ -48,7 +48,6 @@ export default {
           'Content-Type': 'application/x-www-form-urlencoded'
       }
     }
-    console.log('1111111111111', config.request_url)
     return axios({
       method: 'post',
       baseURL: config.request_url,
@@ -66,8 +65,6 @@ export default {
       }
     )
   },
-
-
   get (url, params) {
     var userInfo = JSON.parse(cookie.readCookie('userinfo'))
     var headers = {}
@@ -79,7 +76,6 @@ export default {
             'Content-Type': 'application/x-www-form-urlencoded'
         }
     }
-    console.log('1111111111111', config)
     return axios({
       method: 'get',
       baseURL: config.request_url,
