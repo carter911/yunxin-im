@@ -13,6 +13,7 @@ import remindList from "@/components/remind/RemindList.vue"
 import TaskList from "@/components/task/TaskList.vue"
 import NewRemindAdd from "@/components/remind/NewRemindAdd.vue"
 import Chat from '@/pages/chat/index.vue'
+
 Vue.use(Router)
 export default new Router({
   mode: 'history',
@@ -56,6 +57,11 @@ export default new Router({
       component: Login
     },
     {
+      path: '/login/openid/:openid',
+      name: 'login',
+      component: Login
+    },
+    {
       path: '/project/list',
       name: 'projectList',
       component: ProjectList,
@@ -81,7 +87,6 @@ export default new Router({
       component : TaskDetail,
       meta : {auth : true }
     },
-
     {
       path : '/project/task/task_list/:id',
       name : "taskList",
