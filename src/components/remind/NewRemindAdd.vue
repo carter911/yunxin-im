@@ -3,7 +3,13 @@
 <template>
 
     <div class="content" id="id_remind">
-        <el-dialog title="新提醒" :visible.sync="dialogTableVisible" width="80%" :closeOnClickModal="closeOnClickModal" :showClose="false">
+        <el-dialog title="新提醒" 
+                   :visible.sync="dialogTableVisible" 
+                   width="80%" 
+                   :beforeClose="dialogBeforeClose"
+                   :closeOnClickModal="closeOnClickModal" >
+
+
             <el-form ref="remindForm" :model="form" label-width="120px" :rules="form_rules">
 
                 <el-form-item label="提醒时间" prop="startTime">
@@ -124,6 +130,11 @@ export default {
     },
 
     methods : {
+        dialogBeforeClose(action,instance,done){
+            //console.log("----dialogBeforeColose--->>--" + action + "--" + instance + "--" + done);
+            this.clearAndReset('remindForm');
+        },
+
         showMsg(type , msg){
             this.$message({
                 message : msg,

@@ -2,9 +2,10 @@
 <template>
 
     <div class="task-add">
-          <el-dialog title="新任务" :visible.sync="dialogTableVisible" width="80%"  
-                                    :closeOnClickModal="false" 
-                                    :showClose="false">
+          <el-dialog title="新任务" :visible.sync="dialogTableVisible" 
+                                    width="80%"  
+                                    :beforeClose="dialogBeforeClose"
+                                    :closeOnClickModal="false">
 
             <el-form ref="form" :model="form" label-width="120px" :rules="this.form_rules">
 
@@ -107,8 +108,9 @@ export default {
             })
         },
 
-        beforeDialogClose(action, instance, done){
+        dialogBeforeClose(action, instance, done){
             console.log(action + "---" + instance + "---" + done);
+            this.resetFormAndClose();
         },
 
         resetFormAndClose() {
