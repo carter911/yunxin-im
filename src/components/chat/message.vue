@@ -75,6 +75,7 @@ export default {
         sessionName() {
             let sessionId = this.sessionId;
             let user = null;
+
             if (/^p2p-/.test(sessionId)) {
                 user = sessionId.replace(/^p2p-/, "");
                 if (user === this.$store.state.userUID) {
@@ -85,6 +86,7 @@ export default {
                     let userInfo = this.userInfos[user] || {};
                     return util.getFriendAlias(userInfo);
                 }
+
             } else if (/^team-/.test(sessionId)) {
                 if (this.teamInfo) {
                     // teamInfo中的人数为初始获取的值，在人员增减后不会及时更新，而teamMembers在人员增减后同步维护的人员信息
@@ -113,6 +115,7 @@ export default {
             }
             return util.parseSession(this.sessionId).to;
         },
+
         // 判断是否是机器人
         isRobot() {
             let sessionId = this.sessionId;

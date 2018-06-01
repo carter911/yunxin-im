@@ -37,6 +37,7 @@ export default {
             return sessionId;
         }
     },
+
     methods:{
         chatInfo(item){
             let sessionId = item.id

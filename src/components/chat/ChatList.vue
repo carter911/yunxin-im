@@ -15,10 +15,11 @@
       :myInfo="myInfo"
       :key="msg.idClient"
       :isHistory='isHistory'
-      @msg-loaded="msgLoaded"
-    ></chat-item>
+      @msg-loaded="msgLoaded">
+      </chat-item>
   </ul>
 </template>
+
 <script type="text/javascript">
   import util from '../../utils'
   import config from '../../configs'

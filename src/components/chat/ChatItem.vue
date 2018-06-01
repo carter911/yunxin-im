@@ -18,8 +18,7 @@
       :idClient="msg.idClient"
       :time="msg.time"
       :flow="msg.flow"
-      :type="msg.type"
-    >
+      :type="msg.type">
       
     <div class="msg-head" v-if="msg.avatar">
       <img  class="icon u-circle" :src="msg.avatar">

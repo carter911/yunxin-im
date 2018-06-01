@@ -34,6 +34,7 @@
                     <el-tab-pane v-bind:style="{height: chatHeight}" v-if="showWorker" v-bind:label="workName" name="worker">
                         <Message :chatType="worker" />
                     </el-tab-pane>
+                    
                     <el-tab-pane v-bind:style="{height: chatHeight}" v-if="showOwner" v-bind:label="ownerName" name="owner">
                         <Message :chatType="owner" />
                     </el-tab-pane>
@@ -79,26 +80,33 @@ export default {
     watch:{
         currSessionProjectInfo (){
             console.log('更新tab。。。。。。。。')
+            console.log(this.$store.state);
+            console.log('更新tab 完成。。。。。。。。')
+
             let sessionId = this.$store.state.currSessionId
-            var auth = this.currSessionProjectInfo.auth;
-            let workname = this.currSessionProjectInfo.name + this.currSessionProjectInfo.door +'(施工群)'
-            let ownerName = this.currSessionProjectInfo.name + this.currSessionProjectInfo.door +'(业主群)'
-            console.log('test-------------',auth);
-            if(auth.indexOf("100")>=0){
-                console.log(100);
-                if(sessionId == "team-" + this.currSessionProjectInfo.chat1Id){
-                    this.defaultChat = 'owner';
-                }else if(sessionId == "team-" + this.currSessionProjectInfo.chat2Id){
-                    this.defaultChat = 'worker';
-                }
-                this.isChat = true;
-                this.showWorker = 1;
-                this.showOwner = 1;
-                this.workName = workname;
-                this.ownerName = ownerName;
-            }else if(auth.indexOf("101")>=0){
-                //客户群 
-                console.log(101);
+            var auth = this.currSessionProjectInfo.auth || [];
+            let workname = this.currSessionProjectInfo.name + (this.currSessionProjectInfo.door || '') +'(施工群)'
+            let ownerName = this.currSessionProjectInfo.name + (this.currSessionProjectInfo.door || '' )+'(业主群)'
+           
+            let authWorker = auth.indexOf("102") >= 0;  //施工群
+            let authOwner  = auth.indexOf("101") >= 0;  //业主群
+  
+             if(authWorker && authOwner){
+                    console.log("施工群 & 业主群 都存在");
+                    if(sessionId == "team-" + this.currSessionProjectInfo.chat1Id){
+                        this.defaultChat = 'worker';
+                    }else if(sessionId == "team-" + this.currSessionProjectInfo.chat2Id){
+                        this.defaultChat = 'owner';
+                    }
+
+                    this.isChat = true;
+                    this.showWorker = 1;
+                    this.showOwner = 1;
+                    this.workName = workname;
+                    this.ownerName = ownerName;
+             }else if(authOwner) { 
+                console.log("只存在业主群");
+
                 if(sessionId == "team-" + this.currSessionProjectInfo.chat2Id){
                     this.defaultChat = 'owner';
                 }
@@ -106,18 +114,21 @@ export default {
                 this.showWorker = 0;
                 this.showOwner = 1;
                 this.ownerName = ownerName;
-            }else if(auth.indexOf("102")>=0){
-                //施工群
-                console.log(102);
+                
+             }else if(authWorker){
+                console.log("只存在施工群");
+
                 if(sessionId == "team-" + this.currSessionProjectInfo.chat1Id){
                     this.defaultChat = 'worker';
                 }
+
                 this.isChat = true;
                 this.showOwner = 0;
                 this.showWorker = 1;
                 this.workName = workname;
             }
         },
+
         currSessionId(){
         }
     },
@@ -233,8 +244,13 @@ export default {
                 this.get_project_list();
             }
         },
+
+
         ownerSelect(tab, event){
             let currSessionProjectInfo = this.$store.state.currSessionProjectInfo
+            console.log("-----tabName------" + tab.name);
+
+            //console.log("----ownerSelect----->>" + tab + "," + event);
             console.log(currSessionProjectInfo)
             let sessionId = ""
             if(tab.name == 'worker'){
@@ -242,12 +258,14 @@ export default {
             }else if(tab.name == 'owner'){
                sessionId = 'team-' + currSessionProjectInfo.chat2Id
             }
+
             if(sessionId){
                 console.log(sessionId);
                 this.$store.commit('updateCurrSessionId', {
                     type: 'init',
                     sessionId: sessionId
                 });
+
                 this.$store.commit('updateCurrSessionMsgs', {
                     type: 'init',
                     sessionId: sessionId
@@ -255,7 +273,10 @@ export default {
             }
             this.defaultChat = tab.name
 
+            console.log("---the default chat----" + this.defaultChat);
         },
+
+    
         get_message(){
             console.log('获取聊天记录')
         },

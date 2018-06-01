@@ -114,30 +114,32 @@ export default {
 
     .remind-detail-desc{
         flex-grow:1;
-        padding:12px;
+        padding-top:12px;
+        padding-bottom: 12px;
+        padding-left: 24px;
         text-align: left;
-        color: #363636;
+        color: #333333;
         font-size: 16px;
     }
 
     .remind-detail-title2{
         text-align: center;
-        padding-top: 12px;
+        padding-top: 24px;
         padding-bottom: 12px;
-        color: #363636;
+        color: #333333;
     }
 
     .detail-reminder {
         text-align: right;
         font-size: 12px;
-        color: #797979;
+        color: #999999;
     }
 
     .detail-content {
-        padding-left: 12px;
-        padding-right: 12px;
+        padding-left: 24px;
+        padding-right: 24px;
         text-align: left;
-        color: #494949;
+        color: #666666;
         font-size: 14px;
     }
     

@@ -116,7 +116,7 @@ export default {
         this.disabled = true;
         let mobile = this.form.mobile.replace(/\s+/g, "");
         var url = 'getcode?mobile='+mobile
-       http.get(url).then(response => {
+        http.get(url).then(response => {
             // success callback
             var result = response
             if(result.code == 200){
@@ -146,8 +146,9 @@ export default {
         }, response => {
             // error callback
         })
-      
+    
       },
+
       loginApp(){
         var loginUrl = 'loginApp';
         let mobile = this.form.mobile.replace(/\s+/g, "");

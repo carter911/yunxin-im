@@ -278,8 +278,7 @@ class RemindListEntity {
 .remind-external {
     background-color:#fff;
     height: 61px;
-    padding-top:19px;
-    padding-bottom:19px;
+    padding-top:22px;
     text-align: center;
 }
 

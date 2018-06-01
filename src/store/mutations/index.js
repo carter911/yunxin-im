@@ -245,6 +245,7 @@ export default {
       }
     })
   },
+  
   // 更新当前会话id，用于唯一判定是否在current session状态
   updateCurrSessionId (state, obj) {
     let type = obj.type || ''
@@ -256,6 +257,7 @@ export default {
     }
     store.dispatch('resetSessionUnread', obj.sessionId)
   },
+
   updateCurrSessionProjectInfo (state, data) {
     state.currSessionProjectInfo = data
   },

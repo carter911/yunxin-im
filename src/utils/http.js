@@ -39,15 +39,13 @@ function checkCode (res) {
 export default {
   post (url, data) {
     var userInfo = JSON.parse(cookie.readCookie('userinfo'))
-    var headers = {}
-    if (userInfo) {
-      headers = {
-          'userid': userInfo.userId,
-          'platform': 'web',
-          // 'teoken': userInfo.token,
-          'Content-Type': 'application/x-www-form-urlencoded'
-      }
+    var headers = {
+      'userid': userInfo ? userInfo.userId : '',
+      'platform': 'web',
+      // 'teoken': userInfo.token,
+      'Content-Type': 'application/x-www-form-urlencoded'
     }
+    
     return axios({
       method: 'post',
       baseURL: config.request_url,
@@ -65,17 +63,17 @@ export default {
       }
     )
   },
+
+
   get (url, params) {
     var userInfo = JSON.parse(cookie.readCookie('userinfo'))
-    var headers = {}
-    if (userInfo) {
-        headers = {
-            'userid': userInfo.userId,
-            'platform': 'web',
-            // 'teoken': userInfo.token,
-            'Content-Type': 'application/x-www-form-urlencoded'
-        }
+    var headers = {
+      'userid': userInfo ? userInfo.userId : '',
+      'platform': 'web',
+      // 'teoken': userInfo.token,
+      'Content-Type': 'application/x-www-form-urlencoded'
     }
+
     return axios({
       method: 'get',
       baseURL: config.request_url,
