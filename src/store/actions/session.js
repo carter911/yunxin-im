@@ -72,6 +72,7 @@ export function deleteSession ({state, commit}, sessionId) {
 }
 
 export function setCurrSession ({state, commit, dispatch}, sessionId) {
+  console.log('设置sessionid')
   const nim = state.nim
   if (sessionId) {
     commit('updateCurrSessionId', {
@@ -101,7 +102,6 @@ export function resetCurrSession ({state, commit}) {
 
 export function resetSessionUnread ({state, commit, dispatch}, sessionId) {
   const nim = state.nim
-  console.log('清除小红点', sessionId)
   nim.resetSessionUnread(sessionId)
 }
 //nim.resetSessionUnread('sessionId')

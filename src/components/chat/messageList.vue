@@ -1,16 +1,16 @@
 <template>
   <el-col
     :class="{
-        'active':item.id == this.sessionId,
+        'active':item.id == this.currSessionId,
         'message-info' : 1===1,
         } "
         :span="24" >
-    <el-col :span="3">
+    <el-col :span="4">
         <img class="avatar" :onerror="avatar(item.avatar)" v-bind:src="item.avatar"/>
     </el-col>
-    <el-col :span="17">
+    <el-col :span="16">
         <div
-         @click='chatInfo(item)'
+         @click.stop='chatInfo(item)'
          class="grid-content bg-purple-dark">
             <h2>{{item.name}}</h2>
             <p>{{item.lastMsgShow}}</p>
@@ -27,20 +27,15 @@
 import util from '../../utils'
 import store from '../../store';
 export default {
-    data :{
-    },
-    props: ['item'],
-    computed: {
-        sessionId() {
-            let sessionId = this.$store.state.currSessionId
-            console.log('切换聊天' + sessionId)
-            return sessionId;
-        }
-    },
+    props: ['item','currSessionId'],
+    // computed: {
+    //     sessionId() {
+    //         return this.$store.state.currSessionId
+    //     },
+    // },
     methods:{
         chatInfo(item){
             let sessionId = item.id
-            console.log('请求的sesiionid' + sessionId);
             this.$store.commit('updateCurrSessionId', {
                 type: 'init',
                 sessionId:sessionId
@@ -49,13 +44,11 @@ export default {
                 type: 'init',
                 sessionId: sessionId
             });
-            //this.$store.dispatch('sendMsgReceipt')
         },
         avatar(avatar){
             this.item.avatar = "../../../static/chat.png"
         }
     }
-
 }
 </script>
 <style scoped>
@@ -64,17 +57,17 @@ export default {
         text-align: left;
         border-bottom: 1px solid #ddd;
         padding:3px 10px 3px 20px;
-        height:50px;
+        height:60px;
     }
     .message-info .avatar{
-        height:28px;
-        width: 28px;
-        margin-top: 4px;
+        height:40px;
+        width: 40px;
+        margin-top: 6px;
     }
     .message-info h2{
         color: #000;
-        font-size: 13px;
-        margin-top: 0px;
+        font-size: 14px;
+        margin-top: 6px;
         font-weight: normal;
         overflow:hidden;
         text-overflow:ellipsis;
@@ -82,7 +75,7 @@ export default {
     }
     .message-info p{
         margin-top: -10px;
-        font-size: 11px;
+        font-size: 12px;
         display: -webkit-box;
         -webkit-box-orient: vertical;
         -webkit-line-clamp: 1;
@@ -100,6 +93,7 @@ export default {
     }
     .message-info .active{
         background: #f0f2f7;
+        pointer-events: none;
     }
     .badge{
         background:#f13f37;
