@@ -31,8 +31,8 @@ export default {
   },
   updated() {
       // 提交sdk连接请求
-      this.$store.dispatch("connect");
-      this.$store.dispatch("updateRefreshState");
+      // this.$store.dispatch("connect");
+      // this.$store.dispatch("updateRefreshState");
   },
 
   mounted() {

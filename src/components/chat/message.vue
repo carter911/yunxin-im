@@ -26,21 +26,21 @@ export default {
         ChatEditor,
         ChatList
     },
-    props:['chatType'],
+    props:['chatType','sessionId'],
     // 进入该页面，文档被挂载
     mounted() {
         this.$store.dispatch("setCurrSession", this.sessionId);
     },
-    updated() {
-        console.log('更新当前数据',this.chatType)
-        if(this.chatType == 'worker'){
-            pageUtil.scrollChatListDown();
-        }
-        if(this.chatType == 'owner'){
-            pageUtil.scrollChatOwnerDown()
-        }
+    // created() {
+    //     console.log('更新当前数据',this.chatType)
+    //     if(this.chatType == 'worker'){
+    //         pageUtil.scrollChatListDown();
+    //     }
+    //     if(this.chatType == 'owner'){
+    //         pageUtil.scrollChatOwnerDown()
+    //     }
         
-    },
+    // },
     // 离开该页面，此时重置当前会话
     destroyed() {
         this.$store.dispatch("resetCurrSession");
@@ -66,12 +66,12 @@ export default {
         }
     },
     computed: {
-        sessionId() {
-            let sessionId = this.$store.state.currSessionId
-            pageUtil.scrollChatListDown();
-            console.log('切换聊天1111' + sessionId)
-            return sessionId;
-        },
+        // sessionId() {
+        //     let sessionId = this.$store.state.currSessionId
+        //     pageUtil.scrollChatListDown();
+        //     console.log('切换聊天1111' + sessionId)
+        //     return sessionId;
+        // },
         sessionName() {
             let sessionId = this.sessionId;
             let user = null;

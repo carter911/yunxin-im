@@ -6,10 +6,10 @@
         'message-info' : 1===1,
         } "
          :span="24" >
-    <el-col :span="3">
+    <el-col :span="4">
         <img class="avatar" v-bind:src="this.avatar"/>
     </el-col>
-    <el-col :span="17">
+    <el-col :span="16">
         <div @click='projectInfo(item)'  class="project-list grid-content bg-purple-dark ">
             <h2>{{item.name}}</h2>
         </div>
@@ -24,7 +24,7 @@ export default {
             avatar : "../../../static/chat.png"
         }
     },
-    props: ['item'],
+    props: ['item',],
     computed: {
         sessionId() {
             let sessionId = this.$store.state.currSessionId
@@ -62,14 +62,17 @@ export default {
         height:50px;
     }
     .message-info .avatar{
-        height:28px;
-        width: 28px;
+        height:35px;
+        width: 35px;
         margin-top: 4px;
     }
     .message-info h2{
-        font-size: 13px;
-        margin-top: 12px;
+        font-size: 14px;
+        margin-top: 11px;
         font-weight: normal;
+        overflow:hidden;
+        text-overflow:ellipsis;
+        white-space:nowrap;
     }
     .time{
         margin-top: 14px;

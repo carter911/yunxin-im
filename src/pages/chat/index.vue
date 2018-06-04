@@ -2,10 +2,10 @@
 <template>
     <div id="chat">
         <el-container>
-            <el-aside width="19rem" v-bind:style="{height: heightData}">
+            <el-aside width="300px" v-bind:style="{height: heightData}">
                 <div class="grid-content bg-purple chatBar">
                     <el-menu  :default-active="this.defaultActive" class="el-menu-demo" mode="horizontal" @select="chatSelect">
-                        <el-menu-item index="message">我的消息</el-menu-item>
+                        <el-menu-item index="message">我的消息{{this.sysMsgUnread}}</el-menu-item>
                         <el-menu-item index="project">项目列表</el-menu-item>
                     </el-menu>
                 </div>
@@ -16,13 +16,15 @@
                                 v-for = '(item,index) in sessionlist'
                                 :item ='item'
                                 :key="index"
+                                :currSessionId = "currSessionId"
                                 />
                         </el-row>
                         <el-row v-if="this.defaultActive == 'project'">
-                            <projectList ref="projectList"
+                            <projectList 
                                 v-for="(item,index) in teamList"
                                 :item='item'
                                 :key="index"
+                                :currSessionId = "currSessionId"
                                 />
                         </el-row>
                     </div>
@@ -32,11 +34,10 @@
             <div v-if="isChat" id="chat_info">
                 <el-tabs  v-model="defaultChat" @tab-click="ownerSelect" type="border-card">
                     <el-tab-pane v-bind:style="{height: chatHeight}" v-if="showWorker" v-bind:label="workName" name="worker">
-                        <Message :chatType="worker" />
+                        <Message :chatType="worker" v-if="showWorker" :sessionId="currSessionId" />
                     </el-tab-pane>
-                    
                     <el-tab-pane v-bind:style="{height: chatHeight}" v-if="showOwner" v-bind:label="ownerName" name="owner">
-                        <Message :chatType="owner" />
+                        <Message :chatType="owner" v-if="showOwner" :sessionId="currSessionId" />
                     </el-tab-pane>
                 </el-tabs>
             </div>
@@ -52,6 +53,8 @@ import projectMessage from '../../components/chat/messageList'
 import projectList  from '../../components/chat/projectList'
 import Message from '../../components/chat/message.vue'
 import projectListVue from '../../components/chat/projectList.vue';
+import Log from '../../common/Log';
+
 export default {
     components: {
         projectMessage,projectList,Message
@@ -66,94 +69,72 @@ export default {
             heightData :(document.documentElement.clientHeight-60)+'px',
             chatHeight :(document.documentElement.clientHeight-102)+'px',
             listHeight : (document.documentElement.clientHeight-150)+'px',
-            showWorker:0,
-            showOwner:0,
+            showWorker:false,
+            showOwner:false,
             workName:"施工群",
             ownerName:"业主群",
             isLoad : true,
             isChat : false,
         }
     },
-    updated(){
-        console.log('我更新了');
-    },
     watch:{
-        currSessionProjectInfo (){
-            console.log('更新tab。。。。。。。。')
-            console.log(this.$store.state);
-            console.log('更新tab 完成。。。。。。。。')
-
-            let sessionId = this.$store.state.currSessionId
-            var auth = this.currSessionProjectInfo.auth || [];
-            let workname = this.currSessionProjectInfo.name + (this.currSessionProjectInfo.door || '') +'(施工群)'
-            let ownerName = this.currSessionProjectInfo.name + (this.currSessionProjectInfo.door || '' )+'(业主群)'
-           
-            let authWorker = auth.indexOf("102") >= 0;  //施工群
-            let authOwner  = auth.indexOf("101") >= 0;  //业主群
-  
-             if(authWorker && authOwner){
-                    console.log("施工群 & 业主群 都存在");
-                    if(sessionId == "team-" + this.currSessionProjectInfo.chat1Id){
-                        this.defaultChat = 'worker';
-                    }else if(sessionId == "team-" + this.currSessionProjectInfo.chat2Id){
-                        this.defaultChat = 'owner';
-                    }
-
-                    this.isChat = true;
-                    this.showWorker = 1;
-                    this.showOwner = 1;
-                    this.workName = workname;
-                    this.ownerName = ownerName;
-             }else if(authOwner) { 
-                console.log("只存在业主群");
-
+        currSessionProjectInfo (news, old){
+            var projectInfo = this.currSessionProjectInfo
+            var sessionId = this.currSessionId
+            var auth = this.currSessionProjectInfo.auth;
+            var door = this.currSessionProjectInfo.door == null ? "":this.currSessionProjectInfo.door
+            var workname = this.currSessionProjectInfo.name + door +'(施工群)'
+            var ownerName = this.currSessionProjectInfo.name + door +'(业主群)'
+            if(auth.indexOf("100")>=0){
+                if(sessionId == "team-" + this.currSessionProjectInfo.chat1Id){
+                    this.defaultChat = 'worker';
+                }else if(sessionId == "team-" + this.currSessionProjectInfo.chat2Id){
+                    this.defaultChat = 'owner';
+                }
+                this.isChat = true;
+                this.showWorker = true;
+                this.showOwner = true;
+                this.workName = workname;
+                this.ownerName = ownerName;
+            }else if(auth.indexOf("101")>=0){
+                //客户群 
                 if(sessionId == "team-" + this.currSessionProjectInfo.chat2Id){
                     this.defaultChat = 'owner';
                 }
                 this.isChat = true;
-                this.showWorker = 0;
-                this.showOwner = 1;
+                this.workName = workname;
+                //this.showWorker = false;
+                this.showOwner = true;
                 this.ownerName = ownerName;
-                
-             }else if(authWorker){
-                console.log("只存在施工群");
-
+            }else if(auth.indexOf("102")>=0){
+                //施工群
                 if(sessionId == "team-" + this.currSessionProjectInfo.chat1Id){
                     this.defaultChat = 'worker';
                 }
-
                 this.isChat = true;
                 this.showOwner = 0;
                 this.showWorker = 1;
                 this.workName = workname;
             }
-        },
 
-        currSessionId(){
+            return this.currSessionProjectInfo;
         }
     },
     computed: {
         currSessionProjectInfo() {
             let currSessionProjectInfo = this.$store.state.currSessionProjectInfo
-            //console.log('切换聊天1111', currSessionProjectInfo)
+            console.log('调整项目', currSessionProjectInfo)
+            if(currSessionProjectInfo == null){
+                this.$message({
+                message: '你已经被移出当前项目,',
+                type: 'error'
+              });
+              // TODO 需要删除操作
+            }
             return currSessionProjectInfo;
         },
-        currSessionId() {
-            let currSessionId = this.$store.state.currSessionId
-            if(this.sessionlist.length>0 && currSessionId == null){
-                let session = this.sessionlist.shift( )
-                let sessionId = session.id
-                this.$store.commit('updateCurrSessionId', {
-                type: 'init',
-                sessionId:sessionId
-                });
-                this.$store.commit('updateCurrSessionMsgs', {
-                    type: 'init',
-                    sessionId: sessionId
-                });
-            }
-            
-            return currSessionId;
+        currSessionId (){
+            return this.$store.state.currSessionId
         },
         sysMsgUnread () {
             let temp = this.$store.state.sysMsgUnread
@@ -230,58 +211,30 @@ export default {
         }
     },
     methods: {
-        defaultChatInfo(){
-        },
-        selectProject(){
-            
-        },
         chatSelect(key, keyPath){
             this.defaultActive = key
-            console.log(this.defaultActive )
-            if(key == 'message'){
-                this.get_message();
-            }else if(key == 'project'){
-                this.get_project_list();
-            }
         },
-
-
         ownerSelect(tab, event){
-            let currSessionProjectInfo = this.$store.state.currSessionProjectInfo
-            console.log("-----tabName------" + tab.name);
-
-            //console.log("----ownerSelect----->>" + tab + "," + event);
-            console.log(currSessionProjectInfo)
+            let currSessionProjectInfo = this.currSessionProjectInfo
+            console.log('当前项目详情', currSessionProjectInfo)
             let sessionId = ""
             if(tab.name == 'worker'){
                 sessionId = 'team-' + currSessionProjectInfo.chat1Id
             }else if(tab.name == 'owner'){
                sessionId = 'team-' + currSessionProjectInfo.chat2Id
             }
-
             if(sessionId){
                 console.log(sessionId);
                 this.$store.commit('updateCurrSessionId', {
                     type: 'init',
                     sessionId: sessionId
                 });
-
                 this.$store.commit('updateCurrSessionMsgs', {
                     type: 'init',
                     sessionId: sessionId
                 });
             }
             this.defaultChat = tab.name
-
-            console.log("---the default chat----" + this.defaultChat);
-        },
-
-    
-        get_message(){
-            console.log('获取聊天记录')
-        },
-        get_project_list(){
-            console.log('获取项目列表')
         }
         
   },

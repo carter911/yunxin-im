@@ -168,6 +168,7 @@ export function getTeamMembers({ state }, teamId) {
 export function checkTeamMsgReceipt({state}, msgs) {
   var result = /team-(\d+)/.exec(state.currSessionId)
   if (!result) {
+    console.log('格式化数据', state.currSessionId);
     return null
   }
   var teamId = result[1]

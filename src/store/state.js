@@ -66,7 +66,7 @@ export default {
   // 当前会话ID（即当前聊天列表，只有单聊群聊采用，可用于判别）
   currSessionId: null,
   // 当前会话ID 用户信息
-  currSessionProjectInfo: null,
+  currSessionProjectInfo: {},
 
     // 当前会话ID 用户信息
   currSessionProjectId: null,
