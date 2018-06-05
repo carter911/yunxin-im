@@ -58,6 +58,6 @@ export default {
     box-shadow: 0rem 0rem 0rem 0rem 
     rgba(0, 0, 0, 0.04);
     border: solid 0rem #ededed;
-    border-bottom: solid 2px rgb(237, 237, 237);
+    border-bottom: solid 1px #ededed;
 }
 </style>

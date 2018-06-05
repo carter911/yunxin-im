@@ -2,7 +2,7 @@
   <div>
     <el-card class="box-card">
       <el-form ref="loginForm" :model="form" label-width="80px" :rules="rules">
-        <div class="logo"><img src="../../static/logo_400_400_gaitubao_com_100x100.png"/></div>
+        <div class="logo"><img src="../../static/logo400.png"/></div>
         <el-form-item label="" label-width='0px' prop="mobile">
         <el-input  class="input" type="phone" maxlength="13"  prefix-icon="el-icon-mobile-phone" v-model="form.mobile" placeholder="请输入手机号码"></el-input>
         </el-form-item>

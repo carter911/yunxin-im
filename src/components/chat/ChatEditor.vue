@@ -32,7 +32,7 @@
         </span>
       </div>
        <div class="u-editor-input">
-         <el-input @keyup.enter.native="sendTextMsg" placeholder="请输入聊天消息" type="textarea" :rows="4" resize="none" v-model="msgToSent" @focus='onInputFocus'></el-input>
+         <el-input @keyup.enter.native="sendTextMsg" placeholder="请输入聊天消息 按回车键发送" type="textarea" :rows="4" resize="none" v-model="msgToSent" @focus='onInputFocus'></el-input>
         <!-- <textarea v-model="msgToSent" @focus='onInputFocus'></textarea> -->
         </div>
     </div>
@@ -314,10 +314,11 @@ export default {
 
 <style scoped>
   .m-chat-editor{
-    border-top:3px solid #ddd;
+    border-top:1px solid #e9e9e9;
     height: 100px;
   }
   .edit-bar{
+    text-align: left;
     height:40px;
     line-height: 40px;
   }
@@ -334,6 +335,7 @@ export default {
 
   }
   .u-editor-icons{
+    
     height:40px;
     line-height: 40px;
   }
@@ -370,7 +372,7 @@ export default {
     #m-chat-editor .el-textarea__inner{
       border-radius:0px;
       border: 0px solid #ccc;
-      border-top :1px solid #dcdfe6;
+      /* border-top :1px solid #dcdfe6; */
     }
 </style>
 
