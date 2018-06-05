@@ -128,8 +128,8 @@ export default {
     background: #eee;
     width:500px;
     height: 400px;
-    left:-00px;
-    top:50px;
+    left:370px;
+    top:129px;
   }
   .emoji-item img{
     padding: 3px;

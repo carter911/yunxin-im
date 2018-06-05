@@ -1,5 +1,5 @@
 <template>
- <el-aside class="nav" width="5rem"  :style="{'height' : this.$store.state.windowClientHeight + 'px'}">
+ <el-aside class="nav" width="70px"  :style="{'height' : this.$store.state.windowClientHeight + 'px'}">
     <div class="logo"><img src="../../../static/logo.png"/></div>   
     <el-menu 
       :default-active="$route.path"
@@ -75,21 +75,22 @@ export default {
       border: solid 0rem #ededed;
   }
 
- 
   .el-main {
     background-color: #E9EEF3;
     color: #333;
     text-align: center;
     line-height: 160px;
   }
+
   body > .el-container {
     margin-bottom: 40px;
   }
 
   .el-menu-vertical-demo:not(.el-menu--collapse) {
-    width: 5rem;
+    width: 70px;
     min-height: 400px;
   }
+
   a{
     text-decoration: none;
     color: #000;
@@ -101,17 +102,19 @@ export default {
   }
 
   .logo{
-    margin: 1rem auto;
+    text-align: center;
+    margin: 4px auto;
     width: 100%;
   }
+
   .logo img{
-    height: 2rem;
-    width: 3rem;
+    width: 50px;
+    height: 50px;
     border-radius: .2rem;
   }
   .menu{
-    height: 2rem;
-    width: 2rem;
+    height: 28px;
+    width: 28px;
     
   }
 </style>

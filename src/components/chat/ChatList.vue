@@ -97,7 +97,7 @@
     font-size: 11px;
     color: #999;
   }
-  li{
+  .m-chat-list li{
     list-style: none;
     text-align: center;
     overflow: auto;

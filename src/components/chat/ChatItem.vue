@@ -41,11 +41,15 @@
           <a v-if="teamMsgUnRead >=0" class='msg-unread' :href='`#/msgReceiptDetail/${msg.to}-${msg.idServer}`'>{{teamMsgUnRead>0 ? `${teamMsgUnRead}人未读`: '全部已读'}}</a>
         </div>
     </div>
-    <el-dialog style="max-heihgt:100%"
+    <el-dialog style="height:600px;"
       :visible.sync="dialogVisible"
       width="70%"
+      top="8vh"
       :before-close="handleClose">
-      <div style="text-align:center"><img width="100%" :src="fullImageUrl"/></div>
+      <div style="height:400px;text-align:center">
+          <img height="100%" :src="fullImageUrl"/>
+      </div>
+      <!-- <img :src="fullImageUrl"/> -->
     </el-dialog>
 
       <!-- <div class="msg-head" v-if="msg.avatar">
@@ -425,7 +429,6 @@
 <style scoped>
 
   .msg-unread {
-    
     position: relative;
     float: right;
     top: 0.3rem;
@@ -444,6 +447,7 @@
     position: relative;
     text-align: left;
     border-radius: 10px;
+    margin-left: 10px;
   }
 
   .item-you .msg-head{
@@ -459,12 +463,13 @@
     max-width: 60%;
   }
 
-
   .item-me{
     position: relative;
     text-align: right;
     border-radius: 10px;
+    margin-right: 10px;
   }
+
   .item-me .msg-head{
     text-align: left;
     margin-top: 2px;
@@ -490,7 +495,7 @@
         top: 14px;
         right: 26px;
         margin: 20px;
-        background: #1ab6ff;
+        background: #cce5ff;
         width: 10px; height: 10px; 
         transform: rotate(135deg);
         -o-transform: rotate(135deg);
@@ -508,7 +513,7 @@
     font-size: 10px;
     color: #666;
     padding:1px 20px;
-    background: #fff;
+    background: #f8f8f8;
     border-radius: 9px;
   }
   
@@ -520,7 +525,8 @@
   }
 
   .item-you  .msg_content{
-    background: #fff;
+    color: #333;
+    background: #f3f3f3;
     /* border-radius: 10px; */
     font-size: 14px;
     border-radius: 14px;
@@ -530,10 +536,9 @@
 
 
   .item-me  .msg_content{
-    color: #fff;
-    background: #1ab6ff;
+    color: #333;
+    background: #cce5ff;
     /* border-radius: 10px; */
-
     font-size: 14px;
     border-radius: 14px;
     padding: 10px;
@@ -546,7 +551,7 @@
         top: 14px;
         left: 16px;
         margin: 20px;
-        background: #fff;
+        background: #f3f3f3;
         width: 10px; height: 10px; 
         transform: rotate(135deg);
         -o-transform: rotate(135deg);

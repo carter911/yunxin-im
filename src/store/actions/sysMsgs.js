@@ -44,7 +44,7 @@ export function onSysMsgUnread (obj) {
 }
 
 export function onCustomSysMsgs (customSysMsgs) {
-    console.log(customSysMsgs)
+    console.log('系统消息数量', customSysMsgs)
   if (!Array.isArray(customSysMsgs)) {
     customSysMsgs = [customSysMsgs]
   }

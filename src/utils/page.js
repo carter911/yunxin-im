@@ -24,7 +24,7 @@ var page = {
   // 滚动聊天列表到底部
   scrollChatListDown: (pos, initCount) => {
 
-    let dom = document.getElementById('worker')
+    let dom = document.getElementById('chat_list')
     if (!dom) {
       return
     }

@@ -5,7 +5,7 @@
             <el-aside width="300px" v-bind:style="{height: heightData}">
                 <div class="grid-content bg-purple chatBar">
                     <el-menu  :default-active="this.defaultActive" class="el-menu-demo" mode="horizontal" @select="chatSelect">
-                        <el-menu-item index="message">我的消息{{this.sysMsgUnread}}</el-menu-item>
+                        <el-menu-item index="message">我的消息</el-menu-item>
                         <el-menu-item index="project">项目列表</el-menu-item>
                     </el-menu>
                 </div>
@@ -30,18 +30,43 @@
                     </div>
                 </el-col>
             </el-aside>
-        <el-main>
-            <div v-if="isChat" id="chat_info">
-                <el-tabs  v-model="defaultChat" @tab-click="ownerSelect" type="border-card">
-                    <el-tab-pane v-bind:style="{height: chatHeight}" v-if="showWorker" v-bind:label="workName" name="worker">
-                        <Message :chatType="worker" v-if="showWorker" :sessionId="currSessionId" />
-                    </el-tab-pane>
-                    <el-tab-pane v-bind:style="{height: chatHeight}" v-if="showOwner" v-bind:label="ownerName" name="owner">
-                        <Message :chatType="owner" v-if="showOwner" :sessionId="currSessionId" />
-                    </el-tab-pane>
-                </el-tabs>
-            </div>
-        </el-main>
+            <el-main>
+                <el-container>
+                <el-main>
+                    <div v-if="isChat" id="chat_info">
+                        <ul class="chat_nav">
+                            <li
+                            @click="ownerSelect(owner)"
+                            :class = "{
+                                'active': this.defaultChat=='owner'
+                            }"
+                            class="chat_nav_left" v-if="showOwner">{{this.ownerName}}</li>
+                            <li
+                            @click="ownerSelect(worker)"
+                            :class = "{
+                                'active': this.defaultChat=='worker'
+                            }"
+                            class="chat_nav_left" v-if="showWorker">{{this.workName}}</li>
+                        </ul>
+                    </div>
+                    <div style="chat_body">
+                        <Message :chatType="worker" v-if="currentChat=='worker'" :sessionId="currSessionId" />
+                        <Message :chatType="owner" v-if="currentChat=='owner'" :sessionId="currSessionId" />
+                    </div>
+                </el-main>
+                <el-aside class="project-option" width="150px"  v-bind:style="{height: listHeight}">
+                    
+                    <div class="project-name">{{this.projectName}}</div>
+                    <ul class="project-option-tab">
+                        <li><i class="el-icon-bell"></i><span>查看提醒</span></li>
+                        <li><i class="el-icon-date"></i><span>查看任务</span></li>
+                        <li><i class="el-icon-goods"></i><span>查看材料商</span></li>
+                        <li><i class="el-icon-tickets"></i><span>成员列表</span></li>
+                        <li><i class="el-icon-edit-outline"></i><span>添加提醒</span></li>
+                    </ul>
+                </el-aside>
+                </el-container>
+            </el-main>
         </el-container>
     </div>
 </template>
@@ -59,6 +84,11 @@ export default {
     components: {
         projectMessage,projectList,Message
     },
+    created(){
+        if(this.currSessionId == null){
+            //console.log('实例化1111111')
+        }
+    },
     data(){
         return {
             worker:'worker',
@@ -68,13 +98,16 @@ export default {
             teamType: 'advanced',
             heightData :(document.documentElement.clientHeight-60)+'px',
             chatHeight :(document.documentElement.clientHeight-102)+'px',
-            listHeight : (document.documentElement.clientHeight-150)+'px',
+            listHeight : (document.documentElement.clientHeight-60)+'px',
             showWorker:false,
             showOwner:false,
+            currentChat:false,
             workName:"施工群",
             ownerName:"业主群",
+            supplierName:"供应商",
             isLoad : true,
             isChat : false,
+            projectName:'',
         }
     },
     watch:{
@@ -83,13 +116,16 @@ export default {
             var sessionId = this.currSessionId
             var auth = this.currSessionProjectInfo.auth;
             var door = this.currSessionProjectInfo.door == null ? "":this.currSessionProjectInfo.door
-            var workname = this.currSessionProjectInfo.name + door +'(施工群)'
-            var ownerName = this.currSessionProjectInfo.name + door +'(业主群)'
+            var workname = '施工群'
+            var ownerName = '业主群'
+            this.projectName = this.currSessionProjectInfo.name + door
             if(auth.indexOf("100")>=0){
                 if(sessionId == "team-" + this.currSessionProjectInfo.chat1Id){
                     this.defaultChat = 'worker';
+                    this.currentChat = 'worker'
                 }else if(sessionId == "team-" + this.currSessionProjectInfo.chat2Id){
                     this.defaultChat = 'owner';
+                    this.currentChat = 'owner'
                 }
                 this.isChat = true;
                 this.showWorker = true;
@@ -101,9 +137,9 @@ export default {
                 if(sessionId == "team-" + this.currSessionProjectInfo.chat2Id){
                     this.defaultChat = 'owner';
                 }
+                this.currentChat = 'owner'
                 this.isChat = true;
-                this.workName = workname;
-                //this.showWorker = false;
+                this.showWorker = false;
                 this.showOwner = true;
                 this.ownerName = ownerName;
             }else if(auth.indexOf("102")>=0){
@@ -111,12 +147,12 @@ export default {
                 if(sessionId == "team-" + this.currSessionProjectInfo.chat1Id){
                     this.defaultChat = 'worker';
                 }
+                this.currentChat = 'worker'
                 this.isChat = true;
                 this.showOwner = 0;
                 this.showWorker = 1;
                 this.workName = workname;
             }
-
             return this.currSessionProjectInfo;
         }
     },
@@ -141,6 +177,7 @@ export default {
             let sysMsgUnread = temp.addFriend || 0
             sysMsgUnread += temp.team || 0
             let customSysMsgUnread = this.$store.state.customSysMsgUnread
+            console.log(customSysMsgUnread, sysMsgUnread)
             return sysMsgUnread + customSysMsgUnread
         },
         userInfos () {
@@ -214,13 +251,13 @@ export default {
         chatSelect(key, keyPath){
             this.defaultActive = key
         },
-        ownerSelect(tab, event){
+        ownerSelect(tab){
             let currSessionProjectInfo = this.currSessionProjectInfo
             console.log('当前项目详情', currSessionProjectInfo)
             let sessionId = ""
-            if(tab.name == 'worker'){
+            if(tab == 'worker'){
                 sessionId = 'team-' + currSessionProjectInfo.chat1Id
-            }else if(tab.name == 'owner'){
+            }else if(tab == 'owner'){
                sessionId = 'team-' + currSessionProjectInfo.chat2Id
             }
             if(sessionId){
@@ -262,7 +299,8 @@ export default {
         width: 50%;
     }
     .active{
-        background: #ddd;
+
+        background:#f0f2f7;
     }
 
     .el-tabs{
@@ -282,6 +320,99 @@ export default {
 
     .load {
         font-size:11px;
+    }
+
+
+    .chat_nav{
+        margin: 0px;
+        padding: 0px;
+        height:45px;
+        border-bottom: 1px solid #e9e9e9;
+    }
+
+    .chat_nav li{
+        text-align: center;
+        width: 60px;
+        border: 1px solid #e9e9e9;
+        border-top: 0px solid #e9e9e9;
+        height: 25px;
+        line-height: 25px;
+        font-size: 13px;
+        cursor: pointer;
+        padding: 10px;
+        margin: 0px;
+        /* background: red; */
+        float: left;
+    }
+    .chat_nav .active{
+        /* background: rgb(74, 154, 251); */
+        color: #000;
+        background: url("../../../static/selected.png") no-repeat;
+        background-size:100%;
+        border-bottom:0px solid #ccc;
+        /* background: none; */
+        /* border-bottom: 1px solid rgb(74, 154, 251); */
+    }
+    .chat_nav .chat_nav_left{
+        max-width: 180px;
+        overflow: hidden;
+        text-overflow:ellipsis;
+        white-space: nowrap;
+        float: left;
+    }
+    .chat_nav .chat_nav_right{
+        float: right;
+    }
+
+    .chat_nav .chat_nav_right span{
+        border: 1px solid #ccc;
+        padding: 3px 3px;
+        border-radius: 3px;
+    }
+    .chat_nav .chat_nav_right span:hover{
+        background: #ddd;
+    }
+
+    .chat_body{
+        background: red;
+        width: 100%;
+        text-align: left;
+    }
+    .project-option{
+        background-color: #f9f9f9;
+    }
+    .project-option .project-name{
+        font-size: 13px;
+        height: 35px;
+        padding: 5px;
+        text-align: center;
+        border-bottom: 1px solid #e9e9e9;
+    }
+    .project-option .project-option-tab{
+        padding-left: 30px;
+        text-align: left;
+        list-style: none;
+    }
+    .project-option-tab li{
+        width: 100px;
+        cursor: pointer;
+        height: 30px;
+        margin: 0px;
+        line-height: 30px;
+        font-family: MicrosoftYaHei;
+        font-size: 13px;
+    }
+    .project-option-tab li span{
+        margin-left: 10px;
+        display: inline-block;
+        color: #333333;
+        vertical-align: middle;
+    }
+    .project-option-tab li i{
+        color: #6e6e6e;
+        font-size: 20px;
+        vertical-align: middle;
+
     }
 </style>
 

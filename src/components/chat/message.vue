@@ -4,7 +4,7 @@
       <div class='invalidHint' v-if='scene==="team" && teamInvalid'>
         {{`您已退出该${teamInfo && teamInfo.type==='normal' ? '讨论组':'群'}`}}
       </div>
-      <div :id="chatType" class="chat_list" v-bind:style="{height: chat_list_heihgt}">
+      <div id="chat_list" class="chat_list" v-bind:style="{height: chat_list_heihgt}">
         <ChatList type="session" :msglist="msglist" :userInfos="userInfos" :myInfo="myInfo" :isRobot="isRobot" @msgs-loaded="msgsLoaded"/>
       </div>
       <div class="">
@@ -31,23 +31,19 @@ export default {
     mounted() {
         this.$store.dispatch("setCurrSession", this.sessionId);
     },
-    // created() {
-    //     console.log('更新当前数据',this.chatType)
-    //     if(this.chatType == 'worker'){
-    //         pageUtil.scrollChatListDown();
-    //     }
-    //     if(this.chatType == 'owner'){
-    //         pageUtil.scrollChatOwnerDown()
-    //     }
-        
-    // },
-    // 离开该页面，此时重置当前会话
-    destroyed() {
-        this.$store.dispatch("resetCurrSession");
+    created() {
+        console.log('更新当前数据',this.chatType)
+        if(this.chatType == 'worker'){
+            pageUtil.scrollChatListDown();
+        }
+        if(this.chatType == 'owner'){
+            pageUtil.scrollChatOwnerDown()
+        } 
     },
+    // 离开该页面，此时重置当前会话
     data() {
         return {
-            chat_list_heihgt: (document.documentElement.clientHeight-265)+'px',
+            chat_list_heihgt: (document.documentElement.clientHeight-235)+'px',
             leftBtnOptions: {
                 backText: " ",
                 preventGoBack: true
@@ -56,22 +52,16 @@ export default {
     },
     watch:{
         sessionId(){
-            //pageUtil.scrollChatListDown();
-            if(this.chatType == 'worker'){
-                pageUtil.scrollChatListDown();
-            }
-            if(this.chatType == 'owner'){
-                pageUtil.scrollChatOwnerDown()
-            }
+            pageUtil.scrollChatListDown();
+            // if(this.chatType == 'worker'){
+                
+            // }
+            // if(this.chatType == 'owner'){
+            //     pageUtil.scrollChatOwnerDown()
+            // }
         }
     },
     computed: {
-        // sessionId() {
-        //     let sessionId = this.$store.state.currSessionId
-        //     pageUtil.scrollChatListDown();
-        //     console.log('切换聊天1111' + sessionId)
-        //     return sessionId;
-        // },
         sessionName() {
             let sessionId = this.sessionId;
             let user = null;
@@ -178,63 +168,9 @@ export default {
         }
     },
     methods: {
-        init(){
-            // this.$store.dispatch("showLoading");
-            // 此时设置当前会话
-            console.log('初始化聊天详情start')
-            console.log(this.sessionId)
-            console.log('初始化聊天详情end')
-            this.$store.dispatch("setCurrSession", this.sessionId);
-            pageUtil.scrollChatListDown();
-            // setTimeout(() => {
-            //     this.$store.dispatch("hideLoading");
-            // }, 1000);
-
-            // // 获取群成员
-            if (this.scene === "team") {
-                var teamMembers = this.$store.state.teamMembers[this.to];
-                if (
-                    teamMembers === undefined ||
-                    teamMembers.length < this.teamInfo.memberNum
-                ) {
-                    this.$store.dispatch("getTeamMembers", this.to);
-                }
-            }
-        },
-        onClickBack() {
-            // location.href = '#/contacts'
-            window.history.go(-1);
-        },
         msgsLoaded() {
             pageUtil.scrollChatListDown();
         },
-        enterNameCard() {
-            if (/^p2p-/.test(this.sessionId)) {
-                let account = this.sessionId.replace(/^p2p-/, "");
-                if (account === this.$store.state.userUID) {
-                    location.href = `#/general`;
-                    return;
-                }
-                location.href = `#/namecard/${account}`;
-            }
-        },
-        onTeamManageClick() {
-            if (this.teamInfo && this.teamInfo.validToCurrentUser) {
-                location.href = `#/teammanage/${this.teamInfo.teamId}`;
-            } else {
-                this.$toast("您已退出该群");
-            }
-        },
-        onHistoryClick() {
-            if (
-                this.scene !== "team" ||
-                (this.teamInfo && this.teamInfo.validToCurrentUser)
-            ) {
-                location.href = `#/chathistory/${this.sessionId}`;
-            } else {
-                this.$toast("您已退出该群");
-            }
-        }
     }
 };
 </script>
@@ -270,7 +206,7 @@ export default {
 }
 
 .chat_list {
-    background: #f2f2f2;
+    background: #fff;
     overflow: auto;
 }
 </style>
