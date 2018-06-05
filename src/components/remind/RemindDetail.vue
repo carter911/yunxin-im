@@ -14,16 +14,21 @@
 
         <hr class="remind-detail-hr"/>
 
-        <div class="remind-detail-title2">
-            {{ remind.projectName }}
+        <div class="remind-detail-content"
+             :style="{height : (this.$store.state.windowClientHeight - 122 - 26) + 'px'}">
+
+            <div class="remind-detail-title2">
+                {{ remind.projectName }}
+            </div>
+
+            <div class="detail-reminder"> {{ getReminder()}}</div>
+            <div class="detail-reminder"> {{ remind.startTime | formatDate}}</div>
+
+            <div class="detail-content" v-html="remind.detail"></div>
+
+            <div class="detail-image" v-html="this.images"></div>
         </div>
 
-        <div class="detail-reminder"> {{ getReminder()}}</div>
-        <div class="detail-reminder"> {{ remind.startTime | formatDate}}</div>
-
-        <div class="detail-content" v-html="remind.detail"></div>
-
-        <div class="detail-image" v-html="this.images"></div>
         </div>
      
 </template>
@@ -133,6 +138,10 @@ export default {
         text-align: right;
         font-size: 12px;
         color: #999999;
+    }
+
+    .remind-detail-content{
+        overflow:auto
     }
 
     .detail-content {

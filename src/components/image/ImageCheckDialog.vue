@@ -1,38 +1,54 @@
 <!-- 图片审核对话框 -->
 
 <template>
-        <div>
+        <div id="image_check_dialog">
                 <el-dialog
                     title="照片说明"
-                    width="60%"
+                    width="80%"
+                    top="8vh"
                     :modal="false"
                     :visible.sync="this.dialogVisible"
-                    :before-close="handleClose">
+                    :before-close="handleClose" >
 
-                    <div class="image-content">
-                            <img :src="this.imageItem.image" class="image"/>
-                    </div>
+                    <!-- 使用轮播图 -->
+                        <el-carousel :autoplay="false" 
+                                     :arrow="'always'"
+                                     :initial-index="this.imageIndex"
+                                     :indicator-position="'none'"> 
+                            <el-carousel-item v-for="(item,index) in imageList" :key="index">
 
-                    <span>{{this.getRoleName() }} {{ this.getUserName()}} 拍摄于 {{this.imageItem.time}} </span>
+                            <div class="image-content">
+                                <img :src="item.image" class="image"/>
+                            </div>
 
-                    <span slot="footer" class="dialog-footer">
+                            <span>{{ getRoleName(item) }} {{ getUserName(item)}} 拍摄于 {{item.time}} </span>
 
-                        <div v-if="this.hasCheckAuth"> 
-                                <div v-if="this.imageItem.status == '1'"> 
-                                     <el-button type="primary" @click="handleClose">确定</el-button>   
+                            <div v-if="hasCheckAuth"> 
+                                <div class="bottom_button_class">
+
+                                        <div v-if="item.status == '1'"> 
+                                            <el-button type="primary" @click="handleClose">确定</el-button>   
+                                        </div>
+
+                                        <div v-else>
+                                            <el-button type="success" @click="checkImage(true,item)">审核通过</el-button>
+                                            <el-button type="danger"  @click="checkImage(false,item)">审核不通过</el-button> 
+                                        </div>
+                               </div>
+                            </div>
+
+                            <div v-else> 
+                                <div class="bottom_button_class">  
+                                    <el-button type="primary" @click="handleClose">确定</el-button> 
                                 </div>
+                            </div>
 
-                                <div v-else>
-                                    <el-button type="success" @click="checkImage(true)">审核</el-button>
-                                    <el-button type="danger"  @click="checkImage(false)">取消审核</el-button> 
-                                </div>
-                        </div>
+                            </el-carousel-item>
 
-                        <div v-else> 
-                            <el-button type="primary" @click="handleClose">确定</el-button>    
-                        </div>
+                        </el-carousel>
 
-                    </span>
+                 <!-- 使用轮播图结束 -->
+
                 </el-dialog>
         </div>
 </template>
@@ -42,16 +58,15 @@ import http from "../../utils/http"
 
 export default {
     props : {
-       imageItem : {
-           type : Object,
-           required : true 
-       }, 
+       imageList: {
+           type:Array,
+           required:true 
+       } ,
 
-      //对话框是否显示
-       dialogVisible : {
-           type : Boolean,
-           required:true
-       },
+      imageIndex: {
+          type:Number,
+          required:false
+      },
 
       //是否有审核权限
       hasCheckAuth:{
@@ -67,19 +82,20 @@ export default {
 
     data() {
         return  {
-            dialogRealShow:false,
+            dialogVisible:true ,
+            checkImageNum:0,   //审核图片的数据
         }
     }, 
 
     methods : {
-        getRoleName(){
-            if(null == this.imageItem || null == this.imageItem.user) return "" ;
-            return this.imageItem.user.roleName;
+        getRoleName(imageItem){
+            if(null == imageItem || null == imageItem.user) return "" ;
+            return imageItem.user.roleName;
         },
 
-        getUserName(){
-            if(null == this.imageItem || null == this.imageItem.user) return "";
-            return this.imageItem.user.name; 
+        getUserName(imageItem){
+            if(null == imageItem || null == imageItem.user) return "";
+            return imageItem.user.name; 
         },
 
         showMsg(type , message) {
@@ -91,24 +107,23 @@ export default {
 
         handleClose() {
             this.dialogVisible = false;
+            this.$emit("imageCheckDialogClose", this.checkImageNum)
         },
 
         //审核图片
-        checkImage(isCheck) {
+        checkImage(isCheck, imageItem) {
+            this.checkImageNum ++ ;
             let self = this;
             let url = this.taskId + "/optiontaskimage";
             let params = {
-                id : this.imageItem.id ,
-                status : isCheck ? 1 : 2 
+                id : imageItem.id ,
+                status : isCheck ? '1' : '2' 
             }
 
             http.post(url,params).then(response => {
                 let result = response;
                 if(result.code == 200) {
-                    self.imageItem.status = isCheck ? 1 : 2;
-                    //TODO
-                    this.dialogVisible = false; 
-
+                    imageItem.status =  '1';  //审核之后 数据都变为'1'
                 }else {
                     this.showMsg("error",result.message);
                 }
@@ -121,15 +136,27 @@ export default {
 }
 </script>
 
+
+<style>
+
+#image_check_dialog .el-carousel__container {
+    position: relative;
+    height: 500px;
+  }
+
+</style>
+
 <style scoped>
+
+ 
 
   .image-content{
       text-align: center;
   }
 
  .image {
-    width: 350px;
-    height: 350px;
+    width: auto;
+    height: 400px;
  }
 
  .el-dialog__wrapper {
@@ -142,6 +169,11 @@ export default {
     margin: 0;
     z-index: 1000;
     background-color:rgba(0,0,0,0.5);
+}
+
+.bottom_button_class{
+    margin-top:12px;
+    text-align: center;
 }
 
 

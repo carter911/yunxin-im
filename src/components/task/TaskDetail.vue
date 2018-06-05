@@ -13,115 +13,125 @@
 
         <hr class="task-detail-hr"/>
 
+
+        <div class="task_detail_content"
+            :style="{height : (this.$store.state.windowClientHeight - 122 - 26) + 'px'}"  
+            v-loading='loadingData'>
+
         <div class="task-title">{{taskDetail.name}}</div>
         <div class="task-time">{{ taskDetail.startTime | formatDate }}</div>
 
-       <hr class="task-detail-hr"/>
+        <hr class="task-detail-hr"/>
 
         <el-row class="el-row-task">
-            <el-col :span="4">
-                 <div class="product-remind-title">
-                        <span> 描述： </span>
-                 </div>                
-            </el-col>
-            
-            <el-col :span="20">    
-                <span v-html="taskDetail.detail"> </span>
-            </el-col>
+                <el-col :span="4">
+                    <div class="product-remind-title">
+                            <span> 描述： </span>
+                    </div>                
+                </el-col>
+                
+                <el-col :span="20">    
+                    <p v-html="this.showTaskDetail(taskDetail.detail)"> </p>
+                </el-col>
 
-        </el-row>
+            </el-row>
 
-        <el-row class="el-row-task">
-            <el-col :span="4">
-                 <div class="product-remind-title">
-                        <span> 照片:</span>
-                 </div>                
-            </el-col>
-            
-            <el-col :span="20">    
-                    <TaskImageList :items="this.imageList" 
-                                    @onImageItemClick="onImageItemClick"></TaskImageList>
+            <el-row class="el-row-task" v-if="this.imageList.length">
+                <el-col :span="4">
+                    <div class="product-remind-title">
+                            <span> 照片:</span>
+                    </div>                
+                </el-col>
+                
+                <el-col :span="20">    
+                        <TaskImageList :items="this.imageList" 
+                                        @onImageItemClick="onImageItemClick"></TaskImageList>
+                </el-col>
 
-            </el-col>
+            </el-row>
 
-        </el-row>
+            <el-row class="el-row-task" v-if="this.checkRolePicAuth()">
+                <el-col :span="4">
+                    <span>新增照片</span>
+                </el-col>
 
-        <el-row class="el-row-task" v-if="this.checkRolePicAuth()">
-            <el-col :span="4">
-                <span>新增照片</span>
-            </el-col>
+                <el-col :span="20">
+                    <div>
+                        <el-upload 
+                                ref="upload"
+                                class="el-upload-class"
+                                action=""
+                                list-type="picture-card"
+                                :limit="9"
+                                :auto-upload="false"
+                                :multiple="true"
+                                :on-change="onFileChange"
+                                :file-list="uploadFileList"
+                                :on-preview="handlePictureCardPreview"
+                                :on-remove="handleRemove">
+                                
+                            <i class="el-icon-plus"></i>
+                        </el-upload>
 
-            <el-col :span="20">
-                <div>
-                     <el-upload 
-                               ref="upload"
-                               class="el-upload-class"
-                               action=""
-                               list-type="picture-card"
-                               :limit="9"
-                               :auto-upload="false"
-                               :multiple="true"
-                               :on-change="onFileChange"
-                               :file-list="uploadFileList"
-                               :on-preview="handlePictureCardPreview"
-                               :on-remove="handleRemove">
-                               
-                        <i class="el-icon-plus"></i>
-                    </el-upload>
-
-                     <el-button type="primary" @click="handle2upload"> 确定上传 </el-button>
-                </div>
-            </el-col>
-
-        </el-row>
-
-        <el-row class="el-row-task">
-            <el-col :span="4">
-                 <div class="product-remind-title">
-                        <span> 任务状态:</span>
-                 </div>                
-            </el-col>
-            
-            <el-col :span="20">    
-               <span> {{ taskDetail.statusMessage }}</span>
-            </el-col>
-        </el-row>
-
-        <!-- <el-row class="el-row-task">
-            <el-col :span="4">
-                 <div class="product-remind-title">
-                        <span> 产品评论:</span>
-                 </div>                
-            </el-col>     
-        </el-row> -->
-
-        <el-row class="el-row-task">
-            <el-col :span="4">
-                 <div class="product-remind-title">
-                        <span> 操作状态:</span>
-                 </div>                
-            </el-col>
-            
-            <el-col :span="20">    
-
-                    <div v-if="checkOptionTask()">
-                          <el-button type="primary" @click="this.commitTask"> 提交任务</el-button>
+                        <el-button type="primary" @click="handle2upload"> 确定上传 </el-button>
                     </div>
+                </el-col>
 
-                    <div v-if="checkCheckTask()">
-                        <el-button type="success" @click="checkTask(1)"> 审核通过</el-button>
-                        <el-button type="danger" @click="checkTask(0)"> 审核不通过</el-button> 
-                    </div>
-            </el-col>
-        </el-row>
+            </el-row>
 
-        <ImageCheckDialog :dialogVisible="this.showImageDialog" 
-                          :imageItem="this.currentImageObj"
-                          :taskId="this.taskId"
-                          :hasCheckAuth="this.hasCheckPicAuth()">
-        </ImageCheckDialog>
+            <el-row class="el-row-task">
+                <el-col :span="4">
+                    <div class="product-remind-title">
+                            <span> 任务状态:</span>
+                    </div>                
+                </el-col>
+                
+                <el-col :span="20">    
+                <span> {{ taskDetail.statusMessage }}</span>
+                </el-col>
+            </el-row>
 
-        <loading ref="Loading"></loading>
+            <!-- <el-row class="el-row-task">
+                <el-col :span="4">
+                    <div class="product-remind-title">
+                            <span> 产品评论:</span>
+                    </div>                
+                </el-col>     
+            </el-row> -->
+
+            <el-row class="el-row-task">
+                <el-col :span="4">
+                    <div class="product-remind-title">
+                            <span> 操作状态:</span>
+                    </div>                
+                </el-col>
+                
+                <el-col :span="20">    
+
+                        <div v-if="checkOptionTask()">
+                            <el-button type="primary" @click="this.commitTask"> 提交任务</el-button>
+                        </div>
+
+                        <div v-if="checkCheckTask()">
+                            <el-button type="success" @click="checkTask(1)"> 审核通过</el-button>
+                            <el-button type="danger" @click="checkTask(0)"> 审核不通过</el-button> 
+                        </div>
+                </el-col>
+            </el-row>
+
+    </div>
+
+    <div v-if="showImageDialog">
+         <ImageCheckDialog 
+                    :imageIndex="this.imageIndex"
+                    :imageList="this.imageList"
+                    :taskId="this.taskId"
+                    :hasCheckAuth="this.hasCheckPicAuth()"
+                    @imageCheckDialogClose="imageCheckDialogClose">
+          </ImageCheckDialog>
+    </div>
+
+    <loading ref="Loading"></loading>
 
     </div>
     
@@ -155,10 +165,9 @@ export default {
         return {
             taskDetail : {},
             imageList : [],
+            imageIndex:0,
 
             showImageDialog : false,
-            currentImageObj : {},
-            
             taskId:0,
             imageToken:"",
 
@@ -167,10 +176,22 @@ export default {
 
             //上传图片地址字符串
             uploadFilePathUrlArray :[],
+
+            //是否加载数据
+            loadingData:false 
         }
     },
 
     methods : {
+
+        showTaskDetail(detail) {
+            if(null == detail || undefined == detail) return '';
+            let targetValue = detail.replace(/[\n\r]/g,"<br/>");
+            console.log(targetValue)
+
+
+            return targetValue;
+        },
 
         //显示对话框    
         startLoading(){
@@ -183,11 +204,22 @@ export default {
         },
 
         //查看单张图片详情
-        onImageItemClick(item){
-            this.currentImageObj = item;
+        onImageItemClick(item,index){
             this.showImageDialog = true ;
+            this.imageIndex = index ;
+            Log.L("----onImageItemClick------>>" + this.showImageDialog + "," + this.imageIndex); 
         },
 
+        /**
+         * 图片浏览对话框关闭
+         */
+        imageCheckDialogClose(checkImageCount){
+            this.showImageDialog = false
+            if(checkImageCount) {
+                //重新请求数据
+                this.request_task_detail();
+            }
+        },
 
         handlePictureCardPreview(){
             Log.L("handlePictureCardPreview");
@@ -291,10 +323,12 @@ export default {
         },
 
         //请求任务详情
-        request_task_detail () {
-            let url = this.pid + "/task";
+        request_task_detail (needDialog=false) {
+            if(needDialog) this.loadingData = true;
 
+            let url = this.pid + "/task";
             http.get(url).then(response => {
+                this.loadingData = false;
                 let result = response;
                 Log.L(result);
 
@@ -310,7 +344,9 @@ export default {
                     this.showMsg("error","请求任务详情失败，请稍后重试");
                 }
             }, error => {
-                    this.showMsg("error","请求任务详情失败，请稍后重试");
+                this.loadingData = false;
+                this.showMsg("error","请求任务详情失败，请稍后重试");
+
             }) ;
         },
 
@@ -445,13 +481,10 @@ export default {
                 }
             });
         },
-
-
-
     },
 
     created() {
-        this.request_task_detail();
+        this.request_task_detail(true);
         this.request_qiniu_token();
     }
 
@@ -505,6 +538,10 @@ export default {
     border-radius:1px;
     border: 1px solid #ccc;
     border-top :1px solid #dcdfe6;
+}
+
+#id_task_detail .task_detail_content {
+     overflow:auto
 }
 
 </style>

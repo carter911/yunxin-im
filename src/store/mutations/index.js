@@ -106,6 +106,7 @@ export default {
     // 解除黑名单
     state.blacklist = nim.cutFriends(state.blacklist, remBlacks)
   },
+
   updateSearchlist (state, obj) {
     const type = obj.type
     switch (type) {
@@ -125,9 +126,12 @@ export default {
         break
     }
   },
+
   updateSessions (state, sessions) {
+    
     const nim = state.nim
     state.sessionlist = nim.mergeSessions(state.sessionlist, sessions)
+
     state.sessionlist.sort((a, b) => {
       return b.updateTime - a.updateTime
     })
@@ -251,7 +255,18 @@ export default {
       state.currSessionId = null
     } else if (type === 'init') {
       console.log('更新当前的项目id', obj.sessionId)
-      state.currSessionId = obj.sessionId
+      console.dir(state)
+      state.currSessionId = obj.sessionId 
+      
+      let result1 = obj.sessionId;
+      let result2 = state.currSessionId;
+
+      console.log(result1);
+      console.log(result2);
+
+      console.dir(obj)
+      console.dir(state)
+      
       store.dispatch('updateCurrSessionProjectInfo', obj.sessionId)
       store.dispatch('resetSessionUnread', obj.sessionId)
     }

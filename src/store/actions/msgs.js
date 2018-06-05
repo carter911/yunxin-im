@@ -44,6 +44,8 @@ export function onOfflineMsgs (obj) {
 export function onMsg (msg) {
   msg = formatMsg(msg)
   console.log('我更新了数据', msg)
+
+
   store.commit('putMsg', msg)
   if (msg.sessionId === store.state.currSessionId) {
     store.commit('updateCurrSessionMsgs', {

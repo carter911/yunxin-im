@@ -12,7 +12,7 @@
         <div
          @click.stop='chatInfo(item)'
          class="grid-content bg-purple-dark">
-            <h2>{{item.name}}</h2>
+            <h2>{{item.name}} {{item.id}}</h2>
             <p>{{item.lastMsgShow}}</p>
         </div>
     </el-col>
@@ -45,6 +45,7 @@ export default {
                 sessionId: sessionId
             });
         },
+
         avatar(avatar){
             this.item.avatar = "../../../static/chat.png"
         }

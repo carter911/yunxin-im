@@ -21,6 +21,7 @@ function checkStatus (response) {
   if (response && (response.status === 200 || response.status === 304 || response.status === 400)) {
     return response.data
   }
+
   // 异常状态下，把错误信息返回去
   return {
     status: -404,
@@ -45,7 +46,7 @@ export default {
       // 'teoken': userInfo.token,
       'Content-Type': 'application/x-www-form-urlencoded'
     }
-    
+
     return axios({
       method: 'post',
       baseURL: config.request_url,

@@ -4,7 +4,7 @@ import Log from '../../common/Log';
 
 <template>
     <div class="content"> 
-            <div v-for="(item,index) in items" :key="index" class="image-content-task-list" @click="onImageItemClick(item)">
+            <div v-for="(item,index) in items" :key="index" class="image-content-task-list" @click="onImageItemClick(item,index)">
                     <img :src="item.image + '?imageslim'" class="task_image_list"/>
                      <img :src='get_image_status(item)' class="img_status_dot"/>      
             </div>
@@ -40,8 +40,8 @@ export default {
             return "../../../static/ic_not_check.png" ;
         },
 
-        onImageItemClick(item) {
-            this.$emit('onImageItemClick', item);
+        onImageItemClick(item,index) {
+            this.$emit('onImageItemClick', item,index);
         }
     }
 }
@@ -59,20 +59,24 @@ export default {
    width:90px;
    height:90px;
    margin-right: 12px;
+   margin-top: 12px;
    display:flex;
+   position: relative;
 }
 
 .task_image_list {
-    width:80%;
-    height:80%;
-    float: left;
+    width:100%;
+    height: auto;
+    display:block;
 }
 
 .img_status_dot{
+    position: absolute;
     width: 20px;
     height: 20px;
-    z-index: 12;
-    position: relative;
+    top: -4px;
+    left: 80px;
+    z-index: 1;
 }
 
 </style>
