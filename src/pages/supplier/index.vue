@@ -9,8 +9,8 @@
     <el-row :gutter="20"  v-loading="loading">
       <el-col :span="6" v-for="item in goodsList" >
         <div class="grid-content bg-purple goods">
-          <img @error="defaultImage(item)" v-bind:src="item.product_image">
-          <h2>{{item.product_name}}</h2>
+          <img @click="changeGoods(item.product_id)" @error="defaultImage(item)" v-bind:src="item.product_image">
+          <h2 @click="changeGoods(item.product_id)">{{item.product_name}}</h2>
           <div>
             <span class="price">{{item.discount_price}}</span>
             <span @click="share(item.product_id)" class="share"><i class="el-icon-share"></i>分享</span>
@@ -142,10 +142,14 @@ export default {
           }
         });
       },
-      share(id){
-        this.goodsId = id
-        console.log('商品id', id)
+      share(productId){
+        this.goodsId = productId
         this.shareShow = true
+      },
+      changeGoods(productId){
+          //商品详情
+          let path = "/admin/product/detail/"+this.projectId+"/"+productId
+          this.$router.push({path: path});
       },
       defaultImage(item){
         item.product_image = "/../../../static/logo400.png"
