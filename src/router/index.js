@@ -15,6 +15,9 @@ import NewRemindAdd from "@/components/remind/NewRemindAdd.vue"
 import Chat from '@/pages/chat/index.vue'
 import Supplier from '@/pages/supplier/index.vue'
 import UserItemList from "@/components/user/UserItemList.vue"
+import ProductDetail from "@/components/product/ProductDetail.vue"
+
+
 Vue.use(Router)
 export default new Router({
   mode: 'history',
@@ -127,6 +130,13 @@ export default new Router({
       name: 'userList',
       component:UserItemList,
       meta : {auth : true}
+    },
+
+    {
+      path:'/admin/product/detail/:projectId/:productId',
+      name:'productDetail',
+      component:ProductDetail,
+      meta: {auth : true}
     },
 
     {

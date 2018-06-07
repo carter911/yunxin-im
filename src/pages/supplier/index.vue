@@ -7,7 +7,7 @@
     </el-carousel>
     <div class='supplier_name'>雷士照明</div>
     <el-row :gutter="20"  v-loading="loading">
-      <el-col :span="6" v-for="item in goodsList" >
+      <el-col :span="6" v-for="(item,index) in goodsList" :key="index" >
         <div class="grid-content bg-purple goods">
           <img @click="changeGoods(item.product_id)" @error="defaultImage(item)" v-bind:src="item.product_image">
           <h2 @click="changeGoods(item.product_id)">{{item.product_name}}</h2>
@@ -19,6 +19,7 @@
       </el-col>
     </el-row>
     <div style="font-size:13px" v-if="isEmpty">--我也是有底线的--</div>
+
     <el-dialog
       title="分享商品"
       :visible.sync="shareShow"

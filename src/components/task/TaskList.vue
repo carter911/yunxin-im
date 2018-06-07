@@ -41,7 +41,7 @@
 
                 <div v-if="checkPageDataEmpty()">
                     <img class="data-img-empty" src="../../../static/pic_content_empty.png"/>
-                  </div>
+                </div>
 
                   <div v-if="this.shouldShowLoadMore()">
                         <BottomLoading :loadingType="this.buttomLoadingType" 

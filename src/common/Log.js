@@ -6,9 +6,14 @@ Log.QINIU_PICTURE_SUFFIX = function(){
     return "?imageslim";
 }
 
+Log.DEFAULT_PRODUCT_IMAGE = function() {
+    return "http://images.e-shigong.com/logo.png";
+}
+
 Log.DEFAULT_IMAGE = function(){
     return "http://images.e-shigong.com/logo.png"
 }
+
 
 Log.PAGE_SIZE = function(){
     return 15 ;

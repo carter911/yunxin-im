@@ -133,7 +133,7 @@ export default {
                 },
                 type: 1
             }
-        
+            
             let {shareId} = this.form
             let scene = 'team'
             shareId.forEach(element => {
@@ -147,6 +147,7 @@ export default {
                     console.log('分享失败');
                     return false;
                 }
+
                 //console.log(element);return false;
                 this.$store.dispatch('sendMsg', {
                     type: 'custom',
