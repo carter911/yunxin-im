@@ -148,7 +148,7 @@ export default {
       },
       changeGoods(productId){
           //商品详情
-          let path = "/admin/product/detail/"+this.projectId+"/"+productId
+          let path = "/admin/product/detail/"+parseInt(this.projectId)+"/"+parseInt(productId)
           this.$router.push({path: path});
       },
       defaultImage(item){
