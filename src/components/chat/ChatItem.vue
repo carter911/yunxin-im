@@ -28,7 +28,8 @@
         <p style="">{{msg.fromNick}}({{msg.role}})</p>
         <div class="msg_content">
           <span style="height:14px;width:14px;" v-if="msg.type==='text'" class="msg-text" v-html="msg.showText"></span>
-          <span v-else-if="msg.type==='custom-type1'" class="msg-text" ref="mediaMsg"></span>
+          <span v-else-if="msg.type==='custom-type1'" class="msg-text" ref="mediaMsg">
+          </span>
           <span v-else-if="msg.type==='custom-type3'" class="msg-text" ref="mediaMsg"></span>
           <span v-else-if="msg.type==='image'" class="msg-text msg-image" ref="mediaMsg" @click.stop="showFullImg(msg.originLink)"></span>
           <span v-else-if="msg.type==='video'" class="msg-text" ref="mediaMsg"></span>
@@ -193,13 +194,16 @@
         }
       } else if (item.type === 'custom') {
         let content = JSON.parse(item.content)
+
+        console.log('消息111111->>>>>>>>>>>.',content);
         // type 1 为猜拳消息
-        if (content.type === 1) {
+        if (content.type == 1) {
+          console.log('商品分类项')
           let data = content.data
           let resourceUrl = config.resourceUrl
-          // item.showText = `<img class="emoji-middle" src="${resourceUrl}/im/play-${data.value}.png">`
+          item.showText  = "<p>"+data.name+"</p>";
           item.type = 'custom-type1'
-          item.imgUrl = `${resourceUrl}/im/play-${data.value}.png`
+          //item.imgUrl = `${resourceUrl}/im/play-${data.value}.png`
         // type 3 为贴图表情
         } else if (content.type === 3) {
           let data = content.data
@@ -289,10 +293,26 @@
           media = new Image()
           media.src = item.file.url
         } else if (item.type === 'custom-type1') {
-          // 猜拳消息
-          media = new Image()
-          media.className = 'emoji-middle'
-          media.src = item.imgUrl
+          // 商品详情
+          let content = JSON.parse(item.content)
+          let aLink = document.createElement('div')
+          console.log('122222222222',item)
+          console.log('---------------->',content)
+          aLink.innerHTML = '<p>'+content.data.name+'</p>'
+          if(content.data.image != ""){
+            aLink.innerHTML += '<img class="shareImage" src="'+content.data.image+'"/>'
+          }
+          if(content.data.image2 != ""){
+            aLink.innerHTML += '<img class="shareImage" src="'+content.data.image2+'"/>'
+          }
+          if(content.data.image3 != ""){
+            aLink.innerHTML += '<img class="shareImage"src="'+content.data.image3+'"/>'
+          }
+          
+          this.$refs.mediaMsg.appendChild(aLink)
+          // media = new Image()
+          // media.className = 'emoji-middle'
+          // media.src = item.imgUrl
         } else if (item.type === 'custom-type3') {
           // 贴图表情
           media = new Image()
@@ -315,6 +335,7 @@
             this.$refs.mediaMsg.appendChild(aLink)
           }
         }
+
         if (media) {
           if (this.$refs.mediaMsg) {
             this.$refs.mediaMsg.appendChild(media)
@@ -576,6 +597,13 @@
       width: 100%;
       max-width: 300px;
       height: 100%;
+  }
+
+  .msg-text img.shareImage{
+    width:80px;
+    height:80px;
+    margin-right:10px;
+    border-radius: 10x;
   }
 
 

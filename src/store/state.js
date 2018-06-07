@@ -108,6 +108,9 @@ export default {
   userInfo: {},
   sgbUserinfo: null,
   windowClientHeight: 0,  
-  isLogin: false
+  isLogin: false,
+  supplierBanner: {},
+  supplierGoods: {},
+  supplierGoodsDetail: {},
 
 }

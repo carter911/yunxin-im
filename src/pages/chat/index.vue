@@ -31,7 +31,10 @@
                 </el-col>
             </el-aside>
             <el-main>
-                <el-container>
+                <el-container class="empty-chat" v-if="!isChat" v-bind:style="{height: listHeight}">
+                        <div><img src="../../../static/nochat.png"/></div>
+                </el-container>
+                <el-container v-if="isChat">
                 <el-main>
                     <div v-if="isChat" id="chat_info">
                         <ul class="chat_nav">
@@ -298,6 +301,7 @@ export default {
         line-height: 45px;
         width: 50%;
     }
+
     .active{
 
         background:#f0f2f7;
@@ -402,6 +406,7 @@ export default {
         font-family: MicrosoftYaHei;
         font-size: 13px;
     }
+
     .project-option-tab li span{
         margin-left: 10px;
         display: inline-block;
@@ -413,6 +418,17 @@ export default {
         font-size: 20px;
         vertical-align: middle;
 
+    }
+
+    .empty-chat div{
+        width: 100%;
+        vertical-align: middle;
+        margin-top:30%;
+
+    }
+    .empty-chat div img{
+        height: 150px;
+        width: 150px;
     }
 </style>
 

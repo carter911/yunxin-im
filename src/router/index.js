@@ -13,7 +13,7 @@ import remindList from "@/components/remind/RemindList.vue"
 import TaskList from "@/components/task/TaskList.vue"
 import NewRemindAdd from "@/components/remind/NewRemindAdd.vue"
 import Chat from '@/pages/chat/index.vue'
-
+import Supplier from '@/pages/supplier/index.vue'
 Vue.use(Router)
 export default new Router({
   mode: 'history',
@@ -43,6 +43,11 @@ export default new Router({
           name: 'admin_chat',
           path: 'chat',
           component: Chat
+        },
+        {
+          name: 'admin_supplier',
+          path: 'supplier/supplierId/:supplierId/projectId/:projectId',
+          component: Supplier
         }
       ]
     },

@@ -18,6 +18,8 @@ import {initChatroomInfos, getChatroomInfo, getChatroomMembers, clearChatroomMem
 import { delegateTeamFunction, onTeamNotificationMsg, enterSettingPage, getTeamMembers, checkTeamMsgReceipt, getTeamMsgReads} from './team'
 
 import {updateCurrSessionProjectInfo} from './project'
+import {getGoods, getSupplierBanner, getGoodsDetail} from './supplier'
+
 
 function connectNim ({state, commit, dispatch}, obj) {
   let {force} = Object.assign({}, obj)
@@ -159,6 +161,10 @@ export default {
   // 查询群消息回执已读列表
   getTeamMsgReads,
 
-  updateCurrSessionProjectInfo
+  updateCurrSessionProjectInfo,
 
+  // 供应商
+  getSupplierBanner,
+  getGoods,
+  getGoodsDetail
 }

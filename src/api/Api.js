@@ -1,6 +1,15 @@
-// 网络请求集合类
+import http from '../utils/http'
+import types from './types'
 
-export default Api;
-
-const PROJECT_DETAIL = "" ;
-
+export default {
+    supplierBanner: function (supplierId) {
+        var params = {supplierId: supplierId}
+        http.get(types.SUPPLIERBANNER, params).then(function (res) {
+            if (res.code === 200) {
+                this.state.supplierBanner = res.data
+            }
+        }).catch(function (err) {
+            console.log(err)
+        })
+    }
+}

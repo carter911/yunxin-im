@@ -611,12 +611,19 @@ export default {
   },
   initMsgReceiptDetail (state, obj) {
     state.teamMsgReadsDetail.readAccounts = obj.readAccounts
-    state.teamMsgReadsDetail.unreadAccounts =  obj.unreadAccounts
+    state.teamMsgReadsDetail.unreadAccounts = obj.unreadAccounts
+  },
+  changeWindowClienHeight (state, currentHeight) {
+    state.windowClientHeight = currentHeight
   },
 
-  
-  changeWindowClienHeight (state, currentHeight) {
-    console.log("---curerntHeight----" + currentHeight)
-    state.windowClientHeight = currentHeight 
+  getSupplierBanner (state, banner) {
+    state.supplierBanner = banner
+  },
+  getGoods (state, goods) {
+    state.supplierGoods = goods
+  },
+  getGoodsDetail (state, goodsDetail) {
+    state.supplierGoodsDetail = goodsDetail
   }
 }

@@ -176,15 +176,8 @@ Utils.parseCustomMsg = function (msg) {
   if (msg.type === 'custom') {
     try {
       let cnt = JSON.parse(msg.content)
-      switch (cnt.type) {
-        case 1:
-          return '[猜拳消息]'
-        case 2:
-          return '[阅后即焚]'
-        case 3:
-          return '[贴图表情]'
-        case 4:
-          return '[白板消息]'
+      if (cnt.type == 1) {
+        return '[商品分享]'
       }
     } catch (e) {}
     return '[自定义消息]'
