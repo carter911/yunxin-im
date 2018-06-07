@@ -61,6 +61,9 @@ export default {
 
     data()  {
         return {
+            //表单是否提交
+            formSubmit:false ,
+
             dialogTableVisible: true ,
 
             taskRoleList : [] ,
@@ -120,7 +123,6 @@ export default {
 
         //表单验证
         doCheckForm(formName){
-
             this.$refs[formName].validate((valid) => {
                 if(valid){
                     this.onSubmit();
@@ -131,6 +133,9 @@ export default {
         } ,
 
         onSubmit() {
+            if(this.formSubmit) return ;
+            this.formSubmit = true ;
+
             let url = "task";
             let params = {
                 projectId:this.pid,
@@ -142,8 +147,9 @@ export default {
             }
 
             http.post(url,params).then(response => {
-                let result = response;
+                this.formSubmit = false ;
 
+                let result = response;
                 Log.L(result);
                 if(result.code == 200) {
                     this.showMsg("success", result.message);
@@ -151,6 +157,9 @@ export default {
                 }else {
                     this.showMsg("error", result.message)
                 }
+            }, error => {
+                this.formSubmit = false ;
+                this.showMsg("error", "新任务添加失败，请稍后重试！");
             });
         },
 

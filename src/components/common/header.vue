@@ -11,6 +11,7 @@
 </template>
 <script>
 import cookie from '../../utils/cookie.js'
+
 export default {
     data(){
         return {
@@ -37,11 +38,12 @@ export default {
             confirmButtonText: '确认',
             cancelButtonText: '暂不退出',
             type: 'warning'
-            }).then(() => {
+            }).then(() => {                
                 var yunxinUser = {uid: 0, sdktoken: 123456}
                 this.$store.commit('updateUserUID',yunxinUser)
                 this.$store.commit('updateSgbUserInfo',{})
                 this.$router.push({path: '/login'});
+        
             }).catch(() => {      
             });
         }

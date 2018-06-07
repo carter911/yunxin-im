@@ -6,7 +6,10 @@ const cookie = {
     let exp = new Date()
     exp.setTime(exp.getTime() + days*24*60*60*1000)
     document.cookie = name + '=' + escape (value) + ';expires=' + exp.toGMTString()
+
   },
+
+
   //读取cookies 
   readCookie: function (name) {
     let arr = null
@@ -16,7 +19,8 @@ const cookie = {
     } else {
       return null;
     } 
-  }, 
+  },
+  
   //删除cookies 
   delCookie: function (name) { 
     let cval = this.readCookie(name)

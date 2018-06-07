@@ -1,7 +1,7 @@
 <!-- 提醒列表 未读&全部列表 -->
 
 <template>
-        <div class="remind-list-content">
+        <div id="id_remind_list" class="remind-list-content">
                 <div class="remind-title"> 
                     <el-row>
                             <el-col :span="22">
@@ -25,7 +25,7 @@
 
                             <el-col :span="2" class="remind-external">
                                     <div v-on:click="action_close_pop()">
-                                        <img src="../../../static/ic_close.png" /> 
+                                        <img src="../../../static/ic_close.png" style="width:20px;height:20px;"/> 
                                     </div>
                             </el-col>
                     </el-row> 
@@ -259,27 +259,36 @@ class RemindListEntity {
 
 </script>
 
+
 <style>
+#id_remind_list .el-menu-item {
+    height: 61px;
+    line-height: 61px;
+    width: 70px;
+}
+</style>
+
+<style scoped>
 
 .remind_list_block {
     overflow:auto
 }
 
-
 .remind-list-content {
-    padding:8px;
     background-color:#fff;
 }
 
 .remind-title {
+    margin:0 8px;
     text-align: center;
 }
 
 .remind-external {
     background-color:#fff;
-    height: 61px;
-    padding-top:22px;
+    height: 60px;
+    padding-top:20px;
     text-align: center;
+    border-bottom:1px #f4f4f4 ;
 }
 
 .data-img-empty{

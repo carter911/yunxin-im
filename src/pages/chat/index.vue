@@ -30,6 +30,7 @@
                     </div>
                 </el-col>
             </el-aside>
+
             <el-main>
                 <el-container class="empty-chat" v-if="!isChat" v-bind:style="{height: listHeight}">
                         <div><img src="../../../static/nochat.png"/></div>
@@ -57,21 +58,67 @@
                         <Message :chatType="owner" v-if="currentChat=='owner'" :sessionId="currSessionId" />
                     </div>
                 </el-main>
+
                 <el-aside class="project-option" width="150px"  v-bind:style="{height: listHeight}">
                     
                     <div class="project-name">{{this.projectName}}</div>
                     <ul class="project-option-tab">
-                        <li><i class="el-icon-bell"></i><span>查看提醒</span></li>
-                        <li><i class="el-icon-date"></i><span>查看任务</span></li>
+                        <li><i class="el-icon-bell"></i><span @click="this.lookRemind">查看提醒</span></li>
+                        <li><i class="el-icon-date"></i><span @click="this.lookTask">查看任务</span></li>
                         <li><i class="el-icon-goods"></i><span>查看材料商</span></li>
-                        <li><i class="el-icon-tickets"></i><span>成员列表</span></li>
-                        <li><i class="el-icon-edit-outline"></i><span>添加提醒</span></li>
+                        <li><i class="el-icon-tickets"></i><span @click="this.lookUserList">成员列表</span></li>
+                        <li><i class="el-icon-edit-outline"></i><span @click="this.addNewRemind">添加提醒</span></li>
+                        <li><i class="el-icon-edit"></i><span @click="this.addNewTask">添加任务</span></li>
                     </ul>
                 </el-aside>
                 </el-container>
             </el-main>
         </el-container>
+
+
+        <!-- 右侧显示提醒/任务/用户列表 -->
+        <div id="right-popup-1" class="right-popup" 
+            :style="{'right' : show_right_pop ? '0px' : '-100%', 'height' : (this.$store.state.windowClientHeight - 61) + 'px' }"> 
+                <RightPannel :projectId="this.projectId"  
+                             :showType="this.projectShowType"
+                            @getRemindDetail="this.getRemindDetail"
+                            @getTaskDetail="this.getTaskDetail"
+                            @closeRightPannel="this.closeRightPannel">
+                </RightPannel>
+        </div>
+
+        <!-- 右侧显示提醒/任务 详情 -->
+        <div id="right-popup-2" class="right-popup" 
+            :style="{'right' : '0px' , 'height' : (this.$store.state.windowClientHeight - 61) + 'px'}" 
+            v-if="this.show_right_detail_pop"> 
+            
+                <RightDetailPannel 
+                                :showType="this.show_right_detail_type" 
+                                :remindId="this.currentRemindId"
+                                :taskId="this.currentTaskId"
+                                @closeDetailRightPannel="closeDetailRightPannel">
+
+                </RightDetailPannel>
+        </div>
+
+        <!-- 添加新提醒 -->
+        <div v-if="this.showAddNewRemind">
+            <NewRemindAdd :pid="this.projectId" 
+                        @closeNewRemindAddDialog='closeNewRemindAddDialog'>
+            </NewRemindAdd>
+        </div>
+
+        <div v-if="this.showAddNewTask">
+            <NewTaskAdd :pid="this.projectId"
+                        @closeTaskAddDialog="closeTaskAddDialog">
+            </NewTaskAdd>
+        </div>
+        
+
+
     </div>
+
+
 </template>
 <script>
 /* eslint-disable */
@@ -83,15 +130,29 @@ import Message from '../../components/chat/message.vue'
 import projectListVue from '../../components/chat/projectList.vue';
 import Log from '../../common/Log';
 
+import RightPannel from "../project/RightPannel.vue"
+import RightDetailPannel from "../project/RightDetailPannel.vue"
+import NewRemindAdd from "../../components/remind/NewRemindAdd.vue"
+import NewTaskAdd from "../../components/task/NewTaskAdd.vue"
+
 export default {
     components: {
-        projectMessage,projectList,Message
+        projectMessage,
+        projectList,
+        Message,
+        RightPannel,
+        RightDetailPannel,
+        NewRemindAdd,
+        NewTaskAdd
     },
+
     created(){
         if(this.currSessionId == null){
             //console.log('实例化1111111')
         }
     },
+
+
     data(){
         return {
             worker:'worker',
@@ -111,11 +172,38 @@ export default {
             isLoad : true,
             isChat : false,
             projectName:'',
+
+            //当前项目Id    
+            projectId : 0 ,
+            //当前显示项目提醒&任务列表
+            projectShowType: 0 ,
+            //是否显示右侧面板
+            show_right_pop : false ,
+
+            //显示详情类型
+            //0 为提醒详情
+            //1 为任务详情
+            show_right_detail_type: 0 ,
+            //是否显示提醒/任务 详情
+            show_right_detail_pop : false ,
+            //当前提醒Id
+            currentRemindId : 0 ,
+            //当前任务Id
+            currentTaskId : 0 ,
+
+            //是否显示添加提醒
+            showAddNewRemind:false ,
+
+            //是否显示添加任务
+            showAddNewTask:false
+
         }
     },
     watch:{
         currSessionProjectInfo (news, old){
             var projectInfo = this.currSessionProjectInfo
+            this.projectId = projectInfo.id ;
+
             var sessionId = this.currSessionId
             var auth = this.currSessionProjectInfo.auth;
             var door = this.currSessionProjectInfo.door == null ? "":this.currSessionProjectInfo.door
@@ -251,6 +339,67 @@ export default {
         }
     },
     methods: {
+        addNewTask() {
+            this.showAddNewTask = true ;
+        },
+
+        closeTaskAddDialog() {
+            this.showAddNewTask = false ;
+        },
+
+        addNewRemind() {
+            console.log("---addRemindDialog-------->>> ")
+            this.showAddNewRemind = true ;
+        },
+
+        closeNewRemindAddDialog() {
+            this.showAddNewRemind = false ;
+        },
+
+
+        lookRemind() {
+            Log.L("---lookRemind------")
+            this.show_right_pop = true ;
+            this.projectShowType = 0;
+        },
+
+        lookTask() {
+            Log.L("---lookTask------")
+            this.show_right_pop = true ;
+            this.projectShowType = 1;
+        },
+
+        lookUserList(){
+            Log.L("---lookUserList------")
+            this.show_right_pop = true ;
+            this.projectShowType = 2;
+        },
+
+        //获取提醒详情
+        getRemindDetail(remindId) {
+            this.show_right_detail_type = 0 ;
+            this.currentRemindId = remindId;
+            this.show_right_detail_pop = true ;
+        },
+
+        //获取任务详情
+        getTaskDetail(taskId) {
+            this.show_right_detail_type = 1;
+            this.currentTaskId = taskId;
+            this.show_right_detail_pop = true ;
+        },
+
+        //关闭详情pannel
+        closeDetailRightPannel() {
+            this.show_right_detail_pop = false ;
+        },
+
+
+        closeRightPannel() {
+            this.show_right_pop = false ;
+            this.projectShowType = 0;
+        },
+
         chatSelect(key, keyPath){
             this.defaultActive = key
         },
@@ -445,4 +594,23 @@ export default {
         line-height: 43px;
         width: 50%;
     }
+
+    #chat .right-popup {
+    position: fixed;
+    z-index: 999;
+    right: -100%;
+    top: 0px;
+    width: 500px;
+    max-width: 100%;
+    background: #fff;
+    display: none;
+    border: 1px solid #d2d2d2;
+    border-right: none;
+    top: 60px; 
+    height: 640px; 
+    display: block;
+    overflow:auto;
+    box-shadow: 0px 4px 16px #888888;
+}
+
 </style>

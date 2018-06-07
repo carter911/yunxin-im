@@ -558,7 +558,7 @@ export default {
         background-color: #e9e9e9;
         height: 1px;
         border:none;
-    }
+}
 
 .task-detail-title{
     display: flex;

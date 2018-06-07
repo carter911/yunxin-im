@@ -9,12 +9,15 @@
       text-color="#fff"
       :router=true
       active-text-color="#000">
+
         <el-menu-item index="/admin/project" >
           <img class="menu" :src="home_url"/>
         </el-menu-item>
+
         <el-menu-item index="/admin/chat">
           <img class="menu" :src="chat_url"/>
         </el-menu-item>
+        
     </el-menu>
 
  </el-aside>
