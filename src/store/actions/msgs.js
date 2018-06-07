@@ -137,20 +137,8 @@ export function revocateMsg ({state, commit}, msg) {
 export function sendMsg ({state, commit}, obj) {
 
   const nim = state.nim
-  obj = obj || {}
-
-  obj.content = {
-    data: {
-      image: "https://img.alicdn.com/imgextra/i3/826813153/TB19tEZpCtYBeNjSspaXXaOOFXa_!!0-item_pic.jpg",
-      image2: "https://img.alicdn.com/imgextra/i3/826813153/TB19tEZpCtYBeNjSspaXXaOOFXa_!!0-item_pic.jpg",
-      image3: "https://img.alicdn.com/imgextra/i3/826813153/TB19tEZpCtYBeNjSspaXXaOOFXa_!!0-item_pic.jpg",
-      name: "我向您分享了TATA木门 简欧卧室门 实木复合木门 油漆套装定制门 ZX032白混油",
-      selectProductIds: "544,545,546"
-    },
-    type: 1
-  }
+  obj = obj || {}  
   let type = obj.type || ''
-  type = 'custom'
   let custom = getCustom({state, commit})
   switch (type) {
     case 'text':

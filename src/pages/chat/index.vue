@@ -65,7 +65,7 @@
                     <ul class="project-option-tab">
                         <li><i class="el-icon-bell"></i><span @click="this.lookRemind">查看提醒</span></li>
                         <li><i class="el-icon-date"></i><span @click="this.lookTask">查看任务</span></li>
-                        <li><i class="el-icon-goods"></i><span>查看材料商</span></li>
+                        <li><i class="el-icon-goods"></i><span @click="this.lookSupplier">查看材料商</span></li>
                         <li><i class="el-icon-tickets"></i><span @click="this.lookUserList">成员列表</span></li>
                         <li><i class="el-icon-edit-outline"></i><span @click="this.addNewRemind">添加提醒</span></li>
                         <li><i class="el-icon-edit"></i><span @click="this.addNewTask">添加任务</span></li>
@@ -91,7 +91,6 @@
         <div id="right-popup-2" class="right-popup" 
             :style="{'right' : '0px' , 'height' : (this.$store.state.windowClientHeight - 61) + 'px'}" 
             v-if="this.show_right_detail_pop"> 
-            
                 <RightDetailPannel 
                                 :showType="this.show_right_detail_type" 
                                 :remindId="this.currentRemindId"
@@ -99,6 +98,15 @@
                                 @closeDetailRightPannel="closeDetailRightPannel">
 
                 </RightDetailPannel>
+        </div>
+
+        <div id="right-popup-3" class="right-popup" 
+            :style="{'right' : '0px' , 'height' : (this.$store.state.windowClientHeight - 61) + 'px'}" 
+            v-if="this.show_right_supplier_pop"> 
+                <supplierList
+                :projectId="this.projectId"
+                @closeRightSupplier="closeRightSupplier"
+                ></supplierList>
         </div>
 
         <!-- 添加新提醒 -->
@@ -114,6 +122,9 @@
             </NewTaskAdd>
         </div>
         
+
+
+
 
 
     </div>
@@ -134,6 +145,7 @@ import RightPannel from "../project/RightPannel.vue"
 import RightDetailPannel from "../project/RightDetailPannel.vue"
 import NewRemindAdd from "../../components/remind/NewRemindAdd.vue"
 import NewTaskAdd from "../../components/task/NewTaskAdd.vue"
+import supplierList from  "../../components/supplier/suplierList.vue"
 
 export default {
     components: {
@@ -143,7 +155,8 @@ export default {
         RightPannel,
         RightDetailPannel,
         NewRemindAdd,
-        NewTaskAdd
+        NewTaskAdd,
+        supplierList
     },
 
     created(){
@@ -195,7 +208,9 @@ export default {
             showAddNewRemind:false ,
 
             //是否显示添加任务
-            showAddNewTask:false
+            showAddNewTask:false,
+            // 是否显示供应商列表
+            show_right_supplier_pop: false
 
         }
     },
@@ -203,7 +218,6 @@ export default {
         currSessionProjectInfo (news, old){
             var projectInfo = this.currSessionProjectInfo
             this.projectId = projectInfo.id ;
-
             var sessionId = this.currSessionId
             var auth = this.currSessionProjectInfo.auth;
             var door = this.currSessionProjectInfo.door == null ? "":this.currSessionProjectInfo.door
@@ -369,6 +383,10 @@ export default {
             this.projectShowType = 1;
         },
 
+        lookSupplier() {
+            this.show_right_supplier_pop = true ;
+        },
+
         lookUserList(){
             Log.L("---lookUserList------")
             this.show_right_pop = true ;
@@ -394,7 +412,12 @@ export default {
             this.show_right_detail_pop = false ;
         },
 
+        //关闭供应商列表
+        closeRightSupplier() {
 
+            console.log('父组件关闭')
+            this.show_right_supplier_pop = false ;
+        },
         closeRightPannel() {
             this.show_right_pop = false ;
             this.projectShowType = 0;

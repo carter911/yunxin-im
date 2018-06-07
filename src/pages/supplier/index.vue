@@ -1,13 +1,13 @@
 <template>
   <div id="supplier" style="padding:20px;" v-bind:style="{height: heightData}">
     <el-carousel type="card" indicator-position='none' :interval="3000" height="200px">
-        <el-carousel-item v-for="item in banner" :key="item.id">
+        <el-carousel-item v-for="item in bannerLisr" :key="item.id">
         <img   height="100%" width="100%" :src="item.image" />
         </el-carousel-item>
     </el-carousel>
     <div class='supplier_name'>雷士照明</div>
-    <el-row :gutter="20"  >
-      <el-col :span="6" v-for="item in goods">
+    <el-row :gutter="20"  v-loading="loading">
+      <el-col :span="6" v-for="item in goodsList" >
         <div class="grid-content bg-purple goods">
           <img @error="defaultImage(item)" v-bind:src="item.product_image">
           <h2>{{item.product_name}}</h2>
@@ -18,6 +18,7 @@
         </div>
       </el-col>
     </el-row>
+    <div style="font-size:13px" v-if="isEmpty">--我也是有底线的--</div>
     <el-dialog
       title="分享商品"
       :visible.sync="shareShow"
@@ -26,6 +27,7 @@
       <share 
       :goodsId='this.goodsId'
       :projectId='this.projectId'
+      @ShareComplete = "ShareComplete"
       ></share>
     </el-dialog>
     
@@ -33,6 +35,8 @@
 </template>
 <script>
 import share from '../../components/supplier/share.vue'
+import types from '../../api/types.js'
+import http from '../../utils/http.js'
 export default {
     data(){
         return {
@@ -41,43 +45,103 @@ export default {
             goodsId: 0,
             projectId: 0,
             supplierId: 0,
+            bannerLisr:[],
+            goodsList:[],
+            pageIndex:1,
+            pageSize: 20,
+            loading: false,
+            flag:0,
+            isEmpty:false
         }
     },
     components: {
         share
     },
     created(){
+        this.getBanner()
+        this.getGoodsList()
         this.projectId = this.$route.params.projectId
         this.supplierId = this.$route.params.supplierId
         if(this.projectId<=0 || this.supplierId<=0){
           this.$message.error('您请求的地址不合法');
         }
-        this.$store.dispatch('getSupplierBanner',this.supplierId);
         this.$store.dispatch('getGoods',this.supplierId);
+        //console.log(this.currSessionProjectInfo)
+    },
+    mounted(){
+      this.checkDivScroolTop();
     },
     watch:{
-      banner(){
-        console.log(1111);
-      },
-      goods(){
-
-      },
       projectInfo(){
-        
+          console.log('当前项目信息',this.projectInfo);
       }
     },
     computed: {
-        banner(){
-          return  this.$store.state.supplierBanner 
-        },
         goods(){
           return  this.$store.state.supplierGoods 
         },
-        projectInfo(){
-          return  this.$store.state.currSessionProjectInfo
+        currSessionProjectInfo(){
+          return this.$store.state.currSessionProjectInfo 
         }
     },
     methods:{
+      getBanner(){
+        let self = this
+        var params = {supplierId: this.$route.params.supplierId}
+        http.get(types.SUPPLIERBANNER, params).then(function (res) {
+            if (res.code === 200) {
+                self.bannerLisr = res.data;
+            }
+        }).catch(function (err) {
+            console.log(err)
+        })
+      },
+      getGoodsList(pageIndex=1){
+        this.loading = true;
+        let self = this
+        var params = {supplierId: this.$route.params.supplierId, pageIndex: pageIndex, pageSize: this.pageSize}
+        http.get(types.SUPPLIERGOODS, params).then(function (res) {
+            self.loading = false;
+            if (res.code === 200) {
+                self.pageIndex = pageIndex+1
+                if(res.data == null || res.data.length<self.pageSize){
+                  self.isEmpty = true
+                }else{
+                    res.data.forEach(element => {
+                      self.goodsList.push(element)
+                    });
+                }
+                self.flag = 0;  
+            }
+        }).catch(function (err) {
+            self.loading = false;
+            console.log(err)
+        })
+      },
+      getSupplier(){
+        let self = this
+        var params = {supplierId: this.$route.params.supplierId}
+        http.get(types.SUPPLIERBANNER, params).then(function (res) {
+            if (res.code === 200) {
+                self.bannerLisr = res.data;
+            }
+        }).catch(function (err) {
+            console.log(err)
+        })
+      },
+      checkDivScroolTop(){
+        let self = this
+        var scrollDiv = document.getElementById('supplier');
+        scrollDiv.addEventListener('scroll', function() {
+          if(scrollDiv.scrollHeight - scrollDiv.clientHeight-scrollDiv.scrollTop<100){
+              if(self.flag == 0 && self.isEmpty==false){
+                  self.getGoodsList(self.pageIndex);
+                  self.flag = 1;
+              }
+              
+          }
+        });
+      },
       share(id){
         this.goodsId = id
         console.log('商品id', id)
@@ -85,6 +149,13 @@ export default {
       },
       defaultImage(item){
         item.product_image = "/../../../static/logo400.png"
+      },
+      ShareComplete(){
+        this.$message({
+          message: '分享商品成功',
+          type: 'success'
+        });
+        this.shareShow = false
       }
       
     }
@@ -130,7 +201,7 @@ export default {
     margin: 0px;
     margin-left: 10px;
     width: 180px;
-    height: 31px;
+    height: 33px;
     font-family: MicrosoftYaHei;
     font-size: 12px;
     font-weight: normal;
@@ -138,6 +209,11 @@ export default {
     line-height: 18px;
     letter-spacing: 0px;
     color: #999999;
+    overflow:hidden; 
+    text-overflow:ellipsis;
+    display:-webkit-box; 
+    -webkit-box-orient:vertical;
+    -webkit-line-clamp:2; 
   }
   .goods .share{
       float: right;

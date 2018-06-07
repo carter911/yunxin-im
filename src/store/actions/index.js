@@ -17,7 +17,7 @@ import {sendChatroomMsg, sendChatroomRobotMsg, sendChatroomFileMsg, getChatroomH
 import {initChatroomInfos, getChatroomInfo, getChatroomMembers, clearChatroomMembers} from './chatroomInfos'
 import { delegateTeamFunction, onTeamNotificationMsg, enterSettingPage, getTeamMembers, checkTeamMsgReceipt, getTeamMsgReads} from './team'
 
-import {updateCurrSessionProjectInfo} from './project'
+import {updateCurrSessionProjectInfo, getCurrentProjectInfo} from './project'
 import {getGoods, getSupplierBanner, getGoodsDetail} from './supplier'
 
 
@@ -162,9 +162,11 @@ export default {
   getTeamMsgReads,
 
   updateCurrSessionProjectInfo,
-
+  getCurrentProjectInfo,
   // 供应商
   getSupplierBanner,
   getGoods,
-  getGoodsDetail
+  getGoodsDetail,
+
+
 }
