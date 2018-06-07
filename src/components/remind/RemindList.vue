@@ -266,6 +266,7 @@ class RemindListEntity {
     line-height: 61px;
     width: 70px;
 }
+
 </style>
 
 <style scoped>

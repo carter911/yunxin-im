@@ -2,7 +2,10 @@
     产品详情组件
  -->
 <template>
-    <div id="id_product_base" v-loading="this.dataIsLoading">   
+    <div id="id_product_base" 
+         class="product_detail_cl"
+         :style="{height : (this.$store.state.windowClientHeight - 61) + 'px'}"  
+         v-loading="this.dataIsLoading">   
         <!-- 产品图片 & 产品说明 开始 -->
         <div class="product_header">
 
@@ -64,7 +67,6 @@
 
                 <div v-show="this.currentType == '1'" class="shop_detail">
                     <ProductComment :productId="this.productId"></ProductComment>
-
                 </div>
         </div>
 
@@ -80,7 +82,6 @@
                 @ShareComplete = "ShareComplete"></Share>
         </el-dialog>
     </div>
-
 
 </template>
 
@@ -127,6 +128,7 @@ export default {
         },
 
         ShareComplete() {
+            this.dialogShareShow = false; 
             this.showMessageInfo("产品分享成功","success")
         },
 
@@ -159,7 +161,7 @@ export default {
             }, error => {
                 this.dataIsLoading = false ;
                 this.showMessageInfo("获取产品信息失败", "error");
-                
+
             })
         },
 
@@ -206,6 +208,11 @@ export default {
 
 
 <style scoped>
+
+.product_detail_cl {
+     overflow:auto
+}
+
 
 .product_header {
     padding:12px;

@@ -52,7 +52,16 @@ export default new Router({
           name: 'admin_supplier',
           path: 'supplier/supplierId/:supplierId/projectId/:projectId',
           component: Supplier
-        }
+        },
+        
+        {
+          path:'/admin/product/detail/:projectId/:productId',
+          name:'productDetail',
+          component:ProductDetail,
+          meta: {auth : true}
+        },
+    
+    
       ]
     },
     {
@@ -132,14 +141,7 @@ export default new Router({
       meta : {auth : true}
     },
 
-    {
-      path:'/admin/product/detail/:projectId/:productId',
-      name:'productDetail',
-      component:ProductDetail,
-      meta: {auth : true}
-    },
-
-    {
+        {
       path: '*',
       name: '404',
       component: Notfind
