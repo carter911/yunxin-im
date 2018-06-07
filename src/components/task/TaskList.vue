@@ -1,7 +1,7 @@
 <!-- 任务列表 -->
 
 <template>
-            <div class="task-content">
+        <div id="id_task_list" class="task-content">
                 <div class="remind-title"> 
                     <el-row>
                             <el-col :span="22">
@@ -23,9 +23,9 @@
                                 </div>
                             </el-col> -->
 
-                            <el-col :span="2" class="remind-external">
+                            <el-col :span="2" class="task-external">
                                     <div v-on:click="action_close_pop()">
-                                        <img src="../../../static/ic_close.png" /> 
+                                        <img src="../../../static/ic_close.png"  style="width:20px;height:20px;"/> 
                                     </div>
                             </el-col>
                     </el-row> 
@@ -233,7 +233,25 @@ class TaskListEntity {
 
 </script>
 
-<style scope>
+<style>
+#id_task_list .el-menu-item {
+    height: 61px;
+    line-height: 61px;
+    width: 90px;
+}
+
+</style>
+
+
+<style scoped>
+
+.task-external{
+    background-color:#fff;
+    height: 60px;
+    padding-top:20px;
+    text-align: center;
+    border-bottom:1px #f4f4f4 ;
+}
 
 .task_list_block {
     overflow:auto

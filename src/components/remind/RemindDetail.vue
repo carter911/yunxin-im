@@ -141,7 +141,8 @@ export default {
     }
 
     .remind-detail-content{
-        overflow:auto
+        overflow:auto;
+      
     }
 
     .detail-content {

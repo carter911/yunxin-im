@@ -54,6 +54,8 @@
 import _project_detail from './project_detail.vue'
 import BottomLoading from "../../components/common/BottomLoading.vue"
 import http from "../../utils/http"
+import sgbLocalInfo from "../../utils/localInfo"
+
 export default {
 
   components : {
@@ -91,8 +93,21 @@ export default {
       }
   },
 
-
   methods: {
+
+     getProjectLocalSaveKey() {
+       switch(this.currentStatus) {
+              default:
+              case -1:
+                  return "all_project" ;
+              case 0:
+                  return "project_going";
+              case 3:
+                  return "project_dealy";
+              case 5:
+                  return "project_over";
+       }
+     },
 
       /**
        * 检查页面是否为空
@@ -170,21 +185,28 @@ export default {
 
         var url = 'projectlists';
         let pageIndex = this.getCurrentPageIndex();  
-        if(pageIndex == 1) {
+        if(pageIndex == 1) { 
+           let tempData = sgbLocalInfo.getStorage(this.getProjectLocalSaveKey())
+           if(null != tempData && undefined == tempData) {
+             this.parseLocalProjectInfo(status,pageIndex);
+             return;
+           }
+
           this.request_data_loading = true;
         }
 
         this.buttomLoadingType = 1 ;
         var params = {status:status,
-                              pageSize:this.pageSize,
-                              pageIndex:pageIndex}
+                      pageSize:this.pageSize,
+                      pageIndex:pageIndex}
+
         http.get(url, params).then(response => {
             var result = response
             console.log(result)
             //数据请求结束
             this.request_data_loading = false;
             if(result.code == 200){
-               this.parseProjectInfo(status,pageIndex, result.data);
+               this.parseProjectInfo(status, pageIndex, result.data);
             }else{
               this.$message({
                 message: result.message,
@@ -219,6 +241,51 @@ export default {
           }
       },
 
+      /**
+       * 加载本地数据
+       */
+      parseLocalProjectInfo(status, pageIndex) {
+        switch(status) {
+              case -1 :  //全部
+                this.loadLocalData(this.allProject,pageIndex);
+                break;
+
+              case 0 :
+                this.loadLocalData(this.projectGoing , pageIndex);
+                break ;
+
+              case 3: 
+                this.loadLocalData(this.projectDealy, pageIndex);
+                break; 
+
+              case 5 :
+                this.loadLocalData(this.projectOver, pageIndex);
+                break;  
+          }
+      },
+
+      /**
+       * 加载本地数据
+       */
+      loadLocalData(obj,pageIndex) {
+          let localData = sgb_storage.getStorage(this.getProjectLocalSaveKey());
+          if(localData == null || localData == undefined) return false ;
+
+          obj.currentPageIndex = localData.length / this.pageSize + 1 ;
+          obj.hasBeenLoading = true ;
+          obj.list = obj.list.concat(localData);
+          obj.canLoadMore = localData.length >= this.pageSize * obj.currentPageIndex;
+
+          //单独设置pid
+          if(pageIndex == 1) {
+              this.current_pid = data[0].id;
+          }
+
+          obj.dataIsEmpty = !(obj.list != null && obj.list.length) ;
+          return true ;
+      },
+
+  
       innerParseData(obj , pageIndex, data){
           if(pageIndex == 1) {
               obj.list = [] ;
@@ -243,7 +310,7 @@ export default {
       },
 
       getCurrentPageIndex(){
-          switch(this.currentStatus) {
+        switch(this.currentStatus) {
               case -1:
                       return this.allProject.currentPageIndex;
               case 0:
@@ -252,7 +319,7 @@ export default {
                       return this.projectDealy.currentPageIndex;
               case 5:
                      return this.projectOver.currentPageIndex;
-            }
+          }
               return 1;
       },
 
@@ -264,7 +331,7 @@ export default {
       },
 
       handleSizeChange(val){
-        alert(val)
+        //alert(val)
         this.get_list(this.currentStatus,val);
       },
       
@@ -276,6 +343,7 @@ export default {
           this.current_pid = item.id ;
           console.log("----the current_pid-----" + this.current_pid);
       }
+
   },
 
   created() {
@@ -284,6 +352,14 @@ export default {
 
   // mounted:function(){    
   // }
+
+  beforeDestroy() {
+      sgbLocalInfo.setStorage("all_project", this.allProject);
+      sgbLocalInfo.setStorage("project_going", this.projectGoing);
+      sgbLocalInfo.setStorage("project_dealy", this.projectDealy);
+      sgbLocalInfo.setStorage("project_over", this.projectOver);
+  }
+
 }
 
 

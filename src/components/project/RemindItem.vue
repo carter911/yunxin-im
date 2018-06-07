@@ -1,6 +1,10 @@
 <template>
         <div>
-            <div class="remind-item" v-for="(item,index) in this.remindList" :key="index"  @click="getRemindDetail(item)">
+            <div class="remind-item" v-for="(item,index) in this.remindList" 
+                 :key="index"
+                 onmouseover="this.style.backgroundColor='#F4F9FD'"  
+                 onmouseout="this.style.backgroundColor='#FFFFFF'"
+                 @click="getRemindDetail(item)">
                 
                     <div class="remind-img"> 
                         <img :src='get_remind_avatar(item)' class="project-remind-avatar"/>
@@ -15,7 +19,6 @@
                     <div class="remind-item-time">
                         <span> {{ item.startTime | formatDate}}</span>
                     </div>   
-
             </div>
         </div>
 </template>
@@ -68,9 +71,9 @@ export default {
 <style scope>
 .remind-item{
     border-bottom: #f2f2f2 1px solid;
-    padding: 2px;
+    padding: 4px 10px;
     text-align:center;
-     display:flex;  
+    display:flex;  
     justify-content:space-between;
 }
 

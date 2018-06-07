@@ -10,6 +10,8 @@ var scrollTimer = null
 var page = {
   // 切换页面，并错误提示
   turnPage: (message, url) => {
+     console.log(message,url);
+
     if (message) {
       alert(message)
     }

@@ -94,9 +94,7 @@
         <div id="left-popup" class="left-popup" 
             :style="{'right' : show_right_pop ? '0px' : '-100%', 'height' : (this.$store.state.windowClientHeight - 61) + 'px' }"> 
                 <RightPannel :projectId="this.pid"  
-                            :remindId="this.currentRemindId"
-                            :taskId="this.currentTaskId"
-                            :showType="this.rightPannelShowType"
+                             :showType="this.rightPannelShowType"
                             @getRemindDetail="this.getRemindDetail"
                             @getTaskDetail="this.getTaskDetail"
                             @closeRightPannel="this.closeRightPannel">
@@ -104,7 +102,8 @@
         </div>
 
         <div id="left-popup" class="left-popup" 
-            :style="{'right' : '0px' , 'height' : (this.$store.state.windowClientHeight - 61) + 'px'}" v-if="this.show_right_detail_pop"> 
+            :style="{'right' : '0px' , 'height' : (this.$store.state.windowClientHeight - 61) + 'px'}" 
+            v-if="this.show_right_detail_pop"> 
                 <RightDetailPannel :showType="this.show_right_detail_type" 
                                 :remindId="this.currentRemindId"
                                 :taskId="this.currentTaskId"

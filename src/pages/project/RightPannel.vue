@@ -3,10 +3,8 @@
     综合面板 
     1. 显示 提醒列表
     2. 显示 提醒详情
-
-    3. 显示 任务列表
-    4. 显示 任务详情
-
+    3. 显示 用户列表
+    
 -->
 
 <template>
@@ -23,6 +21,14 @@
                 @closeRightPannel="this.closeRightPannel"></TaskList>
         </div>
 
+        <div v-if="this.showType == 2">
+            <UserItemList :pid="this.projectId" 
+                          @closeRightPannel="this.closeRightPannel">
+
+            </UserItemList>
+
+        </div>
+
     </div>
 
 </template>
@@ -31,11 +37,14 @@
 
 import RemindList    from  "../../components/remind/RemindList.vue"
 import TaskList      from  "../../components/task/TaskList.vue"
+import UserItemList  from  "../../components/user/UserItemList.vue"
+
 
 export default {
     components : {
         RemindList,
         TaskList,
+        UserItemList,
     },
 
     props: {
@@ -47,17 +56,6 @@ export default {
         showType : {
             type :Number,
             require:true      
-        },
-        
-        //提醒id
-        remindId : {
-            type: Number,
-            required:false
-        },
-
-        taskId : {
-            type:Number,
-            required:false
         }
     },
 

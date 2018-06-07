@@ -1,6 +1,11 @@
 <template>
         <div>
-             <div class="task-item-class" v-for="(item,index) in taskList" :key="index"  @click="gotoDetail(item)" >
+             <div class="task-item-class" 
+             v-for="(item,index) in taskList" 
+             :key="index"
+             onmouseover="this.style.backgroundColor='#F4F9FD'"  
+             onmouseout="this.style.backgroundColor='#FFFFFF'"
+             @click="gotoDetail(item)" >
 
                    <div class="task-item-img">
                         <img :src='get_task_avatar(item)' class="project-task-avatar"/>

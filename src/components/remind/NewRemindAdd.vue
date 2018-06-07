@@ -92,8 +92,7 @@ export default {
                 workId:[],
                 taskId:'',
                 detail:'', 
-                image:'',       
-                name:'',         
+                image:'',                
             },
 
             form_rules : {
@@ -105,17 +104,14 @@ export default {
                     { type : 'array' , required : true , message:'请至少选择一个任务提醒人' , trigger: 'change'}
                 ],
 
-                taskId : [
-                    { required : true , message : '请选择关联任务' , trigger:'change'}
-                ],
-
+                // taskId : [
+                //     { required : true , message : '请选择关联任务' , trigger:'change'}
+                // ],
+                
                 detail : [
                     { required : true , message : '请填写提醒详情' , trigger:'blur'}
-                ],
-
-                name : [
-                    { required : true , message : '请填写提醒名称' , trigger:'blur'}
                 ]
+
             } ,
 
             //上传图片 image:url / tempFile
@@ -126,6 +122,9 @@ export default {
 
             //上传图片集合
             upload_image_list:[],
+
+            //防止表单重复提交
+            formSubmit:false , 
         }
     },
 
@@ -165,6 +164,9 @@ export default {
         },
 
         gotoSubmitForm(){
+            if(this.formSubmit) return ;
+            this.formSubmit = true ;
+
             //转换图片地址
             let imageList = "" ;
             this.imageUploadMap.forEach(item => {
@@ -172,26 +174,31 @@ export default {
             })
 
             let url = "message" ;
-            var params = {projectId : this.pid, 
-                          startTime : this.form.startTime / 1000 ,
-                          workId : this.form.workId.join(",") , 
-                          image : imageList,
-                          taskId : this.form.taskId ,
-                          detail : this.form.detail};
+            var params = { 
+                           projectId : this.pid, 
+                           startTime : this.form.startTime / 1000 ,
+                           workId : this.form.workId.join(",") , 
+                           image : imageList,
+                           taskId : this.form.taskId ,
+                           detail : this.form.detail
+                         };
                                 
             Log.L(params);
             http.post(url , params).then(response => {
+                this.formSubmit = false ;
+
                 Log.L(response);
                 if(response.code == 200) {
                     this.showMsg("success","添加提醒成功");
                     this.clearAndReset('remindForm');
                 }else {
-                    this.showMsg("error","添加提醒失败，请稍后重试");
+                    this.showMsg("error",response.message);
                 }
 
             }, response => {
-                Log.L("request data error");
+                this.formOnSubmit = false ;
 
+                Log.L("request data error");
                 this.showMsg("error","添加提醒失败，请稍后重试");
             }) ;
         },

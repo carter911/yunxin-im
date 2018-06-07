@@ -31,6 +31,9 @@
 import cookie from "../utils/cookie";
 import pageUtil from "../utils/page";
 import http from "../utils/http";
+import sgb_storage from "../utils/localInfo.js"
+
+
 export default {
   data() {
       return {
@@ -56,6 +59,12 @@ export default {
         }
       }
     },
+
+    mounted() {
+      //移除localStorage缓存
+      sgb_storage.removeAllProjectInfo();
+    },
+
     beforeCreate(){
       let appid = this.$route.params.openid
       const token = '123456'
@@ -155,13 +164,20 @@ export default {
         var param = {'mobile':mobile,'code':this.form.code}
         http.post(loginUrl,param).then(response => {
             var result = response
+            console.log("login result : ", result);
+
             if(result.code == 200){
               this.$store.commit('updateSgbUserInfo',result.data)
               cookie.delCookie('uid')
               cookie.delCookie('sdktoken')
               cookie.setCookie('uid', "sgb"+result.data.user.id)
               cookie.setCookie('sdktoken', '123456')
+
+              console.dir(cookie);
               console.log('用户登陆信息', cookie.readCookie('uid'))
+
+
+
               this.$router.push({path: '/admin'});
             }else{
               this.$message({
@@ -174,6 +190,8 @@ export default {
         })
       }
     }
+
+    
 }
 </script>
 <style scoped>

@@ -14,6 +14,9 @@ import TaskList from "@/components/task/TaskList.vue"
 import NewRemindAdd from "@/components/remind/NewRemindAdd.vue"
 import Chat from '@/pages/chat/index.vue'
 
+import UserItemList from "@/components/user/UserItemList.vue"
+
+
 Vue.use(Router)
 export default new Router({
   mode: 'history',
@@ -115,6 +118,14 @@ export default new Router({
       component: NewRemindAdd,
       meta: {auth: true}
     },
+
+    {
+      path: '/project/user/list/:pid',
+      name: 'userList',
+      component:UserItemList,
+      meta : {auth : true}
+    },
+
     {
       path: '*',
       name: '404',
