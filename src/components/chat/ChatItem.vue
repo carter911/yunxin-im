@@ -41,16 +41,22 @@
           <a v-if="teamMsgUnRead >=0" class='msg-unread' :href='`#/msgReceiptDetail/${msg.to}-${msg.idServer}`'>{{teamMsgUnRead>0 ? `${teamMsgUnRead}人未读`: '全部已读'}}</a>
         </div>
     </div>
+
     <el-dialog style="height:600px;"
       :visible.sync="dialogVisible"
       width="70%"
       top="8vh"
       :before-close="handleClose">
-      <div style="height:400px;text-align:center">
+      <!-- <div style="height:400px;text-align:center">
           <img height="100%" :src="fullImageUrl"/>
-      </div>
+      </div> -->
+
+      <RotateImage :imageUrl="fullImageUrl"></RotateImage>
+    
+    
       <!-- <img :src="fullImageUrl"/> -->
     </el-dialog>
+
 
       <!-- <div class="msg-head" v-if="msg.avatar">
         <img  height="30px" class="icon u-circle" :src="msg.avatar">
@@ -76,8 +82,14 @@
   import util from '../../utils'
   import config from '../../configs'
   import emojiObj from '../../configs/emoji'
+  import RotateImage from "../image/RotateImage.vue"
 
   export default {
+
+    components : {
+      RotateImage
+    },
+
     props: {
       type: String, // 类型，chatroom, session
       rawMsg: {
