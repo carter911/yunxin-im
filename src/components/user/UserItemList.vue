@@ -92,11 +92,9 @@ export default {
     },
 
     mounted()  {
-        console.log("-----mounted-------->>>")
         this.load_user_list()
     }
-
-
+    
 }
 </script>
 

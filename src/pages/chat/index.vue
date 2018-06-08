@@ -68,7 +68,7 @@
                         <li><i class="el-icon-goods"></i><span @click="this.lookSupplier">查看材料商</span></li>
                         <li><i class="el-icon-tickets"></i><span @click="this.lookUserList">成员列表</span></li>
                         <li><i class="el-icon-edit-outline"></i><span @click="this.addNewRemind">添加提醒</span></li>
-                        <li><i class="el-icon-edit"></i><span @click="this.addNewTask">添加任务</span></li>
+                        <li v-if="canAddNewTask()"><i class="el-icon-edit"></i><span @click="this.addNewTask">添加任务</span></li>
                     </ul>
                 </el-aside>
                 </el-container>
@@ -121,14 +121,7 @@
                         @closeTaskAddDialog="closeTaskAddDialog">
             </NewTaskAdd>
         </div>
-        
-
-
-
-
-
     </div>
-
 
 </template>
 <script>
@@ -203,10 +196,8 @@ export default {
             currentRemindId : 0 ,
             //当前任务Id
             currentTaskId : 0 ,
-
             //是否显示添加提醒
             showAddNewRemind:false ,
-
             //是否显示添加任务
             showAddNewTask:false,
             // 是否显示供应商列表
@@ -352,7 +343,18 @@ export default {
             return sessionlist
         }
     },
+
     methods: {
+        //是否可以添加任务
+        canAddNewTask() {
+            let projectInfo = this.$store.state.currSessionProjectInfo
+
+            return projectInfo != null && 
+                   projectInfo.auth != null && 
+                   projectInfo.auth.indexOf(Log.CREATE_NEW_TASK()) >= 0 && 
+                   projectInfo.statusCode != Log.PROJECT_TYPE_COMPLETED();
+        },
+
         addNewTask() {
             this.showAddNewTask = true ;
         },
@@ -362,7 +364,6 @@ export default {
         },
 
         addNewRemind() {
-            console.log("---addRemindDialog-------->>> ")
             this.showAddNewRemind = true ;
         },
 
@@ -370,15 +371,12 @@ export default {
             this.showAddNewRemind = false ;
         },
 
-
         lookRemind() {
-            Log.L("---lookRemind------")
             this.show_right_pop = true ;
             this.projectShowType = 0;
         },
 
         lookTask() {
-            Log.L("---lookTask------")
             this.show_right_pop = true ;
             this.projectShowType = 1;
         },
@@ -388,7 +386,6 @@ export default {
         },
 
         lookUserList(){
-            Log.L("---lookUserList------")
             this.show_right_pop = true ;
             this.projectShowType = 2;
         },
@@ -414,10 +411,10 @@ export default {
 
         //关闭供应商列表
         closeRightSupplier() {
-
             console.log('父组件关闭')
             this.show_right_supplier_pop = false ;
         },
+
         closeRightPannel() {
             this.show_right_pop = false ;
             this.projectShowType = 0;

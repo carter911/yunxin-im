@@ -3,19 +3,18 @@
 <template>
         <div id="id_remind_list" class="remind-list-content">
                 <div class="remind-title"> 
-                    <el-row>
-                            <el-col :span="22">
-                                <div >
-                                    <el-menu :default-active="this.currentType"
+                    
+                    <div class="remind-title-left">
+                        <el-menu :default-active="this.currentType"
                                              :router="false" 
                                              class="el-menu-demo" 
                                              @select="handleSelect"
                                              mode="horizontal">
                                                 <el-menu-item index="0">未读</el-menu-item>
                                                 <el-menu-item index="1">全部</el-menu-item>
-                                    </el-menu>
-                                </div>
-                            </el-col>
+                        </el-menu>
+                    </div>
+                    
 
                             <!-- <el-col :span="2" class="remind-external">
                             <div v-on:click="action_add_new()">
@@ -23,12 +22,9 @@
                             </div>
                             </el-col> -->
 
-                            <el-col :span="2" class="remind-external">
-                                    <div v-on:click="action_close_pop()">
+                    <div class="remind-title-right" v-on:click="action_close_pop()">
                                         <img src="../../../static/ic_close.png" style="width:20px;height:20px;"/> 
-                                    </div>
-                            </el-col>
-                    </el-row> 
+                    </div> 
                 </div>
 
             <div class="remind_list_block" 
@@ -259,7 +255,6 @@ class RemindListEntity {
 
 </script>
 
-
 <style>
 #id_remind_list .el-menu-item {
     height: 61px;
@@ -280,9 +275,23 @@ class RemindListEntity {
 }
 
 .remind-title {
-    margin:0 8px;
-    text-align: center;
+    display: flex;
+    align-items: center;
+    padding-left: 6px;
+    padding-right: 6px;
+    height: 60px;
+    border-bottom: solid 1px #e6e6e6 ;
 }
+
+.remind-title-left {
+    flex-grow:1;
+    text-align:left ;
+}
+
+.remind-title-right {
+    padding-right:12px;
+}
+
 
 .remind-external {
     background-color:#fff;

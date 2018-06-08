@@ -8,7 +8,9 @@
                 任务详情
             </div>
 
-            <img src="../../../static/ic_close.png" style="width:20px;height:20px;" @click="this.closeRightPannel"/>
+            <div class="task-detail-title-right">
+                <img src="../../../static/ic_close.png" style="width:20px;height:20px;" @click="this.closeRightPannel"/>
+            </div>
         </div>
 
         <hr class="task-detail-hr"/>
@@ -568,6 +570,13 @@ export default {
     padding-left: 6px;
     padding-right: 6px;
 }
+
+.task-detail-title-right {
+   /** padding-right:12px; */
+
+
+}
+
 
 .task-detail-desc{
     flex-grow:1;

@@ -3,32 +3,27 @@
 <template>
         <div id="id_task_list" class="task-content">
                 <div class="remind-title"> 
-                    <el-row>
-                            <el-col :span="22">
-                                <div >
-                                    <el-menu :default-active="this.currentType"
+                    <div class="remind-title-left">
+                        <el-menu :default-active="this.currentType"
                                              :router="false" 
                                              class="el-menu-demo" 
                                              @select="handleSelect"
                                              mode="horizontal">
-                                                <el-menu-item index="0">未读任务</el-menu-item>
-                                                <el-menu-item index="1">全部任务</el-menu-item>
-                                    </el-menu>
-                                </div>
-                            </el-col>
-
+                                <el-menu-item index="0">未读任务</el-menu-item>
+                                <el-menu-item index="1">全部任务</el-menu-item>
+                        </el-menu>
+                    </div>
+                    
                             <!-- <el-col :span="2" class="remind-external">
                                 <div v-on:click="action_add_new()">
                                     <img src="../../../static/ic_add_remind.png" /> 
                                 </div>
                             </el-col> -->
 
-                            <el-col :span="2" class="task-external">
-                                    <div v-on:click="action_close_pop()">
-                                        <img src="../../../static/ic_close.png"  style="width:20px;height:20px;"/> 
-                                    </div>
-                            </el-col>
-                    </el-row> 
+                    <div class="remind-title-right" v-on:click="action_close_pop()">
+                            <img src="../../../static/ic_close.png"  style="width:20px;height:20px;"/> 
+                    </div>
+                
                 </div>
 
             <div class="task_list_block" 
@@ -244,6 +239,24 @@ class TaskListEntity {
 
 
 <style scoped>
+
+.remind-title{
+    display: flex;
+    align-items: center;
+    padding-left: 6px;
+    padding-right: 6px;
+    height: 60px;
+    border-bottom: solid 1px #e6e6e6 ;
+}
+
+.remind-title-left{
+    flex-grow:1;
+    text-align:left ;
+}
+
+.remind-title-right {
+    padding-right:12px;
+}
 
 .task-external{
     background-color:#fff;
