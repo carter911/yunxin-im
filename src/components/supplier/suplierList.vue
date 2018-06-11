@@ -1,11 +1,15 @@
 <style scoped>
 #supplier_list{
     padding: 8px;
+
 }
 .supplier_header{
     height: 40px;
     line-height: 40px;
     border-bottom: 1px solid #dedede;
+}
+.supplier_body{
+    overflow:auto;
 }
 
 .supplier_header_name{
@@ -67,14 +71,14 @@
 }
 </style>
 <template>
-  <div id="supplier_list">
+  <div id="supplier_list" >
       <div class="supplier_header">
           <div class="supplier_header_name"><i class="el-icon-goods"></i>供应商</div>
           <div class="supplier_header_close" v-on:click="closeRightSupplier()">
               <img src="../../../static/ic_close.png" style=";"/> 
           </div>
       </div>
-      <div>
+      <div class="supplier_body" :style="{height : (this.$store.state.windowClientHeight - 122) + 'px'}">
         <div v-if="this.supplierList.length<=0">
             暂无供应商
         </div>

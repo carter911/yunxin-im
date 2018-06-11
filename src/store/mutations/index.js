@@ -11,10 +11,9 @@ import http from '../../utils/http'
 export default {
 
   updateSgbUserInfo (state, UserInfo) {
-    cookie.setCookie('userinfo', JSON.stringify(UserInfo))
-    var userInfo = JSON.parse(cookie.readCookie('userinfo'))
-    //console.log(userInfo)
-    cookie.setCookie('token', UserInfo.token)
+    localStorage.setItem('userinfo', JSON.stringify(UserInfo))
+    //var userInfo = JSON.parse(cookie.readCookie('userinfo'))
+    localStorage.setItem('token', UserInfo.token)
     state.sgbUserinfo = UserInfo
   },
   updateCurrentChatId (state, SessionId) {
@@ -42,8 +41,7 @@ export default {
   updateUserUID (state, loginInfo) {
     state.userUID = loginInfo.uid
     state.sdktoken = loginInfo.sdktoken
-    console.log('loginInfo-更新数据')
-    
+    console.log('更新云信用户信息',loginInfo)
     cookie.setCookie('uid', loginInfo.uid)
     cookie.setCookie('sdktoken', loginInfo.sdktoken)
     console.log(cookie.readCookie('uid'))
@@ -135,9 +133,12 @@ export default {
     state.sessionlist.sort((a, b) => {
       return b.updateTime - a.updateTime
     })
+    var num = 0
     state.sessionlist.forEach((item, index) => {
+      num = num + item.unread;
       state.sessionMap[item.id] = item
     })
+    this.unreadNum = num;
   },
   deleteSessions (state, sessionIds) {
     const nim = state.nim
@@ -255,19 +256,11 @@ export default {
       state.currSessionId = null
     } else if (type === 'init') {
       console.log('更新当前的项目id', obj.sessionId)
-      console.dir(state)
       state.currSessionId = obj.sessionId 
       
-      let result1 = obj.sessionId;
-      let result2 = state.currSessionId;
-
-      console.log(result1);
-      console.log(result2);
-
-      console.dir(obj)
-      console.dir(state)
-      
-      store.dispatch('updateCurrSessionProjectInfo', obj.sessionId)
+      if(obj.sessionId != undefined && obj.sessionId.indexOf('team')>=0){
+        store.dispatch('updateCurrSessionProjectInfo', obj.sessionId)
+      }
       store.dispatch('resetSessionUnread', obj.sessionId)
     }
   },
@@ -303,6 +296,7 @@ export default {
         }
         state.currSessionMsgs = []
         let lastMsgTime = 0
+        console.log('初始化会话', currSessionMsgs)
         currSessionMsgs.forEach(msg => {
           if ((msg.time - lastMsgTime) > 1000 * 60 * 5) {
             lastMsgTime = msg.time

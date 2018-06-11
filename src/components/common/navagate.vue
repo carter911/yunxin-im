@@ -1,11 +1,11 @@
 <template>
  <el-aside class="nav" width="70px"  :style="{'height' : this.$store.state.windowClientHeight + 'px'}">
     <div class="logo"><img src="../../../static/logo.png"/></div>   
-    <el-menu 
+    <el-menu
       :default-active="$route.path"
       class="el-menu-vertical-demo"
       @select="handleSelect"
-      background-color="#4a9afb"
+      background-color="#4a98fb"
       text-color="#fff"
       :router=true
       active-text-color="#000">
@@ -15,6 +15,7 @@
         </el-menu-item>
 
         <el-menu-item index="/admin/chat">
+          
           <img class="menu" :src="chat_url"/>
         </el-menu-item>
         
@@ -30,10 +31,6 @@ export default {
         chat_url:'../../../static/tab_icon_chat_unselected.png',
         heightData :document.documentElement.clientHeight+'px',
       }
-    },
-
-    ready: function () {
-      // window.addEventListener('resize', this.handleResize)
     },
     methods: {
       handleResize (event) {
@@ -62,7 +59,7 @@ export default {
         }else{
               this.chat_url = "../../../static/tab_icon_chat_unselected.png"
               this.home_url = "../../../static/tab_icon_home_selected.png"
-          }
+        }
         //console.log( keyPath);
       },
     }
@@ -101,7 +98,10 @@ export default {
 
   .nav{
     width: 5rem;
-	  background:#4a9afb
+    background: #4a98fb;
+  }
+  .el-menu{
+    background: #4a98fb;
   }
 
   .logo{

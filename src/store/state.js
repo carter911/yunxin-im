@@ -62,6 +62,7 @@ export default {
   msgsMap: {}, // 以idClient作为key，诸如消息撤回等的消息查找
   // 会话列表
   sessionlist: [],
+  unreadNum: 0,
   sessionMap: {},
   // 当前会话ID（即当前聊天列表，只有单聊群聊采用，可用于判别）
   currSessionId: null,

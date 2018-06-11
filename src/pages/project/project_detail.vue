@@ -323,7 +323,7 @@
         //获取提醒信息
         require_remind_list() {
             let user_id = "" ;
-            var userInfo = JSON.parse(cookie.readCookie('userinfo'))
+            var userInfo = JSON.parse(localStorage.getItem('userinfo'))
             if(null != userInfo) {
                 user_id = userInfo.userId;
             }

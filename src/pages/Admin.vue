@@ -20,11 +20,14 @@ import cookie from "../utils/cookie";
 import pageUtil from "../utils/page";
 
 export default {
-  data:function(){return {}},
+  data:function(){return {
+  }},
   components:{
     Navagate,Header,Footers
   },
   created(){
+        window.moveTo(100,100);
+        window.resizeTo(1000, 700);//改变大小  
         // 提交sdk连接请求
         this.$store.dispatch("connect");
         this.$store.dispatch("updateRefreshState");
@@ -48,12 +51,9 @@ export default {
                 that.windowHeightData = document.documentElement.clientHeight;    
                 that.$store.commit("changeWindowClienHeight" , that.windowHeightData);
             };
-
         this.$store.commit("changeWindowClienHeight" , this.windowHeightData);
     }    
   }
-
-
 }
 </script>
 

@@ -184,7 +184,7 @@ export default {
         if(this.dataHasBeenLoaded() && isRefresh) return;
 
         var url = 'projectlists';
-        let pageIndex = this.getCurrentPageIndex();  
+        let pageIndex = this.getCurrentPageIndex();
         if(pageIndex == 1) { 
            let tempData = sgbLocalInfo.getStorage(this.getProjectLocalSaveKey())
            if(null != tempData && undefined == tempData) {
@@ -278,6 +278,8 @@ export default {
 
           //单独设置pid
           if(pageIndex == 1) {
+
+              console.log('id--------->',data[0].id)
               this.current_pid = data[0].id;
           }
 

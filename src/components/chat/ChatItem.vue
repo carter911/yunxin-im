@@ -25,8 +25,10 @@
     </div>
 
     <div class="msg_body" >
-        <p style="">{{msg.fromNick}}({{msg.role}})</p>
+        <p style="">{{msg.fromNick}}<span v-if="msg.role">({{msg.role}})</span></p>
+        
         <div class="msg_content">
+          
           <span style="height:14px;width:14px;" v-if="msg.type==='text'" class="msg-text" v-html="msg.showText"></span>
           <span v-else-if="msg.type==='custom-type1'" class="msg-text" ref="mediaMsg">
           </span>
@@ -161,7 +163,6 @@
       } 
       // 标记用户，区分聊天室、普通消息
       if (this.type === 'session') {
-        
         if (item.flow === 'in') {
           if (item.type === 'robot' && item.content && item.content.msgOut) {
             // 机器人下行消息
@@ -206,14 +207,11 @@
         }
       } else if (item.type === 'custom') {
         let content = JSON.parse(item.content)
-
-        console.log('消息111111->>>>>>>>>>>.',content);
         // type 1 为猜拳消息
         if (content.type == 1) {
-          console.log('商品分类项')
           let data = content.data
           let resourceUrl = config.resourceUrl
-          item.showText  = "<p>"+data.name+"</p>";
+          item.showText  = '<p on-click="lookGoods()">'+data.name+'</p>';
           item.type = 'custom-type1'
           //item.imgUrl = `${resourceUrl}/im/play-${data.value}.png`
         // type 3 为贴图表情
@@ -229,7 +227,7 @@
         } else {
           item.showText = util.parseCustomMsg(item)
           if (item.showText !== '[自定义消息]') {
-            item.showText += ',请到手机或电脑客户端查看'
+            item.showText += ',请到手机端查看'
           }
         }
       } else if (item.type === 'image') {
@@ -291,7 +289,7 @@
           item.message = match[0]
         }
       } else {
-        item.showText = `[${util.mapMsgType(item)}],请到手机或电脑客户端查看`
+        item.showText = `[${util.mapMsgType(item)}],请到手机端查看`
       }
       this.msg = item
     },
@@ -308,8 +306,6 @@
           // 商品详情
           let content = JSON.parse(item.content)
           let aLink = document.createElement('div')
-          console.log('122222222222',item)
-          console.log('---------------->',content)
           aLink.innerHTML = '<p>'+content.data.name+'</p>'
           if(content.data.image != ""){
             aLink.innerHTML += '<img class="shareImage" src="'+content.data.image+'"/>'
@@ -364,6 +360,9 @@
       }) // end this.nextTick
     },
     methods: {
+      lookGoods(ids){
+          alert(ids)
+      },
       artarError(url){
       },
       revocateMsg (vNode) {
@@ -473,6 +472,10 @@
       margin-top: 10px;
       font-size: 11px;
   }
+
+  .msg_option{
+    float: right;
+  }
   
 
   .item-you{
@@ -547,6 +550,10 @@
     padding:1px 20px;
     background: #f8f8f8;
     border-radius: 9px;
+  }
+
+  .tip{
+    text-align: center;
   }
   
 

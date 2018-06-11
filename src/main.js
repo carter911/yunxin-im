@@ -11,6 +11,7 @@ import 'element-ui/lib/theme-chalk/index.css'
 import store from './store'
 import { formatDate } from '@/common/date.js'
 import App from './pages/App'
+import cookie from './utils/cookie'
 
 Vue.use(ElementUI, { size: 'small' })
 Vue.use(Vuex)
@@ -18,14 +19,13 @@ Vue.config.productionTip = false
 
 router.beforeEach((to, from, next) => {
   if (to.matched.some(m => m.meta.auth)) {
-
-    // if (store.state.isLogin == 1) {
-    //   next()
-    // } else {
-    //   store.state.isLogin = 0
-    //   next({ path: '/login' })
-    // }
-    next()
+    let userInfo = JSON.parse(localStorage.getItem('userinfo'))
+    if(userInfo.userId>0){
+      console.error('跳转路由',to.name)
+      next()
+    }else{
+      next({ path: '/login' })
+    }
   } else {
     next()
   }

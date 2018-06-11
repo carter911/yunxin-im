@@ -39,7 +39,7 @@ function checkCode (res) {
 
 export default {
   post (url, data) {
-    var userInfo = JSON.parse(cookie.readCookie('userinfo'))
+    var userInfo = JSON.parse(localStorage.getItem('userinfo'))
     var headers = {
       'userid': userInfo ? userInfo.userId : '',
       'platform': 'web',
@@ -67,7 +67,7 @@ export default {
 
 
   get (url, params) {
-    var userInfo = JSON.parse(cookie.readCookie('userinfo'))
+    var userInfo = JSON.parse(localStorage.getItem('userinfo'))
     var headers = {
       'userid': userInfo ? userInfo.userId : '',
       'platform': 'web',

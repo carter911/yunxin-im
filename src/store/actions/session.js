@@ -26,6 +26,7 @@ function updateSessionAccount (sessions) {
 export function onSessions (sessions) {
   updateSessionAccount(sessions)
   store.commit('updateSessions', sessions)
+  //console.error('当前的session----->', sessions)
 }
 
 export function onUpdateSession (session) {

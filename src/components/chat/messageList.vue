@@ -12,7 +12,7 @@
         <div
          @click.stop='chatInfo(item)'
          class="grid-content bg-purple-dark">
-            <h2>{{item.name}} {{item.id}}</h2>
+            <h2>{{item.name}}</h2>
             <p>{{item.lastMsgShow}}</p>
         </div>
     </el-col>
@@ -61,9 +61,9 @@ export default {
         height:60px;
     }
     .message-info .avatar{
-        height:40px;
-        width: 40px;
-        margin-top: 6px;
+        height:35px;
+        width: 35px;
+        margin-top: 8px;
     }
     .message-info h2{
         color: #000;
@@ -88,7 +88,7 @@ export default {
 
     }
     .time{
-        margin-top: 14px;
+        margin-top: 16px;
         font-size: 11px;
         color: #999;
     }

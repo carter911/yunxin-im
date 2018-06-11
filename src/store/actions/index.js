@@ -93,9 +93,10 @@ export default {
     cookie.delCookie('uid')
     cookie.delCookie('sdktoken')
     if (state.nim) {
+      console.log('退出登录了')
       state.nim.disconnect()
     }
-    pageUtil.turnPage('', 'login')
+    //pageUtil.turnPage('', 'login')
   },
 
   // 初始化 重新连接SDK

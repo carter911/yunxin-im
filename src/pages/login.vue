@@ -1,8 +1,8 @@
 <template>
-  <div>
+  <div id="login">
     <el-card class="box-card">
       <el-form ref="loginForm" :model="form" label-width="80px" :rules="rules">
-        <div class="logo"><img src="../../static/logo400.png"/></div>
+        <div  class="logo"><img src="../../static/logo400.png"/></div>
         <el-form-item label="" label-width='0px' prop="mobile">
         <el-input  class="input" type="phone" maxlength="13"  prefix-icon="el-icon-mobile-phone" v-model="form.mobile" placeholder="请输入手机号码"></el-input>
         </el-form-item>
@@ -10,17 +10,17 @@
         <el-col :span="14">
           <el-input class="input" style="width:100%"  prefix-icon="el-icon-view" v-model="form.code" placeholder="请输入验证码"></el-input>
         </el-col>
-        <el-col :span="6" style='margin-top:4px;margin-left:20px;'>
-          <el-button v-show="show"  :disabled="disabled" style="margin:20px 0px 20px;text-aligin:center;width:100%" size="small" type="primary" @click="getCode">验证码</el-button>
-          <el-button v-show="!show"  :disabled="disabled" style="margin:20px 0px 20px;text-aligin:center;width:100%" size="small" type="primary" @click="getCode">{{count}}</el-button>
+        <el-col :span="8" style='margin-top:10px;margin-left:20px;text-align:right'>
+          <el-button v-show="show"  :disabled="disabled" style="margin:10px 0px 20px;text-aligin:center;width:100%" size="small" type="primary" @click="getCode">验证码</el-button>
+          <el-button v-show="!show"  :disabled="disabled" style="margin:10px 0px 20px;text-aligin:center;width:100%" size="small" type="primary" @click="getCode">{{count}}</el-button>
         </el-col>
         </el-form-item>
         <el-button style="margin:20px 0px 20px;text-aligin:center;width:100%" size="small" type="primary" @click="onSubmit('loginForm')">登录</el-button>
         <div class="login-outher">
-          <div>其他登陆方式 </div>
+          <div>其他登录方式 </div>
           <div>
             <!-- <span><img src='../../static/qq.png' /></span> -->
-            <a :href="wx_url"><img src='../../static/weichat.png' /></a>
+            <a style="margin-left:10px;" :href="wx_url"><img src='../../static/weichat.png' /></a>
           </div>
         </div>
       </el-form>
@@ -59,7 +59,6 @@ export default {
         }
       }
     },
-
     mounted() {
       //移除localStorage缓存
       sgb_storage.removeAllProjectInfo();
@@ -91,6 +90,14 @@ export default {
             // error callback
         })
       }
+    },
+    created(){
+      // let myNotification = new Notification('通知', {
+      //   body: '您有新的消息请注意查收'
+      // })
+      // window.moveTo(0, 0);
+      window.resizeTo(500, 600);//改变大小  
+      // window.onresize=new Function("window.resizeTo(500,   400);")   
     },
     computed:{
         wx_url(){
@@ -195,17 +202,21 @@ export default {
 }
 </script>
 <style scoped>
+
   .box-card{
     width: 300px;
     margin: 100px auto 0 ;
     height: 400px;
+    text-align: center;
 
   }
 
   .logo img{
+    
     width: 50px;
     height: 50px;
     border-radius: 6px;
+    margin-bottom: 20px;
   }
 
   .login-outher{

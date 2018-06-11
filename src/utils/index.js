@@ -327,6 +327,11 @@ Utils.formatMessage = function(message) {
     : haystack
 }
 
+
+Utils.DivReduction =function(){
+   
+}
+
 // todo 写成私有成员方法
 Utils.getTeamUpdateInfo = function(msg) {
   let text, team = msg.attach.team, op = this.getNickNames(msg.attach.users).pop()

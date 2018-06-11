@@ -121,6 +121,7 @@ export function initNimSDK ({ state, commit, dispatch }, loginInfo) {
     oncustomsysmsg: onCustomSysMsgs,
     // // 同步完成
     onsyncdone: function onSyncDone () {
+      console.log('同步完成')
       // 说明在聊天列表页
       if (store.state.currSessionId) {
         dispatch('setCurrSession', store.state.currSessionId)

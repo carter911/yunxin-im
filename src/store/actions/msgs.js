@@ -139,7 +139,13 @@ export function sendMsg ({state, commit}, obj) {
   const nim = state.nim
   obj = obj || {}  
   let type = obj.type || ''
-  let custom = getCustom({state, commit})
+  let custom = {}
+  if(obj.to.indexOf('sgb')>=0){
+    custom = getCustom({state, commit},'p2p')
+  }else{
+    custom = getCustom({state, commit},'team')
+  }
+  
   switch (type) {
     case 'text':
       nim.sendText({
@@ -163,9 +169,16 @@ export function sendMsg ({state, commit}, obj) {
   }
 }
 
-function getCustom ({state, commit}) {
-  let currSessionProjectInfo = state.currSessionProjectInfo
-  let myUserinfo = JSON.parse(cookie.readCookie('userinfo'))
+function getCustom ({state, commit},type='team') {
+  let currSessionProjectInfo = {}
+  if(type == 'team'){
+    currSessionProjectInfo = state.currSessionProjectInfo
+  }else{
+    currSessionProjectInfo.id =0
+    currSessionProjectInfo.roleId = 0
+  }
+  
+  let myUserinfo = JSON.parse(localStorage.getItem('userinfo'))
   console.log('用户信息' + myUserinfo.user.avatar)
   store.dispatch('showLoading')
   var userinfo = {
@@ -181,8 +194,6 @@ function getCustom ({state, commit}) {
 // 发送文件消息
 export function sendFileMsg ({state, commit}, obj) {
   const nim = state.nim
-
-  console.log('-------------------------->>>', obj)
   let {scene, to, fileInput} = obj
   let type = 'file'
   if (/\.(png|jpg|bmp|jpeg|gif)$/i.test(fileInput.value)) {

@@ -12,8 +12,12 @@ export default {
   font-family: 'PingFang SC', 'Microsoft YaHei', Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  color: #fff;
   text-align: center;
+  /* text-align: center;
+  width: 500px;
+  margin: 0 auto;
+  height: 400px;
+  overflow: auto; */
 }
 body,.el-main{
   padding: 0px;

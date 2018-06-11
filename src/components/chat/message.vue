@@ -129,6 +129,7 @@ export default {
         },
         msglist() {
             let msgs = this.$store.state.currSessionMsgs;
+            console.log('------------->',msgs);
             return msgs;
         },
         teamInfo() {

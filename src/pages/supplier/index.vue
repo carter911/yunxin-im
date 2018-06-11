@@ -1,11 +1,11 @@
 <template>
   <div id="supplier" style="padding:20px;" v-bind:style="{height: heightData}">
-    <el-carousel type="card" indicator-position='none' :interval="3000" height="200px">
+    <el-carousel type="card" indicator-position='none' :interval="3000" height="250px">
         <el-carousel-item v-for="item in bannerLisr" :key="item.id">
-        <img   height="100%" width="100%" :src="item.image" />
+        <img   height="100%" width="100%"  :src="item.image" />
         </el-carousel-item>
     </el-carousel>
-    <div class='supplier_name'>雷士照明</div>
+    <!-- <div class='supplier_name'>雷士照明</div> -->
     <el-row :gutter="20"  v-loading="loading">
       <el-col :span="6" v-for="(item,index) in goodsList" :key="index" >
         <div class="grid-content bg-purple goods">
@@ -201,6 +201,8 @@ export default {
     border-top-left-radius: 5px;
     border-top-right-radius: 5px;
     height: 150px;
+    object-fit: contain;
+
   }
   .goods h2{
     margin: 0px;

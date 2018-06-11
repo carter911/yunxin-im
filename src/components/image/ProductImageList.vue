@@ -86,6 +86,7 @@ export default {
 .p_image{
     height: 250px;
     width: 90%;
+    object-fit: contain;
 }
 
 .p_image_operate{
