@@ -278,8 +278,6 @@ export default {
 
           //单独设置pid
           if(pageIndex == 1) {
-
-              console.log('id--------->',data[0].id)
               this.current_pid = data[0].id;
           }
 
@@ -389,6 +387,7 @@ class ProjectListEntity {
 
 .pannel-left
 {
+  cursor: pointer;
   margin: 0px;
   background: white;
   border-right: rgb(237, 237, 237) 1px solid;

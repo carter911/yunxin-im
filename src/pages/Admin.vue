@@ -29,19 +29,20 @@ export default {
         window.moveTo(100,100);
         window.resizeTo(1000, 700);//改变大小  
         // 提交sdk连接请求
-        this.$store.dispatch("connect");
-        this.$store.dispatch("updateRefreshState");
+        
   },
   updated() {
       // 提交sdk连接请求
-      // this.$store.dispatch("connect");
-      // this.$store.dispatch("updateRefreshState");
+      this.$store.dispatch("connect");
+      this.$store.dispatch("updateRefreshState");
   },
 
   mounted() {
     this.dynamicCalucatewindowHeight();
-  },
+    this.$store.dispatch("connect");
+    this.$store.dispatch("updateRefreshState");
 
+  },
   methods : {
       dynamicCalucatewindowHeight() {
         this.windowHeightData = document.documentElement.clientHeight ;

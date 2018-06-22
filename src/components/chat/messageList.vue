@@ -57,7 +57,7 @@ export default {
         cursor:pointer ;
         text-align: left;
         border-bottom: 1px solid #ddd;
-        padding:3px 10px 3px 20px;
+        padding:3px 10px 3px 10px;
         height:60px;
     }
     .message-info .avatar{

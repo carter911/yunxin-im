@@ -141,7 +141,11 @@ export function sendMsg ({state, commit}, obj) {
   let type = obj.type || ''
   let custom = {}
   if(obj.to.indexOf('sgb')>=0){
-    custom = getCustom({state, commit},'p2p')
+    if(type == 'custom'){
+      custom = getCustom({state, commit},'team')
+    }else{
+      custom = getCustom({state, commit},'p2p')
+    }
   }else{
     custom = getCustom({state, commit},'team')
   }

@@ -121,8 +121,7 @@ export default {
 
         onSubmit() {
             let goodsInfo =  this.goodsInfo
-            console.log(goodsInfo)
-            
+            console.log('1111111111111',goodsInfo)
             let content = {
                 data: {
                 image: goodsInfo.curr_img,
@@ -147,7 +146,6 @@ export default {
                     console.log('分享失败');
                     return false;
                 }
-
                 //console.log(element);return false;
                 this.$store.dispatch('sendMsg', {
                     type: 'custom',

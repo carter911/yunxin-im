@@ -24,15 +24,23 @@ import {getGoods, getSupplierBanner, getGoodsDetail} from './supplier'
 function connectNim ({state, commit, dispatch}, obj) {
   let {force} = Object.assign({}, obj)
   // 操作为内容页刷新页面，此时无nim实例
-  if (!state.nim || force) {
+  console.error(state.nim);
+  // 切换账户
+  var uid = localStorage.getItem("uid");
+  var  ischange = 0;
+  if(state.nim &&  state.nim.account != uid){
+    ischange =1
+  }
+
+  if (!state.nim || force || ischange) {
     let loginInfo = {
-      uid: cookie.readCookie('uid'),
-      sdktoken: cookie.readCookie('sdktoken')
+      uid: localStorage.getItem("uid"),
+      sdktoken: localStorage.getItem("sdktoken")
     }
-    console.log('初始化用户信息', loginInfo)
+    console.error('初始化用户信息', loginInfo,localStorage.getItem("uid"),localStorage.getItem("sdktoken"))
     if (!loginInfo.uid) {
       // 无cookie，直接跳转登录页
-      pageUtil.turnPage('无历史登录记录，请重新登录', 'login')
+      //pageUtil.turnPage('无历史登录记录，请重新登录', 'login')
     } else {
       // 有cookie，重新登录
       console.log('----连接云信用户信息------', loginInfo)
@@ -90,8 +98,8 @@ export default {
 
   // 用户触发的登出逻辑
   logout ({ state, commit }) {
-    cookie.delCookie('uid')
-    cookie.delCookie('sdktoken')
+    localStorage.removeItem('uid')
+    localStorage.removeItem('sdktoken')
     if (state.nim) {
       console.log('退出登录了')
       state.nim.disconnect()

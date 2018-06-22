@@ -6,7 +6,7 @@
             <!-- 项目详情 开始 -->
             <el-card class="content-box-card">
                    <el-row>
-                        <el-col :span="16">
+                        <el-col :span="14">
                             <div class="project-detail">
                             <span class="project-title">{{(project.name || '') + " " + (project.door || '')}}</span><br/>
                             <span class="project-detail">施工时间：{{project.startTime | formatDate }} &nbsp;至&nbsp;
@@ -16,7 +16,7 @@
                         </div>
                        </el-col>
 
-                        <el-col :span="8">
+                        <el-col :span="10">
                         <div class="project-status">
                             <span class="project-status-span" v-bind:style="{'background-color': getProjectStatusColor()}"> {{ project.statusMessage }}</span>
                         </div>
@@ -70,7 +70,7 @@
 
                             <el-col :span="6" class="product-remind-right">    
                                    <span v-if="checkNewTaskAddAuth()" class="project-remind-add" v-on:click="this.addNewTask">添加</span> 
-                                   <span v-on:click="getMore(1)">更多</span>
+                                   <span  v-on:click="getMore(1)">更多</span>
                             </el-col>
                     </el-row>
                     <hr/>
@@ -408,6 +408,7 @@
  }
 
  .project-remind-add{
+     cursor: pointer;
      color: #F92309;
      cursor: hand;
      padding-left: 8px;
@@ -415,6 +416,7 @@
  }
 
  .product-remind-title {
+     
      text-align:left;
      font-size:15px;
      padding:2px;
@@ -423,6 +425,7 @@
     flex-direction:row;
     justify-content:flex-start;
     align-items: center;
+    cursor: pointer;
  }
 
 .remind-title-img{
@@ -432,6 +435,7 @@
 }
 
  .product-remind-right{
+     cursor: pointer;
      text-align:right;
      font-size:13px;
      color:#464646;

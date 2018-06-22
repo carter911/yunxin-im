@@ -64,7 +64,7 @@ export default {
         this.projectId = this.$route.params.projectId
         this.supplierId = this.$route.params.supplierId
         if(this.projectId<=0 || this.supplierId<=0){
-          this.$message.error('您请求的地址不合法');
+          this.$message.error('请先选中对应项目再操作');
         }
         this.$store.dispatch('getGoods',this.supplierId);
         //console.log(this.currSessionProjectInfo)
@@ -106,7 +106,10 @@ export default {
             if (res.code === 200) {
                 self.pageIndex = pageIndex+1
                 if(res.data == null || res.data.length<self.pageSize){
-                  self.isEmpty = true
+                  self.isEmpty = true;
+                  res.data.forEach(element => {
+                      self.goodsList.push(element)
+                    });
                 }else{
                     res.data.forEach(element => {
                       self.goodsList.push(element)
@@ -153,7 +156,7 @@ export default {
           this.$router.push({path: path});
       },
       defaultImage(item){
-        item.product_image = "/../../../static/logo400.png"
+        item.product_image = "../../../static/emptyItem.png"
       },
       ShareComplete(){
         this.$message({

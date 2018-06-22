@@ -42,14 +42,9 @@ export default {
     }
 }
 </script>
-
 <style>
 #id_img_source {
-    max-width: 400px;
     max-height: 400px;
-    width:100%;
-    height:auto ;
+    width:auto ;
 }
-
-
 </style>

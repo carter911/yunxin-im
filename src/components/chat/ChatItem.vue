@@ -28,9 +28,12 @@
         <p style="">{{msg.fromNick}}<span v-if="msg.role">({{msg.role}})</span></p>
         
         <div class="msg_content">
-          
           <span style="height:14px;width:14px;" v-if="msg.type==='text'" class="msg-text" v-html="msg.showText"></span>
-          <span v-else-if="msg.type==='custom-type1'" class="msg-text" ref="mediaMsg">
+          <span v-else-if="msg.type==='custom-type1'" class="msg-text" >
+            <p @click="lookGoods">{{this.shareItem.content}}</p>
+            <img @click="lookGoods" v-if="this.shareItem.image !=''" class="shareImage" :src="shareItem.image"/>
+            <img @click="lookGoods" v-if="this.shareItem.image2!=''" class="shareImage" :src="shareItem.image2"/>
+            <img @click="lookGoods" v-if="this.shareItem.image3!=''" class="shareImage" :src="shareItem.image3"/>
           </span>
           <span v-else-if="msg.type==='custom-type3'" class="msg-text" ref="mediaMsg"></span>
           <span v-else-if="msg.type==='image'" class="msg-text msg-image" ref="mediaMsg" @click.stop="showFullImg(msg.originLink)"></span>
@@ -49,33 +52,19 @@
       width="70%"
       top="8vh"
       :before-close="handleClose">
-      <!-- <div style="height:400px;text-align:center">
-          <img height="100%" :src="fullImageUrl"/>
-      </div> -->
-
       <RotateImage :imageUrl="fullImageUrl"></RotateImage>
-    
-    
-      <!-- <img :src="fullImageUrl"/> -->
     </el-dialog>
 
-
-      <!-- <div class="msg-head" v-if="msg.avatar">
-        <img  height="30px" class="icon u-circle" :src="msg.avatar">
-        <span style="margin-top:-10px;">{{msg.fromNick}}</span>
-      </div>
-      <p class="msg-user" v-else-if="msg.type!=='notification'"><em>{{msg.showTime}}</em>{{msg.from}}</p>
-      <span style="height:14px;width:14px;" v-if="msg.type==='text'" class="msg-text" v-html="msg.showText"></span>
-      <span v-else-if="msg.type==='custom-type1'" class="msg-text" ref="mediaMsg"></span>
-      <span v-else-if="msg.type==='custom-type3'" class="msg-text" ref="mediaMsg"></span>
-      <span v-else-if="msg.type==='image'" class="msg-text" ref="mediaMsg" @click.stop="showFullImg(msg.originLink)"></span>
-      <span v-else-if="msg.type==='video'" class="msg-text" ref="mediaMsg"></span>
-      <span v-else-if="msg.type==='audio'" class="msg-text" @click="playAudio(msg.audioSrc)">{{msg.showText}}</span>
-      <span v-else-if="msg.type==='file'" class="msg-text"><a :href="msg.fileLink" target="_blank"><i class="u-icon icon-file"></i>{{msg.showText}}</a></span>
-      <span v-else-if="msg.type==='notification'" class="msg-text notify">{{msg.showText}}</span>
-      <span v-else class="msg-text" v-html="msg.showText"></span>
-      <span v-if="msg.status==='fail'" class="msg-failed"><i class="weui-icon-warn"></i></span>
-      <a v-if="teamMsgUnRead >=0" class='msg-unread' :href='`#/msgReceiptDetail/${msg.to}-${msg.idServer}`'>{{teamMsgUnRead>0 ? `${teamMsgUnRead}人未读`: '全部已读'}}</a> -->
+    <div v-if="this.show_chat_list">
+        <el-dialog style="height:700px;"
+        :visible.sync="show_chat_list"
+        title="查看分享商品"
+        width="400px"
+        top="8vh"
+        :before-close="handleClose">
+        <share-list :item_ids="shareItem.ids" :custom="shareItem.custom"></share-list>
+        </el-dialog>
+    </div>
     </div>
   </li>
 </template>
@@ -85,13 +74,13 @@
   import config from '../../configs'
   import emojiObj from '../../configs/emoji'
   import RotateImage from "../image/RotateImage.vue"
+  import ShareList from './ShareList.vue'
 
   export default {
 
     components : {
-      RotateImage
+      RotateImage,ShareList
     },
-
     props: {
       type: String, // 类型，chatroom, session
       rawMsg: {
@@ -138,6 +127,15 @@
         currentAudio: null,
         dialogVisible: false,
         fullImageUrl : '',
+        shareItem:{
+          image: '',
+          image2: '',
+          image3: '',
+          content: '',
+          ids: '',
+          custom:{}
+        },
+        show_chat_list: false,
       }
     },
     computed: {
@@ -305,19 +303,26 @@
         } else if (item.type === 'custom-type1') {
           // 商品详情
           let content = JSON.parse(item.content)
+          let custom = JSON.parse(item.custom)
+          this.shareItem.custom = custom
           let aLink = document.createElement('div')
-          aLink.innerHTML = '<p>'+content.data.name+'</p>'
+          this.shareItem.content = content.data.name
+          this.shareItem.image = content.data.image
+          this.shareItem.ids = content.data.selectProductIds
+          aLink.innerHTML = '<p>'+content.data.name
           if(content.data.image != ""){
             aLink.innerHTML += '<img class="shareImage" src="'+content.data.image+'"/>'
           }
           if(content.data.image2 != ""){
+            this.shareItem.image2 = content.data.image2
             aLink.innerHTML += '<img class="shareImage" src="'+content.data.image2+'"/>'
           }
           if(content.data.image3 != ""){
+            this.shareItem.image3 = content.data.image3
             aLink.innerHTML += '<img class="shareImage"src="'+content.data.image3+'"/>'
           }
-          
-          this.$refs.mediaMsg.appendChild(aLink)
+          aLink.innerHTML += '</p>'
+          //this.$refs.mediaMsg.appendChild(aLink)
           // media = new Image()
           // media.className = 'emoji-middle'
           // media.src = item.imgUrl
@@ -360,8 +365,8 @@
       }) // end this.nextTick
     },
     methods: {
-      lookGoods(ids){
-          alert(ids)
+      lookGoods(){
+          this.show_chat_list = true
       },
       artarError(url){
       },

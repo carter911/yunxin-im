@@ -30,13 +30,12 @@
 .header_left:hover{
     color: #4a98fb;
 }
-
 </style>
 
 <template>
 <el-header>
     <div class="header">
-        <div @click="goBack" class="header_left">< 上一页</div>
+        <div v-if="this.isBack" @click="goBack" class="header_left">< 上一页</div>
         <div class="header_right">
             <div style="display:inline-block;vertical-align: middle;height:2.7rem;">
                 <img style="height:1.7rem;widht:1.7rem;border-radius: 1rem" :onerror="avatar" :src="userInfo.user.avatar" />
@@ -53,10 +52,24 @@ import cookie from '../../utils/cookie.js'
 export default {
     data(){
         return {
-            userInfo:JSON.parse(localStorage.getItem('userinfo'))
+            userInfo:JSON.parse(localStorage.getItem('userinfo')),
+            isBack:false
         }
     },
+    watch:{
+      '$route':'isTab'
+ 
+    },
+    
     methods: {
+        isTab(){
+            console.error('header luoyou',this.$route.path);
+            if(this.$route.path == '/admin/chat' || this.$route.path == '/admin/project'){
+                this.isBack = false;
+            }else{
+                this.isBack = true;
+            }
+        },
         goBack(){
             console.log('go back')
             this.$router.go(-1)

@@ -1,4 +1,5 @@
 <template>
+<keep-alive>
   <div class="g-inherit m-article">
     <div class="m-chat-main">
       <div class='invalidHint' v-if='scene==="team" && teamInvalid'>
@@ -12,6 +13,7 @@
       </div>
     </div>
   </div>
+  </keep-alive>
 </template>
 
 <script>

@@ -160,7 +160,6 @@ methods : {
     //请求提醒列表
     request_remind_list(refresh=true){
         if(this.get_data_has_loaded() && refresh) return;
-
         let self = this;        
         let url =  this.pid + "/usermessage";
         let isUnRead = self.currentType === '0';

@@ -21,7 +21,7 @@ router.beforeEach((to, from, next) => {
   if (to.matched.some(m => m.meta.auth)) {
     let userInfo = JSON.parse(localStorage.getItem('userinfo'))
     if(userInfo.userId>0){
-      console.error('跳转路由',to.name)
+      localStorage.setItem('currentMenu',to.name)
       next()
     }else{
       next({ path: '/login' })

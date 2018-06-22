@@ -12,7 +12,6 @@ export default {
 
   updateSgbUserInfo (state, UserInfo) {
     localStorage.setItem('userinfo', JSON.stringify(UserInfo))
-    //var userInfo = JSON.parse(cookie.readCookie('userinfo'))
     localStorage.setItem('token', UserInfo.token)
     state.sgbUserinfo = UserInfo
   },
@@ -44,7 +43,6 @@ export default {
     console.log('更新云信用户信息',loginInfo)
     cookie.setCookie('uid', loginInfo.uid)
     cookie.setCookie('sdktoken', loginInfo.sdktoken)
-    console.log(cookie.readCookie('uid'))
   },
   updateMyInfo (state, myInfo) {
     state.myInfo = util.mergeObject(state.myInfo, myInfo)
@@ -138,7 +136,8 @@ export default {
       num = num + item.unread;
       state.sessionMap[item.id] = item
     })
-    this.unreadNum = num;
+    this.state.unreadNum = num;
+    console.error('未读数量',state.unreadNum)
   },
   deleteSessions (state, sessionIds) {
     const nim = state.nim
@@ -256,8 +255,8 @@ export default {
       state.currSessionId = null
     } else if (type === 'init') {
       console.log('更新当前的项目id', obj.sessionId)
+      localStorage.setItem('currSession',obj)
       state.currSessionId = obj.sessionId 
-      
       if(obj.sessionId != undefined && obj.sessionId.indexOf('team')>=0){
         store.dispatch('updateCurrSessionProjectInfo', obj.sessionId)
       }
@@ -266,6 +265,7 @@ export default {
   },
 
   updateCurrSessionProjectInfo (state, data) {
+    localStorage.setItem('currSessionProjectInfo', data)
     state.currSessionProjectInfo = data
   },
 

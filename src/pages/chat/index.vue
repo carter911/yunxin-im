@@ -1,8 +1,7 @@
-
 <template>
     <div id="chat">
         <el-container>
-            <el-aside width="270px" v-bind:style="{height: heightData}">
+            <el-aside class="chat-left" width="270px" v-bind:style="{height: heightData}">
                 <div class="grid-content bg-purple chatBar">
                     <el-menu  :default-active="this.defaultActive" class="el-menu-demo" mode="horizontal" @select="chatSelect">
                         <el-menu-item index="message">我的消息</el-menu-item>
@@ -31,23 +30,25 @@
                 </el-col>
             </el-aside>
             <el-main v-if="isP2p">
-                <el-container style="" v-if="isP2p" v-bind:style="{height: listHeight}">
-                    <!-- <div v-if="isP2p" id="chat_info">
-                        <ul class="chat_nav">
-                            <li class="active" v-if="showOwner">111111</li>
-                        </ul>
-                    </div> -->
-                    <div style="width:100%" >
-                        <Message style="width:100%" :sessionId="currSessionId" />
-                    </div>
+                <el-container style="" v-if="isP2p" v-bind:style="{height: p2pHeight}">
+                    <el-main>
+                        <div v-if="isP2p" id="chat_info">
+                            <ul class="chat_nav" width="90px">
+                                <li class="active" v-if="showOwner">{{this.p2pName}}</li>
+                            </ul>
+                        </div>
+                        <div style="width:100%" >
+                            <Message style="width:100%" :sessionId="currSessionId" />
+                        </div>
+                    </el-main>
                     <!-- <Message style="width:100%" :sessionId="currSessionId" /> -->
                 </el-container>
-                <el-container class="empty-chat" v-if="!isP2p" v-bind:style="{height: listHeight}">
+                <el-container class="empty-chat" v-if="!isP2p" v-bind:style="{height: chatHeight}">
                         <div><img src="../../../static/nochat.png"/></div>
                 </el-container>
             </el-main>
             <el-main v-if="isTeam">
-                <el-container class="empty-chat" v-if="!isTeam" v-bind:style="{height: listHeight}">
+                <el-container class="empty-chat" v-if="!isTeam" v-bind:style="{height: chatHeight}">
                         <div><img src="../../../static/nochat.png"/></div>
                 </el-container>
                 <el-container v-if="isTeam">
@@ -74,11 +75,13 @@
                     </div>
                 </el-main>
 
-                <el-aside class="project-option" width="150px"  v-bind:style="{height: listHeight}">
+                <el-aside class="project-option" width="150px"  v-bind:style="{height: heightData}">
                     <div class="project-name">{{this.projectName}}</div>
                     <ul class="project-option-tab">
-                        <li><i class="el-icon-bell"></i><span @click="this.lookRemind">查看提醒</span></li>
-                        <li><i class="el-icon-date"></i><span @click="this.lookTask">查看任务</span></li>
+                        <li><i class="el-icon-bell"></i><span @click="this.lookRemind">
+                            查看提醒 <b style="color:red;" v-if="projectDetail.messageNum>0">({{this.projectDetail.messageNum}})</b>
+                        </span></li>
+                        <li><i class="el-icon-date"></i><span @click="this.lookTask">查看任务<b style="color:red;" v-if="projectDetail.taskNum>0">({{this.projectDetail.taskNum}})</b></span></li>
                         <li><i class="el-icon-goods"></i><span @click="this.lookSupplier">查看材料商</span></li>
                         <li><i class="el-icon-tickets"></i><span @click="this.lookUserList">成员列表</span></li>
                         <li><i class="el-icon-edit-outline"></i><span @click="this.addNewRemind">添加提醒</span></li>
@@ -133,8 +136,9 @@
                         @closeTaskAddDialog="closeTaskAddDialog">
             </NewTaskAdd>
         </div>
-    </div>
 
+        
+    </div>
 </template>
 <script>
 /* eslint-disable */
@@ -152,6 +156,8 @@ import NewRemindAdd from "../../components/remind/NewRemindAdd.vue"
 import NewTaskAdd from "../../components/task/NewTaskAdd.vue"
 import supplierList from  "../../components/supplier/suplierList.vue"
 import cookie from '../../utils/cookie';
+import ShareList from '../../components/chat/ShareList.vue'
+
 
 export default {
     components: {
@@ -164,11 +170,9 @@ export default {
         NewTaskAdd,
         supplierList
     },
-
     created(){
-        if(this.currSessionId == null){
-            //console.log('实例化1111111')
-        }
+
+        let projectInfo = localStorage.getItem('currSessionProjectInfo')
     },
     data(){
         return {
@@ -178,8 +182,9 @@ export default {
             defaultChat:'worker',
             teamType: 'advanced',
             heightData :(document.documentElement.clientHeight-60)+'px',
-            chatHeight :(document.documentElement.clientHeight-102)+'px',
-            listHeight : (document.documentElement.clientHeight-60)+'px',
+            p2pHeight :(document.documentElement.clientHeight-60)+'px',
+            chatHeight :(document.documentElement.clientHeight-160)+'px',
+            listHeight : (document.documentElement.clientHeight-107)+'px',
             showWorker:false,
             showOwner:false,
             currentChat:false,
@@ -190,6 +195,7 @@ export default {
             //isChat : false,
             isTeam : false,
             isP2p : false,
+            p2pName:'',
             projectName:'',
             pannelLeft:-540,
             //当前项目Id    
@@ -198,7 +204,6 @@ export default {
             projectShowType: 0 ,
             //是否显示右侧面板
             show_right_pop : false ,
-
             //显示详情类型
             //0 为提醒详情
             //1 为任务详情
@@ -214,56 +219,21 @@ export default {
             //是否显示添加任务
             showAddNewTask:false,
             // 是否显示供应商列表
-            show_right_supplier_pop: false
+            show_right_supplier_pop: false,
+            // 是否显示商品列表
+            show_chat_list:false,
+            projectDetail:{
+                messageNum :0,
+                taskNum: 0,
+            }
 
         }
     },
     watch:{
-        currSessionProjectInfo (news, old){
-            var projectInfo = this.currSessionProjectInfo
-            this.projectId = projectInfo.id ;
-            var sessionId = this.currSessionId
-            var auth = this.currSessionProjectInfo.auth;
-            var door = this.currSessionProjectInfo.door == null ? "":this.currSessionProjectInfo.door
-            var workname = '施工群'
-            var ownerName = '业主群'
-            this.projectName = this.currSessionProjectInfo.name + door
-            if(auth.indexOf("100")>=0){
-                if(sessionId == "team-" + this.currSessionProjectInfo.chat1Id){
-                    this.defaultChat = 'worker';
-                    this.currentChat = 'worker'
-                }else if(sessionId == "team-" + this.currSessionProjectInfo.chat2Id){
-                    this.defaultChat = 'owner';
-                    this.currentChat = 'owner'
-                }
-                
-                this.showWorker = true;
-                this.showOwner = true;
-                this.workName = workname;
-                this.ownerName = ownerName;
-            }else if(auth.indexOf("101")>=0){
-                //客户群 
-                if(sessionId == "team-" + this.currSessionProjectInfo.chat2Id){
-                    this.defaultChat = 'owner';
-                }
-                this.currentChat = 'owner'
-                
-                this.showWorker = false;
-                this.showOwner = true;
-                this.ownerName = ownerName;
-            }else if(auth.indexOf("102")>=0){
-                //施工群
-                if(sessionId == "team-" + this.currSessionProjectInfo.chat1Id){
-                    this.defaultChat = 'worker';
-                }
-                this.currentChat = 'worker'
-               
-                this.showOwner = 0;
-                this.showWorker = 1;
-                this.workName = workname;
-            }
-            return this.currSessionProjectInfo;
-        }
+        // currSessionProjectInfo (news, old){
+
+        //     return this.currSessionProjectInfo;
+        // }
     },
     computed: {
         currSessionProjectInfo() {
@@ -279,20 +249,23 @@ export default {
             return currSessionProjectInfo;
         },
         currSessionId (){
+            let projectInfo = localStorage.getItem('currSessionProjectInfo')
             let sessionId = this.$store.state.currSessionId
             if(sessionId != null){
+                //console.error(sessionId.indexOf('p2p'))
                 if(sessionId.indexOf('p2p')>=0){
                     this.isP2p = true;
                     this.isTeam = false;
-                    console.log('单聊',sessionId)
+                    sessionId = sessionId.replace(/^p2p-/, '')
+                    this.p2pName= this.userInfos[sessionId]['nick']
+                    console.error('单聊',sessionId)
                 }else if(sessionId.indexOf('team')>=0){
                     this.isTeam = true;
                     this.isP2p = false;
-                    console.log('群聊',sessionId)
+                    console.error('群聊',this.$store.state.currSessionProjectInfo)
+                    this.selectTeam(sessionId)
                 }
             }
-            console.error('更新session-->',this.$store.state.currSessionId)
-            //return cookie.readCookie('currSessionId')
             return this.$store.state.currSessionId
         },
         sysMsgUnread () {
@@ -323,16 +296,18 @@ export default {
             item.avatar = ''
             //console.log('未读条数',item)
             if (item.scene === 'p2p') {  
+                //console.error('p2p用户信息',item.scene,this.userInfos[item.to])
                 let userInfo = null
                 if (item.to !== this.myPhoneId) {
                     userInfo = this.userInfos[item.to]
                 } else {
                     return false
-            }
-            if (userInfo) {
-                item.name = userInfo.nick//util.getFriendAlias(userInfo)
-                item.avatar = userInfo.avatar
-            }
+                }
+                if (userInfo) {
+                    item.name = userInfo.nick//util.getFriendAlias(userInfo)
+                    item.avatar = userInfo.avatar
+                    // console.error('p2p',item)
+                }
             } else if (item.scene === 'team') {
             let teamInfo = null
             teamInfo = this.$store.state.teamlist.find(team => {
@@ -364,6 +339,7 @@ export default {
             return item
             })
             this.isLoad = false
+            // console.error('历史聊天',sessionlist)
             return sessionlist
         }
     },
@@ -489,6 +465,55 @@ export default {
                 });
             }
             this.defaultChat = tab.name
+        },
+        selectTeam(sessionId){
+            var projectInfo = this.currSessionProjectInfo
+            this.projectId = projectInfo.id ;
+
+            this.projectDetail.messageNum =projectInfo.messageNum
+            this.projectDetail.taskNum =projectInfo.taskNum
+            console.log('项目详情', projectInfo);
+            var auth = this.currSessionProjectInfo.auth;
+            var door = this.currSessionProjectInfo.door == null ? "":this.currSessionProjectInfo.door
+            var workname = '施工群'
+            var ownerName = '业主群'
+            this.projectName = this.currSessionProjectInfo.name + door
+            if(auth == null){
+                return true;
+            }
+            if(auth.indexOf("100")>=0){
+                if(sessionId == "team-" + this.currSessionProjectInfo.chat1Id){
+                    this.defaultChat = 'worker';
+                    this.currentChat = 'worker'
+                }else if(sessionId == "team-" + this.currSessionProjectInfo.chat2Id){
+                    this.defaultChat = 'owner';
+                    this.currentChat = 'owner'
+                }
+                this.showWorker = true;
+                this.showOwner = true;
+                this.workName = workname;
+                this.ownerName = ownerName;
+            }else if(auth.indexOf("101")>=0){
+                //客户群 
+                if(sessionId == "team-" + this.currSessionProjectInfo.chat2Id){
+                    this.defaultChat = 'owner';
+                }
+                this.currentChat = 'owner'
+                
+                this.showWorker = false;
+                this.showOwner = true;
+                this.ownerName = ownerName;
+            }else if(auth.indexOf("102")>=0){
+                //施工群
+                if(sessionId == "team-" + this.currSessionProjectInfo.chat1Id){
+                    this.defaultChat = 'worker';
+                }
+                this.currentChat = 'worker'
+               
+                this.showOwner = 0;
+                this.showWorker = 1;
+                this.workName = workname;
+            }
         }
         
   },
@@ -607,12 +632,12 @@ export default {
         border-bottom: 1px solid #e9e9e9;
     }
     .project-option .project-option-tab{
-        padding-left: 30px;
+        padding-left: 20px;
         text-align: left;
         list-style: none;
     }
     .project-option-tab li{
-        width: 100px;
+        width: 110px;
         cursor: pointer;
         height: 30px;
         margin: 0px;

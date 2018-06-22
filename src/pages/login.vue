@@ -8,7 +8,7 @@
         </el-form-item>
         <el-form-item label="" label-width='0px' prop="code">
         <el-col :span="14">
-          <el-input class="input" style="width:100%"  prefix-icon="el-icon-view" v-model="form.code" placeholder="请输入验证码"></el-input>
+          <el-input maxlength="4" class="input" style="width:100%"  prefix-icon="el-icon-view" v-model="form.code" placeholder="请输入验证码"></el-input>
         </el-col>
         <el-col :span="8" style='margin-top:10px;margin-left:20px;text-align:right'>
           <el-button v-show="show"  :disabled="disabled" style="margin:10px 0px 20px;text-aligin:center;width:100%" size="small" type="primary" @click="getCode">验证码</el-button>
@@ -33,7 +33,9 @@ import pageUtil from "../utils/page";
 import http from "../utils/http";
 import sgb_storage from "../utils/localInfo.js"
 
-
+if (window.require) {
+  var ipc = window.require('electron').ipcRenderer
+}
 export default {
   data() {
       return {
@@ -74,11 +76,8 @@ export default {
             var result = response
             if(result.code == 200){
               this.$store.commit('updateSgbUserInfo',result.data)
-              cookie.delCookie('uid')
-              cookie.delCookie('sdktoken')
-              cookie.setCookie('uid', "sgb"+result.data.user.id)
-              cookie.setCookie('sdktoken', '123456')
-              console.log('用户登陆信息', cookie.readCookie('uid'))
+              localStorage.setItem('uid', "sgb"+result.data.user.id)
+              localStorage.setItem('sdktoken', '123456')
               this.$router.push({path: '/admin'});
             }else{
               this.$message({
@@ -92,22 +91,31 @@ export default {
       }
     },
     created(){
+      if (window.require) {
+        //alert(111)
+        //ipc.send('close');
+      }
       // let myNotification = new Notification('通知', {
       //   body: '您有新的消息请注意查收'
       // })
       // window.moveTo(0, 0);
-      window.resizeTo(500, 600);//改变大小  
+      window.resizeTo(400, 525);//改变大小  
+      //window.resizeTo(700, 800);//改变大小  
       // window.onresize=new Function("window.resizeTo(500,   400);")   
     },
     computed:{
         wx_url(){
-          let callbackUrl = 'http%3a%2f%2fdev.e-shigong.com%2fcallback'
+          let callbackUrl = 'http%3a%2f%2fapi.e-shigong.com%2fcallback'
           return 'https://open.weixin.qq.com/connect/qrconnect?appid=wx68c972e31acbb4a0&redirect_uri='+callbackUrl+'&response_type=code&scope=snsapi_login&?state=123456#wechat_redirect'
         }
     },
     watch: {
       'form.mobile'(newValue, oldValue) { // 监听
         this.form.mobile = newValue.length > oldValue.length ? newValue.replace(/\s/g, '').replace(/(\d{3})(\d{0,4})(\d{0,4})/, '$1 $2 $3') : this.form.mobile.trim()
+      },
+      'form.code'(newValue, oldValue) { // 监听
+
+        //this.form.mobile = newValue.length >= 4?
       }
     },
     methods: {
@@ -172,19 +180,10 @@ export default {
         http.post(loginUrl,param).then(response => {
             var result = response
             console.log("login result : ", result);
-
             if(result.code == 200){
               this.$store.commit('updateSgbUserInfo',result.data)
-              cookie.delCookie('uid')
-              cookie.delCookie('sdktoken')
-              cookie.setCookie('uid', "sgb"+result.data.user.id)
-              cookie.setCookie('sdktoken', '123456')
-
-              console.dir(cookie);
-              console.log('用户登陆信息', cookie.readCookie('uid'))
-
-
-
+              localStorage.setItem('uid', "sgb"+result.data.user.id)
+              localStorage.setItem('sdktoken', '123456')
               this.$router.push({path: '/admin'});
             }else{
               this.$message({
@@ -204,9 +203,9 @@ export default {
 <style scoped>
 
   .box-card{
-    width: 300px;
-    margin: 100px auto 0 ;
-    height: 400px;
+    width: 400px;
+    margin: 0px auto 0 ;
+    height: 500px;
     text-align: center;
 
   }

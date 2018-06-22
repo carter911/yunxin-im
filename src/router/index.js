@@ -46,19 +46,24 @@ export default new Router({
         {
           name: 'admin_chat',
           path: 'chat',
-          component: Chat
+          component: Chat,
+          meta: {
+            keepAlive: true
+          },
         },
         {
           name: 'admin_supplier',
           path: 'supplier/supplierId/:supplierId/projectId/:projectId',
-          component: Supplier
+          component: Supplier,
+          meta: {
+            keepAlive: true
+          },
         },
-        
         {
           path:'/admin/product/detail/:projectId/:productId',
           name:'productDetail',
           component:ProductDetail,
-          meta: {auth : true}
+          meta: {auth : true,keepAlive: true}
         },
     
     
