@@ -1,6 +1,10 @@
 <!--
     产品详情组件
  -->
+ <style>
+
+ </style>
+ 
 <template>
     <div id="id_product_base" 
          class="product_detail_cl"
@@ -8,20 +12,16 @@
          v-loading="this.dataIsLoading">   
         <!-- 产品图片 & 产品说明 开始 -->
         <div class="product_header">
-
             <div class="product_image">
                 <ProductImageList :imageList="this.productImageList"></ProductImageList>
             </div>
-
             <div class="product_base_info">
                     <div class="product_title">
                         <span>{{this.productDetail.product_name}}</span>
                     </div>
-
                     <div class="product_old_price">
                         <span>原价： {{this.productDetail.product_price}}</span>
                     </div>
-
                     <div class="product_new_price_content">
                        <div><span class="product_new_price">￥:  {{this.productDetail.product_price}}</span></div> 
                     
@@ -29,8 +29,12 @@
                     </div>
 
                     <div class="product_new_operate">
-                        <!-- <div class="product_add_collect" @click="addCollect">加入收藏夹</div> -->
+                        <div v-if="this.productDetail.collect==0" class="product_add_collect" @click="addCollect">加入收藏夹</div>
+                        <div v-if="this.productDetail.collect==1" class="product_add_collect product_add_collect_active">已加入收藏</div>
                         <div class="prooduct_share_friends" @click="share2Friends">分享至朋友</div>
+                    </div>
+                    <div class="connection" @click="chat">
+                        <div>联系供应商：{{this.productDetail.supplier_name}}</div><img src="../../../static/wangwang.png"/>
                     </div>
 
                     <div class="product_good_style">
@@ -40,11 +44,8 @@
                             </i>
                         </div>
                     </div>
-
             </div>
-
         </div>
-
         <!-- 产品图片 & 产品说明 结束 -->
 
         <!-- 产品详情 & 评价 开始  -->
@@ -81,6 +82,17 @@
                 :projectId='this.projectId'
                 @ShareComplete = "ShareComplete"></Share>
         </el-dialog>
+        <el-dialog
+                :title="productDetail.supplier_name"
+                top=50
+                :visible.sync="chatShow"
+                width="700px"
+                :before-close="beforeChat"
+                center>
+                <div style="width:100%;height:400px;">
+                    <Message chatHeight="270px" :sessionType="worker" style="width:100%" :sessionId="'p2p-'+this.productDetail.client" />
+                </div>
+        </el-dialog>
     </div>
 
 </template>
@@ -91,13 +103,15 @@ import Log from '../../common/Log';
 import http from "../../utils/http"
 import ProductComment from "./ProductComment.vue"
 import Share from '../supplier/share.vue'
-
+import Message from '../../components/chat/message.vue'
+// import { session } from 'electron';
 export default {
 
     data() {
         return {
+            worker:'worker',
+            chatShow:false,
             currentType : '0' ,
-
             //产品详情对象
             productDetail : {} ,
             //产品图片集合
@@ -118,7 +132,8 @@ export default {
     components: {
         ProductImageList,
         ProductComment,
-        Share
+        Share,
+        Message
     },
 
 
@@ -175,7 +190,24 @@ export default {
         } ,
 
         addCollect(){
-            this.showMessageInfo("功能正在开发中...","warning");
+            let url = "collectAdd";
+            let params = {
+                productId : this.productId ,
+                companyId : this.productDetail.companyId ,
+                supplierId : this.productDetail.supplier_id ,
+            }
+            http.post(url,params).then(data => {
+                Log.L(data) ;
+                if(data.code == 200){
+                    this.productDetail.collect=1;
+                    this.showMessageInfo(data.message, "success");
+                }else {
+                    this.showMessageInfo(data.message, "error");
+                }
+            }, error => {
+                this.showMessageInfo("接口异常请稍后重试", "error");
+
+            })
         },
 
         showMessageInfo(msg,type) {
@@ -183,6 +215,35 @@ export default {
              message: msg,
              type: type
            });
+        },
+        beforeChat(done){
+            let sessionId = localStorage.getItem('supplierChatId')
+            console.error('供应商聊天关闭',sessionId)
+            this.$store.commit('updateCurrSessionId', {
+                type: 'init',
+                sessionId:sessionId
+            });
+            this.$store.commit('updateCurrSessionMsgs', {
+                type: 'init',
+                sessionId: sessionId
+            });
+            this.chatShow = true;
+            done();
+        },
+        chat(){
+            console.error('供应商聊天1',this.$store.state.currSessionId)
+            localStorage.setItem('supplierChatId',this.$store.state.currSessionId)
+            let sessionId = 'p2p-'+this.productDetail.client
+            console.error('供应商聊天',sessionId)
+            this.$store.commit('updateCurrSessionId', {
+                type: 'init',
+                sessionId:sessionId
+            });
+            this.$store.commit('updateCurrSessionMsgs', {
+                type: 'init',
+                sessionId: sessionId
+            });
+            this.chatShow = true;
         }
     },
 
@@ -213,7 +274,27 @@ export default {
      overflow:auto
 }
 
-
+.connection{
+    margin: 10px;
+    float:right;
+    cursor: pointer;
+    height:30px;
+    widht:30px;
+}
+.connection div{
+    float: left;
+    height: 30px;
+    line-height:30px;
+    display: inline-block;
+    margin-top:0px;
+   
+}
+.connection img{
+    
+    height:30px;
+    widht:30px;
+    vert-align: middle;
+}
 .product_header {
     padding:12px;
     display: flex;
@@ -288,6 +369,7 @@ export default {
 }
 
 .product_new_operate{
+    cursor: pointer;
    display: flex;
    justify-content:space-between;
    margin-top:20px;
@@ -307,6 +389,12 @@ export default {
     text-align: center;
     font-size: 16px;
 }
+.product_add_collect_active{
+    background:#ccc;
+    border:0px;
+    color:#fff;
+}
+
 
 .prooduct_share_friends{
     overflow: hidden;

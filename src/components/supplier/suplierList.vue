@@ -11,7 +11,6 @@
 .supplier_body{
     overflow:auto;
 }
-
 .supplier_header_name{
     font-size: 13px;
     text-align: left;

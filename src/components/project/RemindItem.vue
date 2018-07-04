@@ -70,6 +70,7 @@ export default {
 
 <style scope>
 .remind-item{
+    cursor: pointer;
     border-bottom: #f2f2f2 1px solid;
     padding: 4px 10px;
     text-align:center;

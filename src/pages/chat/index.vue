@@ -1,15 +1,21 @@
 <template>
     <div id="chat">
         <el-container>
-            <el-aside class="chat-left" width="270px" v-bind:style="{height: heightData}">
+            <el-aside class="chat-left" width="270px" v-bind:style="{height: (this.$store.state.windowClientHeight-60)+'px'}">
                 <div class="grid-content bg-purple chatBar">
                     <el-menu  :default-active="this.defaultActive" class="el-menu-demo" mode="horizontal" @select="chatSelect">
                         <el-menu-item index="message">我的消息</el-menu-item>
                         <el-menu-item index="project">项目列表</el-menu-item>
                     </el-menu>
                 </div>
-                <el-col  :span="24" class="pannel-left" v-bind:style="{height: listHeight}">
-                    <div>
+
+                <el-col  :span="24" class="pannel-left" v-bind:style="{height: (this.$store.state.windowClientHeight-107)+'px'}">
+                    <div class="keyword">
+                        <el-input v-model="keyword" placeholder="请输入要查找的群组或者名称">
+                            <i slot="prefix" class="el-input__icon el-icon-search"></i>
+                        </el-input>
+                    </div>
+                    <div> 
                         <el-row  v-if="this.defaultActive == 'message'">
                             <projectMessage
                                 v-for = '(item,index) in sessionlist'
@@ -30,15 +36,15 @@
                 </el-col>
             </el-aside>
             <el-main v-if="isP2p">
-                <el-container style="" v-if="isP2p" v-bind:style="{height: p2pHeight}">
+                <el-container style="" v-if="isP2p" v-bind:style="{height: (this.$store.state.windowClientHeight-60)+'px'}">
                     <el-main>
-                        <div v-if="isP2p" id="chat_info">
-                            <ul class="chat_nav" width="90px">
-                                <li class="active" v-if="showOwner">{{this.p2pName}}</li>
+                        <div v-if="isP2p" id="chat_info" >
+                            <ul class="chat_nav" width="90px" >
+                                <li style="width:90px;" class="active" v-if="showOwner">{{this.p2pName}}</li>
                             </ul>
                         </div>
                         <div style="width:100%" >
-                            <Message style="width:100%" :sessionId="currSessionId" />
+                            <Message style="width:100%" :sessionId="currSessionId" :chatHeight="(this.$store.state.windowClientHeight-236)+'px'" />
                         </div>
                     </el-main>
                     <!-- <Message style="width:100%" :sessionId="currSessionId" /> -->
@@ -48,10 +54,10 @@
                 </el-container>
             </el-main>
             <el-main v-if="isTeam">
-                <el-container class="empty-chat" v-if="!isTeam" v-bind:style="{height: chatHeight}">
+                <el-container class="empty-chat" v-if="!isTeam" v-bind:style="{height: (this.$store.state.windowClientHeight-60)+'px'}">
                         <div><img src="../../../static/nochat.png"/></div>
                 </el-container>
-                <el-container v-if="isTeam">
+                <el-container v-if="isTeam" v-bind:style="{height: (this.$store.state.windowClientHeight-60)+'px'}">
                 <el-main>
                     <div v-if="isTeam" id="chat_info">
                         <ul class="chat_nav">
@@ -70,12 +76,11 @@
                         </ul>
                     </div>
                     <div style="chat_body">
-                        <Message :chatType="worker" v-if="currentChat=='worker'" :sessionId="currSessionId" />
-                        <Message :chatType="owner" v-if="currentChat=='owner'" :sessionId="currSessionId" />
+                        <Message :chatType="worker" v-if="currentChat=='worker'" :sessionId="currSessionId" :chatHeight="(this.$store.state.windowClientHeight-236)+'px'" />
+                        <Message :chatType="owner" v-if="currentChat=='owner'" :sessionId="currSessionId" :chatHeight="(this.$store.state.windowClientHeight-236)+'px'" />
                     </div>
                 </el-main>
-
-                <el-aside class="project-option" width="150px"  v-bind:style="{height: heightData}">
+                <el-aside class="project-option" width="150px"  v-bind:style="{height: (this.$store.state.windowClientHeight-60)+'px'}">
                     <div class="project-name">{{this.projectName}}</div>
                     <ul class="project-option-tab">
                         <li><i class="el-icon-bell"></i><span @click="this.lookRemind">
@@ -176,15 +181,16 @@ export default {
     },
     data(){
         return {
+            keyword:'',
             worker:'worker',
             owner:'owner',
             defaultActive:"message",
             defaultChat:'worker',
             teamType: 'advanced',
-            heightData :(document.documentElement.clientHeight-60)+'px',
-            p2pHeight :(document.documentElement.clientHeight-60)+'px',
-            chatHeight :(document.documentElement.clientHeight-160)+'px',
-            listHeight : (document.documentElement.clientHeight-107)+'px',
+            heightData :(this.$store.state.windowClientHeight-60)+'px',
+            p2pHeight :(this.$store.state.windowClientHeight-60)+'px',
+            chatHeight :(this.$store.state.windowClientHeight-160)+'px',
+            listHeight : (this.$store.state.windowClientHeight-107)+'px',
             showWorker:false,
             showOwner:false,
             currentChat:false,
@@ -234,6 +240,12 @@ export default {
 
         //     return this.currSessionProjectInfo;
         // }
+        // keyword(key){
+        //     console.log(this.defaultActive)
+        //     console.error(key)
+        //     console.log(this.sessionlist);
+            
+        // },
     },
     computed: {
         currSessionProjectInfo() {
@@ -248,6 +260,7 @@ export default {
             }
             return currSessionProjectInfo;
         },
+        
         currSessionId (){
             let projectInfo = localStorage.getItem('currSessionProjectInfo')
             let sessionId = this.$store.state.currSessionId
@@ -286,11 +299,16 @@ export default {
             return `${this.$store.state.userUID}`
         },
         teamList: function () {
+            let keyword = this.keyword;
             return this.$store.state.teamlist && this.$store.state.teamlist.filter(team => {
+                if(this.defaultActive == 'project' && team.name.indexOf(keyword)==-1){
+                    return false;
+                }
                 return team.type === this.teamType && team.validToCurrentUser
             })
         },
         sessionlist () {
+            let keyword =  this.keyword;
             let sessionlist = this.$store.state.sessionlist.filter(item => {
             item.name = ''
             item.avatar = ''
@@ -335,6 +353,10 @@ export default {
             }
             if (item.updateTime) {
                 item.updateTimeShow = util.formatDate(item.updateTime, true)
+            }
+            
+            if(this.defaultActive == 'message' && item.name.indexOf(keyword)==-1){
+                return false;
             }
             return item
             })
@@ -443,6 +465,7 @@ export default {
 
         chatSelect(key, keyPath){
             this.defaultActive = key
+            this.keyword = ""
         },
         ownerSelect(tab){
             let currSessionProjectInfo = this.currSessionProjectInfo
@@ -668,6 +691,13 @@ export default {
     .empty-chat div img{
         height: 150px;
         width: 150px;
+    }
+    .keyword{
+        height: 40px;
+        margin:  0 auto;
+        line-height: 40px;
+        margin-top: 10px;
+        width: 90%;
     }
 </style>
 

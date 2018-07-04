@@ -1,5 +1,5 @@
 <template>
-  <ul  class="m-chat-list p-chat-list" v-bind:style="{height: chatHeight}">
+  <ul  class="m-chat-list p-chat-list" v-bind:style="{height: (this.$store.state.windowClientHeight-370)+'px'}">
     <li  class="u-msg item-time" v-if="canLoadMore">
       ---- 上拉加载更多 ----
     </li>
@@ -74,7 +74,7 @@
       return {
         isFullImgShow: false,
         msgLoadedTimer: null,
-        chatHeight :(document.documentElement.clientHeight-370)+'px',
+        //chatHeight :(this.$store.state.windowClientHeight-370)+'px',
       }
     },
     methods: {
@@ -89,6 +89,12 @@
           this.$emit('msgs-loaded')
         }, 20)
       }
+    },
+    computed:{
+      // chatHeight(){
+      //   console.log(this.state.changeWindowClienHeight)
+      //   return (this.state.changeWindowClienHeight-380)+'px';
+      // }
     }
   }
 </script>

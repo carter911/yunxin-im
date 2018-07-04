@@ -1,6 +1,55 @@
+<style scoped>
+  #window-option{
+    text-align: left;
+    margin-left: 5px;
+    margin-top: 10px;
+    display: flex;
+    flex-direction:row;
+    flex-wrap: nowrap;
+    padding-bottom: 10px;
+    height: 15px;
+  }
+  #window-option .btn{
+    margin-right: 4px;
+    height: 15px;
+    width: 15px;
+   
+    background-size: 100%;
+    border: 0px;
+  }
+
+  #window-option .close{
+     background-image: url('../../../static/closeWindow.png');
+  }
+  #window-option .close:hover{
+    background-image: url('../../../static/closeWindowHover.png');
+  }
+
+  #window-option .min{
+     background-image: url('../../../static/minWindow.png');
+  }
+  #window-option .min:hover{
+    background-image: url('../../../static/minWindowHover.png');
+  }
+
+  #window-option .max{
+     background-image: url('../../../static/maxWindow.png');
+  }
+  #window-option .max:hover{
+    background-image: url('../../../static/maxWindowHover.png');
+  }
+
+
+
+</style>
 <template>
 <keep-alive>
- <el-aside class="nav" width="71px"  :style="{'height' : this.$store.state.windowClientHeight + 'px'}">
+ <el-aside class="nav" width="65px"  :style="{'height' : (this.$store.state.windowClientHeight) + 'px'}">
+    <div id="window-option">
+        <div id="close" class="btn close" @click="closeWindow()" ></div>
+        <div class="btn min" @click="minWindow()" ></div>
+        <div class="btn max" @click="maxWindow()" ></div>
+    </div>
     <div class="logo"><img src="../../../static/logo.png"/></div>   
     <el-menu
       :default-active="$route.path"
@@ -22,7 +71,6 @@
         </el-menu-item>
         
     </el-menu>
-
  </el-aside>
  </keep-alive>
 </template>
@@ -31,15 +79,15 @@
 export default {
     data(){
       return {
+        closeWindows : false,
         home_url:'../../../static/tab_icon_home_selected.png',
         chat_url:'../../../static/tab_icon_chat_unselected.png',
-
         heightData :document.documentElement.clientHeight+'px',
       }
     },
     computed: {
         unreadNum(){
-            console.error('1111111111',this.$store.state.unreadNum)
+            //console.error('1111111111',this.$store.state.unreadNum)
             return this.$store.state.unreadNum;
         }
     },
@@ -91,6 +139,37 @@ export default {
         }
         //console.log( keyPath);
       },
+      closeWindow(){
+        this.$confirm('确定退出将会退出程序,确定吗？', '退出', {
+            confirmButtonText: '确认',
+            cancelButtonText: '暂不退出',
+            type: 'warning'
+            }).then(() => {                
+                var yunxinUser = {uid: 0, sdktoken: 123456}
+                this.$store.commit('updateUserUID',yunxinUser)
+                this.$store.commit('updateSgbUserInfo',{})
+                this.$store.dispatch('logout')
+                this.$router.push({path: '/login'});
+                if(window.require) {
+                    var ipc = window.require('electron').ipcRenderer
+                    ipc.send('close');
+                }
+            }).catch(() => {      
+            });
+      },
+      minWindow(){
+        //alert('最小化窗口');
+        if(window.require) {
+            var ipc = window.require('electron').ipcRenderer
+            ipc.send('min');
+        }
+      },
+      maxWindow(){
+        if(window.require) {
+            var ipc = window.require('electron').ipcRenderer
+            ipc.send('max');
+        }
+      }
     }
   }
 </script>
@@ -120,8 +199,10 @@ export default {
   }
 
   .el-menu-vertical-demo:not(.el-menu--collapse) {
-    width: 70px;
+    width: 64px;
+    border-right: 1px solid #4a98fb;
     min-height: 400px;
+    overflow-x: hidden;
   }
 
   a{
@@ -130,7 +211,7 @@ export default {
   }
 
   .nav{
-    width: 70px;
+    width: 65px;
     background: #4a98fb;
   }
   .el-menu{
@@ -139,18 +220,18 @@ export default {
 
   .logo{
     text-align: center;
-    margin: 4px auto;
+    margin: 3px auto;
     width: 100%;
   }
 
   .logo img{
     width: 50px;
     height: 50px;
-    border-radius: .2rem;
+    /* border-radius: .2rem; */
   }
   .menu{
-    height: 28px;
-    width: 28px;
+    height: 24px;
+    width: 24px;
     
   }
 </style>

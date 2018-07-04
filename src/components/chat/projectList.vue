@@ -1,6 +1,5 @@
 <template>
   <el-col 
-        
         :class="{
         'active': item.teamId == this.sessionId,
         'message-info' : 1===1,

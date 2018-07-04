@@ -2,8 +2,7 @@
 
   <div id="project">
     <el-container>
-      <el-aside  class="pannel-left" width="22rem">
-
+      <el-aside  class="pannel-left" width="22rem" v-bind:style="{'height' : (this.$store.state.windowClientHeight - 60) + 'px'}">
       <el-menu :router="false"   :default-active="this.status"  class="el-menu-demo" mode="horizontal" @select="handleSelect">
           <el-menu-item index="-1">全部</el-menu-item>
           <el-menu-item index="0">进行中</el-menu-item>
@@ -13,7 +12,7 @@
 
       <div class="block">
             <!-- 主体展示container -->
-            <el-main class='project_content_class' v-bind:style="{'height' : (this.$store.state.windowClientHeight - 121) + 'px'}" v-loading='request_data_loading'>
+            <el-main class='project_content_class' v-bind:style="{'height' : (this.$store.state.windowClientHeight - 181) + 'px'}" v-loading='request_data_loading'>
               <div v-for="item in this.getTargetArray()" 
                    :style="{'background-color': current_pid == item.id ? '#f2f2f2' : '#fff'}"
                    class="project_list" :key="item.id" 

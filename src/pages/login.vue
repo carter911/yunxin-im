@@ -1,6 +1,28 @@
+<style scoped>
+  #window-option{
+    text-align: left;
+    margin-bottom: 50px;
+  }
+  #window-option .close{
+    margin-top: -15px;
+    margin-left: -15px;
+    height: 15px;
+    width: 15px;
+    background-image: url('../../static/closeWindow.png');
+    background-size: 100%;
+    border: 0px;
+  }
+  #window-option .close:hover{
+    background-image: url('../../static/closeWindowHover.png');
+  }
+</style>
+
 <template>
   <div id="login">
     <el-card class="box-card">
+      <div id="window-option">
+        <div class="close" @click="closeWindow()" ></div>
+      </div>
       <el-form ref="loginForm" :model="form" label-width="80px" :rules="rules">
         <div  class="logo"><img src="../../static/logo400.png"/></div>
         <el-form-item label="" label-width='0px' prop="mobile">
@@ -19,12 +41,19 @@
         <div class="login-outher">
           <div>其他登录方式 </div>
           <div>
-            <!-- <span><img src='../../static/qq.png' /></span> -->
-            <a style="margin-left:10px;" :href="wx_url"><img src='../../static/weichat.png' /></a>
+            <a style="margin-left:10px;" @click="wx_login()" ><img src='../../static/weichat.png' /></a>
           </div>
         </div>
       </el-form>
     </el-card>
+    <el-dialog
+      title="第三方登录"
+      :visible.sync="isLogin"
+      width="100%"
+      top="0"
+      :before-close="handleClose">
+     <iframe width="100%" style="border:0px;height:90%;" :src="wx_url"></iframe>
+    </el-dialog>
   </div>
 </template>
 <script>
@@ -32,14 +61,13 @@ import cookie from "../utils/cookie";
 import pageUtil from "../utils/page";
 import http from "../utils/http";
 import sgb_storage from "../utils/localInfo.js"
-
-if (window.require) {
-  var ipc = window.require('electron').ipcRenderer
-}
+//const {ipcRenderer} = require('electron')
+import path  from 'path'
 export default {
   data() {
       return {
         type: '',
+        isLogin:false,
         form: {
           mobile: '',
           code: '',
@@ -91,15 +119,15 @@ export default {
       }
     },
     created(){
-      if (window.require) {
-        //alert(111)
+      if(window.require) {
+        
         //ipc.send('close');
       }
-      // let myNotification = new Notification('通知', {
+            // let myNotification = new Notification('通知', {
       //   body: '您有新的消息请注意查收'
       // })
       // window.moveTo(0, 0);
-      window.resizeTo(400, 525);//改变大小  
+      window.resizeTo(402,502);//改变大小  
       //window.resizeTo(700, 800);//改变大小  
       // window.onresize=new Function("window.resizeTo(500,   400);")   
     },
@@ -131,6 +159,18 @@ export default {
             return false;
           }
         });
+      },
+      wx_login(){
+        this.isLogin = true;
+      },
+      handleClose(){
+        this.isLogin = false;
+      },
+      closeWindow(){
+          if(window.require) {
+            var ipc = window.require('electron').ipcRenderer
+            ipc.send('close');
+          }
       },
       getCode() {
         if(this.form.mobile == "" || this.form.mobile == undefined || this.form.mobile == null ){
@@ -200,18 +240,23 @@ export default {
     
 }
 </script>
-<style scoped>
 
+<style scoped>
+  .login{
+    padding: 0px;
+    margin: 0px;
+    
+  }
   .box-card{
     width: 400px;
     margin: 0px auto 0 ;
     height: 500px;
     text-align: center;
+    padding: 0px;
 
   }
 
   .logo img{
-    
     width: 50px;
     height: 50px;
     border-radius: 6px;

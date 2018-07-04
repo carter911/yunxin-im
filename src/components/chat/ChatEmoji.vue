@@ -122,18 +122,18 @@ export default {
   .emoji-content{
     z-index: 10000;
     position: absolute;
-    border-radius: 10px;
-    border:3px solid #ddd;
-    padding: 15px;
-    background: #eee;
+    /* border-radius: 10px; */
+    border:2px solid #ddd;
+    padding: 5px;
+    background: #fff;
     width:500px;
-    height: 400px;
-    left:370px;
-    top:129px;
+    height: 320px;
+    left:0px;
+    top:-300px;
   }
   .emoji-item img{
-    padding: 3px;
-    width:30px;
-    height:30px;
+    padding: 5px;
+    width:25px;
+    height:25px;
   }
 </style>

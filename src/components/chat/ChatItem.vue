@@ -37,7 +37,9 @@
           </span>
           <span v-else-if="msg.type==='custom-type3'" class="msg-text" ref="mediaMsg"></span>
           <span v-else-if="msg.type==='image'" class="msg-text msg-image" ref="mediaMsg" @click.stop="showFullImg(msg.originLink)"></span>
-          <span v-else-if="msg.type==='video'" class="msg-text" ref="mediaMsg"></span>
+          <span v-else-if="msg.type==='video'" class="msg-text" ref="mediaMsg">
+
+          </span>
           <span v-else-if="msg.type==='audio'" class="msg-text" @click="playAudio(msg.audioSrc)">{{msg.showText}}</span>
           <span v-else-if="msg.type==='file'" class="msg-text"><a :href="msg.fileLink" target="_blank"><i class="u-icon icon-file"></i>{{msg.showText}}</a></span>
           <span v-else-if="msg.type==='notification'" class="msg-text notify">{{msg.showText}}</span>
@@ -134,6 +136,14 @@
           content: '',
           ids: '',
           custom:{}
+        },
+        videoItem:{
+          src:'',
+          width : 440,
+          height : 280,
+          autoStart : false,
+          preload : 'metadata',
+          controls : 'controls',
         },
         show_chat_list: false,
       }
@@ -333,10 +343,11 @@
           media.src = item.imgUrl
         } else if (item.type === 'video') {
           if (/(mov|mp4|ogg|webm)/i.test(item.file.ext)) {
+
             media = document.createElement('video')
             media.src = item.file.url
-            media.width = 640
-            media.height = 480
+            media.width = 440
+            media.height = 280
             media.autoStart = false
             media.preload = 'metadata'
             media.controls = 'controls'
@@ -520,6 +531,7 @@
   .msg-head img{
     border-radius: 20px;
     height: 35px;
+    width: 35px;
   }
 
   .item-me .msg_body{

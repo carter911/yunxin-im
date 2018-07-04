@@ -12,7 +12,7 @@
 .header{
     height:60px;
     line-height:60px;
-    font-size:11px;
+    font-size:13px;
     width: 100%;
 }
 .header_right{
@@ -37,11 +37,11 @@
     <div class="header">
         <div v-if="this.isBack" @click="goBack" class="header_left">< 上一页</div>
         <div class="header_right">
-            <div style="display:inline-block;vertical-align: middle;height:2.7rem;">
-                <img style="height:1.7rem;widht:1.7rem;border-radius: 1rem" :onerror="avatar" :src="userInfo.user.avatar" />
+            <div style="display:inline-block;height:2.7rem;line-height:60px;">
+                <img style="vertical-align: middle;height:1.7rem;widht:1.7rem;border-radius: 1rem" :onerror="avatar" :src="userInfo.user.avatar" />
             </div>
-                <div style="display:inline-block;vertical-align: middle;cursor: pointer;margin-right:1rem">{{userInfo.user.name}}</div>
-                <div v-on:click="logout" style="display:inline-block;vertical-align: middle;cursor: pointer;">退出登录</div>
+            <div style="display:inline-block;vertical-align: middle;cursor: pointer;margin-right:1rem">{{userInfo.user.name}}</div>
+            <div v-on:click="logout" style="display:inline-block;vertical-align: middle;cursor: pointer;">退出登录</div>
         </div>
     </div>
 </el-header>
@@ -78,7 +78,7 @@ export default {
             this.userInfo.user.avatar = "http://images.e-shigong.com/ic_home_head.png"
         },
         logout () {
-            this.$confirm('确定要退出登录吗？', '退出', {
+            this.$confirm('确定退出将会退出程序,确定吗？', '退出', {
             confirmButtonText: '确认',
             cancelButtonText: '暂不退出',
             type: 'warning'
@@ -88,8 +88,13 @@ export default {
                 this.$store.commit('updateSgbUserInfo',{})
                 this.$store.dispatch('logout')
                 this.$router.push({path: '/login'});
+                if(window.require) {
+                    var ipc = window.require('electron').ipcRenderer
+                    ipc.send('close');
+                }
             }).catch(() => {      
             });
+            
         }
     }
 }

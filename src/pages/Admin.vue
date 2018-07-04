@@ -29,7 +29,6 @@ export default {
         window.moveTo(100,100);
         window.resizeTo(1000, 700);//改变大小  
         // 提交sdk连接请求
-        
   },
   updated() {
       // 提交sdk连接请求
@@ -45,16 +44,31 @@ export default {
   },
   methods : {
       dynamicCalucatewindowHeight() {
-        this.windowHeightData = document.documentElement.clientHeight ;
+        this.windowHeightData = this.getClientHeight()
         const that = this;
         window.onresize = function temp() {
-               //console.log("-----onresize--->>" + typeof(`${document.documentElement.clientHeight}`) + "-----"+ typeof(document.documentElement.clientHeight));
-                that.windowHeightData = document.documentElement.clientHeight;    
+                that.windowHeightData = that.getClientHeight()
+                console.log("-----onresize--->>" + typeof(`${document.documentElement.clientHeight}`) + "-----"+ that.windowHeightData);
+                //that.windowHeightData = this.windowHeightData;    
                 that.$store.commit("changeWindowClienHeight" , that.windowHeightData);
             };
+
         this.$store.commit("changeWindowClienHeight" , this.windowHeightData);
-    }    
-  }
+    }, 
+    getClientHeight()
+    {
+        var clientHeight=0;
+        if(document.body.clientHeight&&document.documentElement.clientHeight)
+        {
+        var clientHeight = (document.body.clientHeight<document.documentElement.clientHeight)?document.body.clientHeight:document.documentElement.clientHeight;
+        }
+        else
+        {
+        var clientHeight = (document.body.clientHeight>document.documentElement.clientHeight)?document.body.clientHeight:document.documentElement.clientHeight;
+        }
+        return clientHeight;
+      } 
+    }
 }
 </script>
 

@@ -2,11 +2,10 @@
     <!-- 中间显示具体项目 -->
     <div> 
          <div class="content"  v-loading='data_request_loading'>
-            
             <!-- 项目详情 开始 -->
             <el-card class="content-box-card">
                    <el-row>
-                        <el-col :span="14">
+                        <el-col :span="14" >
                             <div class="project-detail">
                             <span class="project-title">{{(project.name || '') + " " + (project.door || '')}}</span><br/>
                             <span class="project-detail">施工时间：{{project.startTime | formatDate }} &nbsp;至&nbsp;
@@ -15,14 +14,12 @@
                             <span class="project-detail">当前角色：{{getCurrentRoleName()}}</span>
                         </div>
                        </el-col>
-
-                        <el-col :span="10">
-                        <div class="project-status">
-                            <span class="project-status-span" v-bind:style="{'background-color': getProjectStatusColor()}"> {{ project.statusMessage }}</span>
-                        </div>
-                    </el-col>
+                        <el-col :span="10" >
+                            <div class="project-status">
+                                <span class="project-status-span" v-bind:style="{'background-color': getProjectStatusColor()}"> {{ project.statusMessage }}</span>                                
+                            </div>
+                        </el-col>
                   </el-row> 
-
                   <hr/>
 
                   <el-row>
@@ -420,7 +417,7 @@
      text-align:left;
      font-size:15px;
      padding:2px;
-     cursor:hand;
+    cursor: pointer;
     display:flex;
     flex-direction:row;
     justify-content:flex-start;
@@ -471,7 +468,7 @@
      text-align: right;
      padding-top: 30px;
      padding-bottom: 30px;
-     height: 100%;
+     /* height: 100%; */
  }
 
 .project-status-span{

@@ -121,7 +121,7 @@ export default {
 
         onSubmit() {
             let goodsInfo =  this.goodsInfo
-            console.log('1111111111111',goodsInfo)
+            //console.log('1111111111111',goodsInfo)
             let content = {
                 data: {
                 image: goodsInfo.curr_img,

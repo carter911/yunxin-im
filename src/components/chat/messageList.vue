@@ -36,6 +36,8 @@ export default {
     methods:{
         chatInfo(item){
             let sessionId = item.id
+            // let sessionId ='p2p-sgb1693'
+            // console.error('--------->sessionid',sessionId)
             this.$store.commit('updateCurrSessionId', {
                 type: 'init',
                 sessionId:sessionId
@@ -76,7 +78,7 @@ export default {
     }
     .message-info p{
         margin-top: -10px;
-        font-size: 12px;
+        font-size: 13px;
         display: -webkit-box;
         -webkit-box-orient: vertical;
         -webkit-line-clamp: 1;

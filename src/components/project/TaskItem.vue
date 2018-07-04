@@ -64,6 +64,7 @@ export default {
 <style scope> 
 
 .task-item-class {
+    cursor: pointer;
     border-bottom: #f2f2f2 1px solid;
     padding: 2px;
     text-align:center;

@@ -317,6 +317,7 @@ export default {
 
 <style scoped>
   .m-chat-editor{
+    position: relative;
     border-top:1px solid #e9e9e9;
     height: 100px;
   }
@@ -364,6 +365,9 @@ export default {
 </style>
 
 <style>
+    .m-chat-editor{
+      position: relative;
+    }
     #m-chat-editor .el-input{
       width:100%;
       height: 200px;

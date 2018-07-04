@@ -5,17 +5,16 @@
       <div class='invalidHint' v-if='scene==="team" && teamInvalid'>
         {{`您已退出该${teamInfo && teamInfo.type==='normal' ? '讨论组':'群'}`}}
       </div>
-      <div id="chat_list" class="chat_list" v-bind:style="{height: chat_list_heihgt}">
+      <div  id="chat_list" class="chat_list" v-bind:style="{height: chatHeight}">
         <ChatList type="session" :msglist="msglist" :userInfos="userInfos" :myInfo="myInfo" :isRobot="isRobot" @msgs-loaded="msgsLoaded"/>
       </div>
-      <div class="">
+      <div>
         <ChatEditor type="session" :scene="scene" :to="to" :isRobot="isRobot" :invalid="teamInvalid || muteInTeam" :invalidHint="sendInvalidHint" :advancedTeam="teamInfo && teamInfo.type === 'advanced'"/>
       </div>
     </div>
   </div>
   </keep-alive>
 </template>
-
 <script>
 import ChatEditor from "../../components/chat/ChatEditor";
 import ChatList from "../../components/chat/ChatList";
@@ -28,7 +27,7 @@ export default {
         ChatEditor,
         ChatList
     },
-    props:['chatType','sessionId'],
+    props:['chatType','sessionId','chatHeight'],
     // 进入该页面，文档被挂载
     mounted() {
         this.$store.dispatch("setCurrSession", this.sessionId);
@@ -45,7 +44,7 @@ export default {
     // 离开该页面，此时重置当前会话
     data() {
         return {
-            chat_list_heihgt: (document.documentElement.clientHeight-235)+'px',
+            chat_height:(this.$store.state.windowClientHeight-236)+'px',
             leftBtnOptions: {
                 backText: " ",
                 preventGoBack: true
@@ -61,9 +60,16 @@ export default {
             // if(this.chatType == 'owner'){
             //     pageUtil.scrollChatOwnerDown()
             // }
+        },
+        chatHeight(){
+            console.log(this.chatHeight);
+            // let height =  this.$store.state.windowClientHeight
+            // this.chat_height = (height-236)+'px';
+            // console.error('聊天高度',height)
         }
     },
     computed: {
+
         sessionName() {
             let sessionId = this.sessionId;
             let user = null;

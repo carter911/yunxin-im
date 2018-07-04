@@ -11,12 +11,14 @@ import 'element-ui/lib/theme-chalk/index.css'
 import store from './store'
 import { formatDate } from '@/common/date.js'
 import App from './pages/App'
-import cookie from './utils/cookie'
+
+if (typeof module === 'object') {
+window.jQuery = window.$ = module.exports;
+};
 
 Vue.use(ElementUI, { size: 'small' })
 Vue.use(Vuex)
 Vue.config.productionTip = false
-
 router.beforeEach((to, from, next) => {
   if (to.matched.some(m => m.meta.auth)) {
     let userInfo = JSON.parse(localStorage.getItem('userinfo'))
