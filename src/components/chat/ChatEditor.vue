@@ -168,6 +168,7 @@ export default {
           let robotText = ''
 
           let atUsers = this.msgToSent.match(/@[^\s@$]+/g)
+        
           if (atUsers) {
             for (let i = 0; i < atUsers.length; i++) {
               let item = atUsers[i].replace('@', '')

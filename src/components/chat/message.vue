@@ -137,7 +137,11 @@ export default {
         },
         msglist() {
             let msgs = this.$store.state.currSessionMsgs;
-            console.log('------------->',msgs);
+            var arr2 = msgs.filter(function(msg, index) {
+                //console.log('------------->'+msg.type,msg);
+            });
+            
+            //console.log('------------->',msgs);
             return msgs;
         },
         teamInfo() {

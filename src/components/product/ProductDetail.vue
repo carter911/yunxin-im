@@ -23,7 +23,7 @@
                         <span>原价： {{this.productDetail.product_price}}</span>
                     </div>
                     <div class="product_new_price_content">
-                       <div><span class="product_new_price">￥:  {{this.productDetail.product_price}}</span></div> 
+                       <div><span class="product_new_price">￥:  {{this.productDetail.discount_price}}</span></div> 
                     
                        <div><span class="product_look_count">已预览:{{this.productDetail.buyerCount}}</span></div>
                     </div>
@@ -33,16 +33,16 @@
                         <div v-if="this.productDetail.collect==1" class="product_add_collect product_add_collect_active">已加入收藏</div>
                         <div class="prooduct_share_friends" @click="share2Friends">分享至朋友</div>
                     </div>
-                    <div class="connection" @click="chat">
-                        <div>联系供应商：{{this.productDetail.supplier_name}}</div><img src="../../../static/wangwang.png"/>
-                    </div>
-
+                
                     <div class="product_good_style">
                         <div class="good_style_tip" v-for="(item ,index) in this.productDetail.label" :key="index">
                             <i class="el-icon-circle-check">
                                 <span style="padding-left:12px;">{{item}}</span>
                             </i>
                         </div>
+                    </div>
+                    <div class="connection" @click="chat">
+                        <div>联系供应商：{{this.productDetail.supplier_name}}</div><img src="../../../static/wangwang.png"/>
                     </div>
             </div>
         </div>

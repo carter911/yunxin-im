@@ -8,12 +8,13 @@ export function updateCurrSessionProjectInfo ({state, commit}, SessionId) {
         var projectId = SessionId.slice(5)
         var url = projectId + '/'+ types.PROJECTS
         var params = {type: 2}
+
         http.get(url, params).then(function (res) {
-            console.log(url);
-            console.log(params);
-            console.log("updateCurrSessionProjectInfo", res.data)
+            console.error(url, res.data)
             if (res.code == 200) {
                 store.commit('updateCurrSessionProjectInfo', res.data)
+            }else{
+                alert(res.message)
             }
         }).catch(function (err) {
                 console.log(err)

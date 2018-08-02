@@ -1,5 +1,4 @@
 <template>
-
   <div id="project">
     <el-container>
       <el-aside  class="pannel-left" width="22rem" v-bind:style="{'height' : (this.$store.state.windowClientHeight - 60) + 'px'}">

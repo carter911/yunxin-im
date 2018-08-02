@@ -8,20 +8,24 @@
     rgba(0, 0, 0, 0.04);
     border: solid 0rem #ededed;
     border-bottom: solid 1px #ededed;
+    -webkit-app-region: drag;
 }
 .header{
+    width: 200px;
     height:60px;
     line-height:60px;
     font-size:13px;
     width: 100%;
+    
 }
 .header_right{
     text-align: right;
     float:right;
-    width: 300px;
+    width: 160px;
+    -webkit-app-region: no-drag;
 }
 .header_left{
-    width: 200px;
+    width: 70px;
     text-align: left;
     float: left;
     cursor: pointer;
@@ -33,8 +37,8 @@
 </style>
 
 <template>
-<el-header>
-    <div class="header">
+<el-header style="">
+    <div class="header" >
         <div v-if="this.isBack" @click="goBack" class="header_left">< 上一页</div>
         <div class="header_right">
             <div style="display:inline-block;height:2.7rem;line-height:60px;">
@@ -60,7 +64,6 @@ export default {
       '$route':'isTab'
  
     },
-    
     methods: {
         isTab(){
             console.error('header luoyou',this.$route.path);

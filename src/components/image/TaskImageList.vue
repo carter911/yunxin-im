@@ -5,7 +5,7 @@ import Log from '../../common/Log';
 <template>
     <div class="content"> 
             <div v-for="(item,index) in items" :key="index" class="image-content-task-list" @click="onImageItemClick(item,index)">
-                    <img :src="item.image + '?imageslim'" class="task_image_list"/>
+                    <img  :src="item.image + '?imageslim'" class="task_image_list"/>
                      <img :src='get_image_status(item)' class="img_status_dot"/>      
             </div>
     </div>

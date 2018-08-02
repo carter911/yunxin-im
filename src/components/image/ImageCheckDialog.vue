@@ -4,7 +4,7 @@
         <div id="image_check_dialog">
                 <el-dialog
                     title="照片说明"
-                    width="80%"
+                    width="90%"
                     top="8vh"
                     :modal="false"
                     :visible.sync="this.dialogVisible"
@@ -18,7 +18,7 @@
                             <el-carousel-item v-for="(item,index) in imageList" :key="index">
 
                             <div class="image-content">
-                                <img :src="item.image" class="image"/>
+                                <img preview="2" :preview-text="getRoleName(item)" :src="item.image" class="image"/>
                             </div>
 
                             <span>{{ getRoleName(item) }} {{ getUserName(item)}} 拍摄于 {{item.time}} </span>

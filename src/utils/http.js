@@ -69,10 +69,10 @@ export default {
 
   get (url, params) {
     var userInfo = JSON.parse(localStorage.getItem('userinfo'))
+    
     var headers = {
       'userid': userInfo ? userInfo.userId : '',
       'platform': 'web',
-      // 'teoken': userInfo.token,
       'Content-Type': 'application/x-www-form-urlencoded'
     }
 

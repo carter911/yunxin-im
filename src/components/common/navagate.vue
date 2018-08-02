@@ -10,10 +10,9 @@
     height: 15px;
   }
   #window-option .btn{
-    margin-right: 4px;
-    height: 15px;
-    width: 15px;
-   
+    margin-right: 6px;
+    height: 13px;
+    width: 13px;
     background-size: 100%;
     border: 0px;
   }
@@ -45,7 +44,7 @@
 <template>
 <keep-alive>
  <el-aside class="nav" width="65px"  :style="{'height' : (this.$store.state.windowClientHeight) + 'px'}">
-    <div id="window-option">
+    <div id="window-option" v-if="!web">
         <div id="close" class="btn close" @click="closeWindow()" ></div>
         <div class="btn min" @click="minWindow()" ></div>
         <div class="btn max" @click="maxWindow()" ></div>
@@ -79,6 +78,7 @@
 export default {
     data(){
       return {
+        web:true,
         closeWindows : false,
         home_url:'../../../static/tab_icon_home_selected.png',
         chat_url:'../../../static/tab_icon_chat_unselected.png',
@@ -92,6 +92,9 @@ export default {
         }
     },
     created(){
+      if(window.require) {
+          this.web =false;
+      }
       console.log('当前路由', this.$route.path)
         let curr = localStorage.getItem('currentMenu')
         if(this.$route.path == '/admin/chat'){
@@ -118,7 +121,6 @@ export default {
           if(this.$store.state.sessionlist.length>0){
             this.chat_url = "../../../static/tab_icon_chat_selected.png"
             this.home_url = "../../../static/tab_icon_home_unselected.png"
-
             let sessionId = this.$store.state.currSessionId
             if(!sessionId){
                 console.log("初始化",this.$store.state.sessionlist[0].id)
@@ -203,6 +205,7 @@ export default {
     border-right: 1px solid #4a98fb;
     min-height: 400px;
     overflow-x: hidden;
+    /* -webkit-app-region: drag; */
   }
 
   a{
@@ -213,8 +216,10 @@ export default {
   .nav{
     width: 65px;
     background: #4a98fb;
+    /* -webkit-app-region: drag; */
   }
   .el-menu{
+    /* -webkit-app-region: drag; */
     background: #4a98fb;
   }
 
@@ -230,6 +235,8 @@ export default {
     /* border-radius: .2rem; */
   }
   .menu{
+    
+    -webkit-app-region: no-drag;
     height: 24px;
     width: 24px;
     

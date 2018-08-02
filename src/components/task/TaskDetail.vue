@@ -46,6 +46,7 @@
                 </el-col>
                 
                 <el-col :span="20">    
+
                         <TaskImageList :items="this.imageList" 
                                         @onImageItemClick="onImageItemClick"></TaskImageList>
                 </el-col>
@@ -57,7 +58,7 @@
                     <span>新增照片</span>
                 </el-col>
 
-                <el-col :span="20">
+                <el-col :span="20" >
                     <div>
                         <el-upload 
                                 ref="upload"
@@ -65,13 +66,14 @@
                                 action=""
                                 list-type="picture-card"
                                 :limit="9"
+                                :on-exceed="uploadLimit"
                                 :auto-upload="false"
                                 :multiple="true"
+                                :before-upload="beforeUpload"
                                 :on-change="onFileChange"
                                 :file-list="uploadFileList"
                                 :on-preview="handlePictureCardPreview"
                                 :on-remove="handleRemove">
-                                
                             <i class="el-icon-plus"></i>
                         </el-upload>
 
@@ -121,6 +123,7 @@
                 </el-col>
             </el-row>
 
+
     </div>
 
     <div v-if="showImageDialog">
@@ -148,7 +151,6 @@ import TaskImageList from '../image/TaskImageList.vue'
 import Loading from "../common/Loading.vue";
 
 import * as qiniu from 'qiniu-js'
-
 export default {
     components : {
       ImageCheckDialog  ,
@@ -363,11 +365,24 @@ export default {
         } ,
 
         onFileChange(file, fileList) {
-            Log.L2("file", file);
-            Log.L2("fileList" , fileList);
-
-            this.uploadFileList = fileList;
+            var filterList = fileList.filter(item=>{
+                var isLt2M = item.size/1024/1024<2
+                if (isLt2M) {
+                    return item;
+                }else{
+                    this.$message.error('上传图片大小不能超过 2MB!');
+                }
+            });
+            this.uploadFileList = filterList;
         },  
+        uploadLimit(file, fileList){
+            this.$message.error('每次最多只能上传9张图片');
+                return;
+        },
+
+        beforeUpload(file){
+        
+        },
 
         handleRemove(file , fileList) {
             Log.L("handleRemove")
@@ -599,5 +614,8 @@ export default {
     color: #797979;
     font-size: 13px;
 }
-
+.el-icon-plus{
+    line-height: 100px;
+    text-align: center;
+}
 </style>

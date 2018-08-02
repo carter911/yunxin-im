@@ -16,8 +16,6 @@ import Chat from '@/pages/chat/index.vue'
 import Supplier from '@/pages/supplier/index.vue'
 import UserItemList from "@/components/user/UserItemList.vue"
 import ProductDetail from "@/components/product/ProductDetail.vue"
-
-
 Vue.use(Router)
 export default new Router({
   mode: 'history',
@@ -48,7 +46,7 @@ export default new Router({
           path: 'chat',
           component: Chat,
           meta: {
-            keepAlive: true
+            //keepAlive: true
           },
         },
         {
@@ -56,14 +54,14 @@ export default new Router({
           path: 'supplier/supplierId/:supplierId/projectId/:projectId',
           component: Supplier,
           meta: {
-            keepAlive: true
+            //keepAlive: true
           },
         },
         {
           path:'/admin/product/detail/:projectId/:productId',
           name:'productDetail',
           component:ProductDetail,
-          meta: {auth : true,keepAlive: true}
+          meta: {auth : true}
         },
     
     

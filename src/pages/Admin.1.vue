@@ -7,20 +7,6 @@
       <el-main><router-view/></el-main>
       <el-footer>上海奇已信息科技有限公司-施公宝</el-footer>
     </el-container>
-
-    <el-dialog 
-      title="更新提示"
-      :visible.sync="isUpdate"
-      width="40%">
-      <p v-if="this.downloadPercent>0">更新进度 <el-progress :percentage="1"></el-progress></p>
-      <p style="text-align:left">1 优化mac最小化问题</p>
-      <p style="text-align:left">2 优化材料商聊天</p>
-      <span slot="footer" class="dialog-footer">
-        <el-button type="primary" @click="nowUpdate">立即更新</el-button>
-      </span>
-    </el-dialog>
-
-
   </el-container>
   </div>
 </template>
@@ -35,28 +21,28 @@ import pageUtil from "../utils/page";
 
 export default {
   data:function(){return {
-    isUpdate:false,
+    centerDialogVisible:false,
     downloadPercent:0
   }},
   components:{
     Navagate,Header,Footers
   },
   created(){
-        var current_version = 20180601;
-        var that = this;
-        if(window.require) {
-          var ipc = window.require('electron').ipcRenderer
-          ipc.send('resizeWindow',1000,700);
-          ipc.send('get-app-version')
-          ipc.on('got-app-version', function (event, version) {
-            console.log(current_version,version)
-            if(current_version>version){
-                console.error('更新当前版本',current_version)
-                that.isUpdate = true;
-            }
-          })
-        } 
-        // 提交sdk连接请求
+    var current_version = '20180601';
+    //window.resizeTo(402,502);//改变大小  
+    if(window.require) {
+      var ipc = window.require('electron').ipcRenderer
+      ipc.send('resizeWindow',1000,700);
+      // ipc.send('get-app-version')
+      // ipc.on('got-app-version', function (event, version) {
+      //   if(current_version>version){
+      //       this.centerDialogVisible = true;
+      //   }
+      // })
+      //ipc.send('close');
+    }
+       
+      
   },
   updated() {
       // 提交sdk连接请求
@@ -80,6 +66,7 @@ export default {
                 //that.windowHeightData = this.windowHeightData;    
                 that.$store.commit("changeWindowClienHeight" , that.windowHeightData);
             };
+
         this.$store.commit("changeWindowClienHeight" , this.windowHeightData);
     }, 
     getClientHeight()
@@ -94,8 +81,11 @@ export default {
         var clientHeight = (document.body.clientHeight>document.documentElement.clientHeight)?document.body.clientHeight:document.documentElement.clientHeight;
         }
         return clientHeight;
+      } 
     },
-    nowUpdate(){
+    handleClose1(done)
+    {
+      this.centerDialogVisible = true
       if(window.require) {
         console.error('------开始检查更新------')
         var ipcRenderer = window.require('electron').ipcRenderer
@@ -105,10 +95,11 @@ export default {
           console.log('返回消息', text)
           this.tips = text
         })
+        
         ipcRenderer.on('downloadProgress', (event, progressObj) => {
           console.log('下载', progressObj)
           //this.progress = progressObj.percent
-          this.downloadPercent = parseInt(progressObj.percent) || 0
+          this.downloadPercent = progressObj.percent || 0
         })
         ipcRenderer.on('isUpdateNow', () => {
           console.log('是否现在更新')
@@ -116,9 +107,6 @@ export default {
         })
       }
     }
-
-
-  }
 }
 </script>
 

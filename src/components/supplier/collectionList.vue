@@ -30,7 +30,6 @@
 }
 
 .supplier_header_close img{
-    cursor: pointer;
     margin-top: 10px;
     margin-right: 10px;
     width:15px;
@@ -58,6 +57,7 @@
     cursor: pointer;
 }
 .cagegory img{
+    cursor: pointer;
     background: #fff;
     border: 1px solid #ddd;
     text-align: center;
@@ -70,33 +70,69 @@
     margin: 0px;
     font-size: 13px;
 }
+.empty{
+    margin-top:20px;
+}
+
+.goods{
+    border-bottom: 1px solid #dddd;
+}
+.goods img{
+    cursor: pointer;
+    width:70px;
+    height: 50px;
+    border-radius: 5px;
+    margin-top: 10px;
+    padding: 5px;
+}
+.goods_info{
+    font-size: 12px;
+    text-align: left;
+}
+.goods_info h2 {
+    cursor: pointer;
+    font-size: 12px;
+    height: 28px;
+}
+
+.goods_info p{
+    cursor: pointer;
+    color: #f24c49;
+}
+
+.loading{
+    font-size: 11px;
+    text-align: center;
+    margin-top: 20px;
+}
+.load_true{
+    cursor: pointer;
+}
 </style>
 <template>
   <div id="supplier_list" >
       <div class="supplier_header">
-          <div class="supplier_header_name"><i class="el-icon-goods"></i>供应商</div>
+          <div class="supplier_header_name"><i class="el-icon-star-off"></i>我的收藏</div>
           <div class="supplier_header_close" v-on:click="closeRightSupplier()">
               <img src="../../../static/ic_close.png" style=";"/> 
           </div>
       </div>
       <div class="supplier_body" :style="{height : (this.$store.state.windowClientHeight - 122) + 'px'}">
-        <div v-if="this.supplierList.length<=0">
-            暂无供应商
+        <div class="empty" v-if="this.list.length<=0">
+            暂无收藏
         </div>
-        <div v-if="this.supplierList.length>0" class="supplier_list">
-            <el-row  :gutter="20"  v-for="(item,k) in this.supplierList" :key="k"  class="category_list">
-            <div class="category_name">{{item.category_name}}</div>
-            <div v-if="item.children.length>0">
-                <el-col :span="6"  v-for="(category,key) in item.children" :key="key" class="cagegory">
-                    
-                    <div class="grid-content bg-purple goods" @click="changeSupplier(category.supplier_id)">
-                    <img width="100%" @error="defaultImage(category)" v-bind:src="category.image">
-                    <h2>{{category.supplier_name}}</h2>
-                    </div>
+        <div v-if="this.list.length>0" class="supplier_list">
+            <el-row v-for="(item,key) in list" :key='key' class="goods">
+                <el-col :span="8">
+                    <img @click="changeGoods(item.product_id)" width="100%"  :src="item.product_image"/>
                 </el-col>
-            </div>
-            
-        </el-row>
+                <el-col class="goods_info" :span="16">
+                    <h2 @click="changeGoods(item.product_id)">{{item.product_name}}</h2>
+                    <p>{{item.discount_price}}元</p>
+                </el-col>
+            </el-row>
+            <div class="loading " v-if="isLast">--我也是有底线的--</div>
+            <div class="loading load_true" v-if="!isLast" @click="this.getList">下一页</div>
         </div>
         
       </div>
@@ -111,45 +147,67 @@ import http from '../../utils/http'
 export default {
     data(){
         return {
-            supplierList :[],
+            list : [],
+            pageSize: 20,
+            pageIndex: 1,
+            isLast: false,
         }
     },
     props: {
+        companyId:{
+            type : Number,
+            required:true 
+        },
         projectId:{
             type : Number,
             required:true 
         }
     },
     created(){
-        this.getcompanySupplier()
-        //this.getGoodsDetail()
+        this.getList()
     },
     mounted(){
         //console.log('获取请求数据')
-        
     },
     methods:{
         defaultImage(item){
             item.image = "/../../../static/logo400.png"
         },
         closeRightSupplier() {
-            this.$emit("closeRightSupplier");
+            this.$emit("closeCollectionList");
         },
-        getcompanySupplier(){
+        getList(){
             let self = this
             let params = {
-                projectId:this.projectId,
-                type:1,
+                companyId:this.companyId,
+                pageIndex:this.pageIndex,
+                pageSize:this.pageSize
             }
             console.log(params)
-            http.get('companySupplier',params).then(function (res) {
+            http.get('collectList',params).then(function (res) {
                 if (res.code == 200) {
-                    console.log('供应商列表----------->',res.data)
-                    self.supplierList = res.data
+                    self.pageIndex = self.pageIndex+1;
+                    if(res.data!=null){
+                        if(self.pageSize>res.data.length){
+                            self.isLast = true;
+                        }
+                        res.data.forEach(element => {
+                            self.list.push(element)
+                        });
+                    }else {
+                        self.isLast = true;
+                    }
+                    
                 }
             }).catch(function (err) {
                     console.log('hhtp请求错误', err)
             })
+        },
+        changeGoods(productId){
+            //商品详情
+            
+            let path = "/admin/product/detail/"+parseInt(this.projectId)+"/"+parseInt(productId)
+            this.$router.push({path: path});
         },
         changeSupplier(supplierId){
             let path = "/admin/supplier/supplierId/"+supplierId+"/projectId/"+this.projectId

@@ -8,7 +8,6 @@
                         <el-menu-item index="project">项目列表</el-menu-item>
                     </el-menu>
                 </div>
-
                 <el-col  :span="24" class="pannel-left" v-bind:style="{height: (this.$store.state.windowClientHeight-107)+'px'}">
                     <div class="keyword">
                         <el-input v-model="keyword" placeholder="请输入要查找的群组或者名称">
@@ -82,15 +81,16 @@
                 </el-main>
                 <el-aside class="project-option" width="150px"  v-bind:style="{height: (this.$store.state.windowClientHeight-60)+'px'}">
                     <div class="project-name">{{this.projectName}}</div>
-                    <ul class="project-option-tab">
-                        <li><i class="el-icon-bell"></i><span @click="this.lookRemind">
+                    <ul v-if="currSessionProjectInfo.auth" class="project-option-tab">
+                        <li v-if="currSessionProjectInfo.auth.indexOf('402')>=0"><i class="el-icon-bell"></i><span @click="this.lookRemind">
                             查看提醒 <b style="color:red;" v-if="projectDetail.messageNum>0">({{this.projectDetail.messageNum}})</b>
                         </span></li>
-                        <li><i class="el-icon-date"></i><span @click="this.lookTask">查看任务<b style="color:red;" v-if="projectDetail.taskNum>0">({{this.projectDetail.taskNum}})</b></span></li>
-                        <li><i class="el-icon-goods"></i><span @click="this.lookSupplier">查看材料商</span></li>
-                        <li><i class="el-icon-tickets"></i><span @click="this.lookUserList">成员列表</span></li>
-                        <li><i class="el-icon-edit-outline"></i><span @click="this.addNewRemind">添加提醒</span></li>
-                        <li v-if="canAddNewTask()"><i class="el-icon-edit"></i><span @click="this.addNewTask">添加任务</span></li>
+                        <li v-if="currSessionProjectInfo.auth.indexOf('312')>=0"><i class="el-icon-date"></i><span @click="this.lookTask">查看任务<b style="color:red;" v-if="projectDetail.taskNum>0">({{this.projectDetail.taskNum}})</b></span></li>
+                        <li v-if="currSessionProjectInfo.auth.indexOf('801')>=0"><i class="el-icon-goods"></i><span @click="this.lookSupplier">查看材料商</span></li>
+                        <li v-if="currSessionProjectInfo.auth.indexOf('212')>=0"><i class="el-icon-tickets"></i><span @click="this.lookUserList">成员列表</span></li>
+                        <li v-if="currSessionProjectInfo.auth.indexOf('704')>=0"><i class="el-icon-star-off"></i><span @click="this.lookCollection">我的收藏</span></li>
+                        <li v-if="currSessionProjectInfo.auth.indexOf('401')>=0"><i class="el-icon-edit-outline"></i><span @click="this.addNewRemind">添加提醒</span></li>
+                        <li v-if="currSessionProjectInfo.auth.indexOf('303')>=0" ><i class="el-icon-edit"></i><span @click="this.addNewTask">添加任务</span></li>
                     </ul>
                 </el-aside>
             </el-container>
@@ -116,7 +116,6 @@
                                 :remindId="this.currentRemindId"
                                 :taskId="this.currentTaskId"
                                 @closeDetailRightPannel="closeDetailRightPannel">
-
                 </RightDetailPannel>
         </div>
 
@@ -127,6 +126,17 @@
                 :projectId="this.projectId"
                 @closeRightSupplier="closeRightSupplier"
                 ></supplierList>
+        </div>
+
+        <!-- 显示我的收藏 -->
+        <div id="right-popup-3" class="right-popup" 
+            :style="{'right' : pannelLeft+'px' , 'height' : (this.$store.state.windowClientHeight - 61) + 'px'}" 
+            v-if="this.show_collection_list"> 
+                <collectionList
+                :companyId="this.currSessionProjectInfo.companyId"
+                :projectId="this.projectId"
+                @closeCollectionList="closeCollectionList"
+                ></collectionList>
         </div>
 
         <!-- 添加新提醒 -->
@@ -160,9 +170,9 @@ import RightDetailPannel from "../project/RightDetailPannel.vue"
 import NewRemindAdd from "../../components/remind/NewRemindAdd.vue"
 import NewTaskAdd from "../../components/task/NewTaskAdd.vue"
 import supplierList from  "../../components/supplier/suplierList.vue"
+import collectionList from  "../../components/supplier/collectionList.vue"
 import cookie from '../../utils/cookie';
 import ShareList from '../../components/chat/ShareList.vue'
-
 
 export default {
     components: {
@@ -173,7 +183,8 @@ export default {
         RightDetailPannel,
         NewRemindAdd,
         NewTaskAdd,
-        supplierList
+        supplierList,
+        collectionList
     },
     created(){
 
@@ -228,6 +239,8 @@ export default {
             show_right_supplier_pop: false,
             // 是否显示商品列表
             show_chat_list:false,
+            //是否显示收藏
+            show_collection_list:false,
             projectDetail:{
                 messageNum :0,
                 taskNum: 0,
@@ -236,16 +249,6 @@ export default {
         }
     },
     watch:{
-        // currSessionProjectInfo (news, old){
-
-        //     return this.currSessionProjectInfo;
-        // }
-        // keyword(key){
-        //     console.log(this.defaultActive)
-        //     console.error(key)
-        //     console.log(this.sessionlist);
-            
-        // },
     },
     computed: {
         currSessionProjectInfo() {
@@ -263,9 +266,10 @@ export default {
         
         currSessionId (){
             let projectInfo = localStorage.getItem('currSessionProjectInfo')
+            console.error('------------>',projectInfo)
             let sessionId = this.$store.state.currSessionId
+            
             if(sessionId != null){
-                //console.error(sessionId.indexOf('p2p'))
                 if(sessionId.indexOf('p2p')>=0){
                     this.isP2p = true;
                     this.isTeam = false;
@@ -376,7 +380,6 @@ export default {
                    projectInfo.auth.indexOf(Log.CREATE_NEW_TASK()) >= 0 && 
                    projectInfo.statusCode != Log.PROJECT_TYPE_COMPLETED();
         },
-
         addNewTask() {
             this.showAddNewTask = true ;
         },
@@ -404,7 +407,6 @@ export default {
         },
 
         lookSupplier() {
-            console.log(this.pannelLeft)
             let self = this
             let x = 0
             let timer = setInterval(function(){
@@ -423,6 +425,28 @@ export default {
                 }
             },30);
             this.show_right_supplier_pop = true ;
+        },
+
+        lookCollection() {
+            console.log(this.pannelLeft)
+            let self = this
+            let x = 0
+            let timer = setInterval(function(){
+                if(self.pannelLeft>=0){
+                    clearInterval(timer);
+                }
+                else{
+                    let size =  (x-10)*(x-10)
+                    x=x+1;
+                    console.log(self.pannelLeft)
+                    var currLeft = self.pannelLeft+size*1.5;
+                    if(currLeft>0){
+                        currLeft = 0;
+                    }
+                    self.pannelLeft = currLeft;
+                }
+            },30);
+            this.show_collection_list = true ;
         },
 
 
@@ -456,6 +480,12 @@ export default {
             console.log('父组件关闭')
             this.pannelLeft = -540
             this.show_right_supplier_pop = false ;
+        },
+        //关闭我的收藏
+        closeCollectionList() {
+            console.log('父组件关闭')
+            this.pannelLeft = -540
+            this.show_collection_list = false ;
         },
 
         closeRightPannel() {

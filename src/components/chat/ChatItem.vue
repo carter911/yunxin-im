@@ -36,9 +36,10 @@
             <img @click="lookGoods" v-if="this.shareItem.image3!=''" class="shareImage" :src="shareItem.image3"/>
           </span>
           <span v-else-if="msg.type==='custom-type3'" class="msg-text" ref="mediaMsg"></span>
-          <span v-else-if="msg.type==='image'" class="msg-text msg-image" ref="mediaMsg" @click.stop="showFullImg(msg.originLink)"></span>
+          <span v-else-if="msg.type==='image'" class="msg-text msg-image">
+              <img alt="111" preview="1" preview-text="描述文字" :src="imageUrl"/>
+          </span>
           <span v-else-if="msg.type==='video'" class="msg-text" ref="mediaMsg">
-
           </span>
           <span v-else-if="msg.type==='audio'" class="msg-text" @click="playAudio(msg.audioSrc)">{{msg.showText}}</span>
           <span v-else-if="msg.type==='file'" class="msg-text"><a :href="msg.fileLink" target="_blank"><i class="u-icon icon-file"></i>{{msg.showText}}</a></span>
@@ -137,6 +138,7 @@
           ids: '',
           custom:{}
         },
+        imageUrl:'',
         videoItem:{
           src:'',
           width : 440,
@@ -241,6 +243,7 @@
       } else if (item.type === 'image') {
         // 原始图片全屏显示
         item.originLink = item.file.url
+        this.imageUrl = item.file.url
       } else if (item.type === 'video') {
         // ...
       } else if (item.type === 'audio') {
@@ -308,8 +311,8 @@
         let media = null
         if (item.type === 'image') {
           // 图片消息缩略图
-          media = new Image()
-          media.src = item.file.url
+        //   media = new Image()
+        //   media.src = item.file.url
         } else if (item.type === 'custom-type1') {
           // 商品详情
           let content = JSON.parse(item.content)
