@@ -41,7 +41,11 @@ export default {
 
     methods : {
         gotoDetail(item) {
-           item.isActive = 0 ;
+           if(item.isActive === 1)  {
+               item.isActive = 0 ;
+               this.$store.commit("saveTempCurrentTaskId",item.id);
+           }
+
            this.$emit("getTaskDetail",item.id);
         },
 

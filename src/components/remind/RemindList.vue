@@ -13,6 +13,7 @@
                                                 <el-menu-item index="0">未读</el-menu-item>
                                                 <el-menu-item index="1">全部</el-menu-item>
                         </el-menu>
+
                     </div>
                     
 
@@ -23,7 +24,7 @@
                             </el-col> -->
 
                     <div class="remind-title-right" v-on:click="action_close_pop()">
-                                        <img src="../../../static/ic_close.png" style="width:20px;height:20px;"/> 
+                            <img src="../../../static/ic_close.png" style="width:20px;height:20px;"/> 
                     </div> 
                 </div>
 
@@ -55,6 +56,7 @@ import Log from '../../common/Log';
 import RemindItem from "../../components/project/RemindItem.vue"
 import BottomLoading from '../common/BottomLoading.vue'
 import http from "../../utils/http"
+import store from '../../store';
 export default {
 
   components : {
@@ -80,6 +82,7 @@ export default {
             currentType : '0',
 
             unReadPageIndex : 1 ,
+
             allPageIndex : 1,
 
             //提醒全部数据
@@ -93,9 +96,17 @@ export default {
 
             pageSize : 20 ,
 
-            request_data_loading : false
+            request_data_loading : false, 
+
+            currentRemindId: this.getCurrentRemindId,
      }
  },
+
+computed: {
+    getCurrentRemindId: function () {
+        return this.$store.getters.getCurrentRemindId;
+    }
+},
 
 methods : {
     handleSelect(type){
@@ -121,27 +132,27 @@ methods : {
     },
 
     shouldShowLoadMore(){
-        if(this.currentType == '0') return this.unReadRemindEntity.canLoadMore;
+        if(this.currentType === '0') return this.unReadRemindEntity.canLoadMore;
         return this.allRemindEntity.canLoadMore;
     },
 
     checkPageDataEmpty(){
-        if(this.currentType == '0') return this.unReadRemindEntity.dataIsEmpty;
+        if(this.currentType === '0') return this.unReadRemindEntity.dataIsEmpty;
         return this.allRemindEntity.dataIsEmpty;
     },
 
     get_data_has_loaded(){
-        if(this.currentType == '0') return this.unReadRemindEntity.hasBeenLoading;
+        if(this.currentType === '0') return this.unReadRemindEntity.hasBeenLoading;
         return this.allRemindEntity.hasBeenLoading;
     },
 
     get_current_remind_list(){
-        if(this.currentType == '0') return this.unReadRemindEntity.list;
+        if(this.currentType === '0') return this.unReadRemindEntity.list;
         return this.allRemindEntity.list;
     },
 
     get_current_page(){
-        if(this.currentType == '0') return this.unReadRemindEntity.currentPageIndex;
+        if(this.currentType === '0') return this.unReadRemindEntity.currentPageIndex;
         return this.allRemindEntity.currentPageIndex;
     },
 
@@ -149,7 +160,7 @@ methods : {
      * 当前页面是否为空
      */
     get_current_page_is_empty(){
-        if(this.currentType == '0') return this.unReadRemindEntity.dataIsEmpty;
+        if(this.currentType === '0') return this.unReadRemindEntity.dataIsEmpty;
         return this.allRemindEntity.dataIsEmpty;
     },
 
@@ -165,7 +176,7 @@ methods : {
         let isUnRead = self.currentType === '0';
         let pageIndex = this.get_current_page() ;
 
-        if(pageIndex == 1) {
+        if(pageIndex === 1) {
             this.request_data_loading = true ;
         }
 
@@ -217,6 +228,25 @@ methods : {
           }
           
           obj.dataIsEmpty = !(obj.list != null && obj.list.length) ;
+    },
+
+    //清除小红点
+    clearRedDot(remindId){
+        console.log("-----clearRedDot-------->>" + remindId);
+
+        if(null == remindId || remindId === 0 ) return;
+        this.unReadRemindEntity.list.forEach(function (each) {
+            if(each.id === remindId) {
+                each.isLike = 1;
+            }
+        });
+
+        this.allRemindEntity.list.forEach(function (each) {
+            if(each.id === remindId) {
+                each.isLike = 1;
+            }
+        });
+
     }
 },
 
@@ -230,12 +260,20 @@ watch : {
              this.currentType = '0';
              this.request_remind_list();
          }
-    }
+    },
+
+    getCurrentRemindId:function (newOne,oldOne) {
+        //console.log("-----clearRedDot-------->>" + oldOne + " ---- " + newOne);
+        this.clearRedDot(newOne);
+    },
 },
+
+
 
 created() {
     this.request_remind_list();
-  }
+},
+
 }
 
 class RemindListEntity {

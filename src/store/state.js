@@ -114,4 +114,9 @@ export default {
   supplierGoods: {},
   supplierGoodsDetail: {},
 
+  //当前提醒Id
+  currentRemindId:0,
+
+  //当前任务Id
+  currentTaskId:0,
 }

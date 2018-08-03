@@ -3,20 +3,16 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
 import router from './router'
-import axios from 'axios'
-import VueAxios from 'vue-axios'
-import Qs from 'qs'
 import ElementUI from 'element-ui'
 import 'element-ui/lib/theme-chalk/index.css'
 import store from './store'
-import { formatDate } from '@/common/date.js'
+import {formatDate} from '@/common/date.js'
 import App from './pages/App'
-import is from 'electron-is'
-import Os from 'os'
 import preview from 'vue-photo-preview'
 import 'vue-photo-preview/dist/skin.css'
 
 import EasyScroll from 'easyscroll';
+
 Vue.use(EasyScroll);
 if (typeof module === 'object') {
 window.jQuery = window.$ = module.exports;

@@ -35,18 +35,22 @@
                         </el-select>
                 </el-form-item>
 
-                <el-form-item label="添加图片" style="text-align:left;" multiple="true">
-                       <el-upload
-                            ref="upload"
-                            action=""
-                            :before-remove="this.onFileDelete"
-                            :http-request="this.onFileUpload"
-                            :file-list="this.upload_image_list"
-                            list-type="picture-card">
-                           
-                            <i class="el-icon-plus"></i>
-                        </el-upload> 
-                </el-form-item>
+                <!--<el-form-item label="添加图片" style="text-align:left;" multiple="true">-->
+                       <!--<el-upload-->
+                            <!--ref="upload"-->
+                            <!--action=""-->
+                            <!--:before-remove="this.onFileDelete"-->
+                            <!--:http-request="this.onFileUpload"-->
+                            <!--:file-list="this.upload_image_list"-->
+                            <!--list-type="picture-card">-->
+                           <!---->
+                            <!--<i class="el-icon-plus"></i>-->
+                        <!--</el-upload> -->
+                <!--</el-form-item>-->
+
+                <!--上传组件-->
+                <UploadPlugin ref="uploadPlugin"></UploadPlugin>
+
 
                 <el-form-item style="text-align:left;">
                         <el-button type="primary" @click="formOnSubmit('remindForm')">立即创建</el-button>
@@ -65,7 +69,12 @@ import http from "../../utils/http"
 //引入qiniusdk
 import * as qiniu from 'qiniu-js'
 
+import UploadPlugin from "../image/UploadPlugin"
+
 export default {
+    components :{
+        UploadPlugin
+    },
 
     props : {
         pid :{
@@ -115,13 +124,13 @@ export default {
             } ,
 
             //上传图片 image:url / tempFile
-            imageUploadMap: [],
+            //imageUploadMap: [],
             
             //图片上传Item
-            imageToken:"",
+            //imageToken:"",
 
             //上传图片集合
-            upload_image_list:[],
+            //upload_image_list:[],
 
             //防止表单重复提交
             formSubmit:false , 
@@ -147,7 +156,7 @@ export default {
 
         clearAndReset(formName){
             this.$refs[formName].resetFields();
-            this.$refs.upload.clearFiles();
+            this.$refs.uploadPlugin.clearFiles();
             this.closeNewRemindAddDialog();
         },
 
@@ -166,15 +175,19 @@ export default {
         gotoSubmitForm(){
             if(this.formSubmit) return ;
             this.formSubmit = true ;
+            let self = this;
 
             //转换图片地址
             let imageList = "" ;
-            this.imageUploadMap.forEach(item => {
-                imageList += Log.getImageSuffix() +  item.url + ","
-            })
+            this.$refs.uploadPlugin.imageUploadMap.forEach((item,index) => {
+                imageList += Log.getImageSuffix() +  item.url ;
+                if(index < self.$refs.uploadPlugin.imageUploadMap.length) {
+                    imageList += ",";
+                }
+            });
 
             let url = "message" ;
-            var params = { 
+            let params = {
                            projectId : this.pid, 
                            startTime : this.form.startTime / 1000 ,
                            workId : this.form.workId.join(",") , 
@@ -188,7 +201,7 @@ export default {
                 this.formSubmit = false ;
 
                 Log.L(response);
-                if(response.code == 200) {
+                if(response.code === 200) {
                     this.showMsg("success","添加提醒成功");
                     this.clearAndReset('remindForm');
                 }else {
@@ -205,7 +218,7 @@ export default {
 
         parse_role_data(result) {
             let tempArray = [] ;
-            if(result == undefined || result.length == 0) return;
+            if(result === undefined || result.length === 0) return;
             
             Log.L("parse_role_data:");
             Log.L(result);
@@ -225,13 +238,13 @@ export default {
         //获取角色列表
         request_role_list() {
             let url = "getmessagerole";
-            var params = { projectId:this.pid };
+            let params = { projectId:this.pid };
 
             http.get(url, params).then(response => {
                 Log.L(response);
 
                 let result = response ;
-                if(result.code == 200) {
+                if(result.code === 200) {
 
                     //parse data
                     this.parse_role_data(result.data);
@@ -243,17 +256,6 @@ export default {
             });
         },
 
-        //获取token
-        request_qiniu_token() {
-            http.get("gettoken").then(response => {
-                Log.L2("获取token中:" , response)
-
-                let result = response;
-                if(result.code == 200){
-                    this.imageToken = result.data.token;
-                } 
-            } , response => {}) ;
-        } ,
 
         //获取关联任务
         request_task_list() {
@@ -273,50 +275,50 @@ export default {
         },
 
         //图片上传
-        onFileUpload(obj) {
-            let self = this;
-
-            if(undefined == obj || null == obj) return;
-            //check the imageToken;
-            let url = Log.getRandomImageFileName();
-            Log.L2("upload url : " , url) ;
-
-            var observable = qiniu.upload(obj.file,  url, this.imageToken, null, null) ;
-            observable.subscribe({
-                next(res) {
-                    Log.L2("next upload ", res);
-                } ,
-
-                error(err) {
-                    Log.L2("upload error" , err);
-                },
-
-                complete(res) {
-                    Log.L2("upload complete" , res);
-                    let target = { url : url, obj : obj} ;
-
-                    self.imageUploadMap[self.imageUploadMap.length] = target;
-                }
-            });
-        },
-
-        //移除删除的文件
-        onFileDelete(file,fileList) {
-           if(null == file || undefined == file) return ;
-           
-           this.imageUploadMap.forEach(ele => {
-                if(null != ele && ele.obj.file == file.raw) {
-                    this.imageUploadMap.splice(this.imageUploadMap.indexOf(ele),1);
-                }
-           }) ;
-        }
+        // onFileUpload(obj) {
+        //     let self = this;
+        //
+        //     if(undefined == obj || null == obj) return;
+        //     //check the imageToken;
+        //     let url = Log.getRandomImageFileName();
+        //     Log.L2("upload url : " , url) ;
+        //
+        //     var observable = qiniu.upload(obj.file,  url, this.imageToken, null, null) ;
+        //     observable.subscribe({
+        //         next(res) {
+        //             Log.L2("next upload ", res);
+        //         } ,
+        //
+        //         error(err) {
+        //             Log.L2("upload error" , err);
+        //         },
+        //
+        //         complete(res) {
+        //             Log.L2("upload complete" , res);
+        //             let target = { url : url, obj : obj} ;
+        //
+        //             self.imageUploadMap[self.imageUploadMap.length] = target;
+        //         }
+        //     });
+        // },
+        //
+        // //移除删除的文件
+        // onFileDelete(file,fileList) {
+        //    if(null == file || undefined == file) return ;
+        //
+        //    this.imageUploadMap.forEach(ele => {
+        //         if(null != ele && ele.obj.file == file.raw) {
+        //             this.imageUploadMap.splice(this.imageUploadMap.indexOf(ele),1);
+        //         }
+        //    }) ;
+        // }
     },
 
     mounted () {
         Log.L("-----get data-------1");
         this.request_role_list();
         this.request_task_list();
-        this.request_qiniu_token();
+        //this.request_qiniu_token();
         Log.L("-----get data-------2");
     }
 }

@@ -14,11 +14,13 @@
                             <span class="project-detail">当前角色：{{getCurrentRoleName()}}</span>
                         </div>
                        </el-col>
+
                         <el-col :span="10" >
                             <div class="project-status">
                                 <span class="project-status-span" v-bind:style="{'background-color': getProjectStatusColor()}"> {{ project.statusMessage }}</span>                                
                             </div>
                         </el-col>
+
                   </el-row> 
                   <hr/>
 
@@ -45,6 +47,7 @@
                   <div>
 
                     <RemindItem :remindList="this.remindList"
+                                :showUnRead="true"
                                 @getRemindDetail="this.getRemindDetail"
                     ></RemindItem>
     
@@ -98,7 +101,7 @@
                 </RightPannel>
         </div>
 
-        <div id="left-popup" class="left-popup" 
+        <div id="left-popup2" class="left-popup"
             :style="{'right' : '0px' , 'height' : (this.$store.state.windowClientHeight - 61) + 'px'}" 
             v-if="this.show_right_detail_pop"> 
                 <RightDetailPannel :showType="this.show_right_detail_type" 
@@ -151,12 +154,6 @@
             NewTaskAdd,
             RightPannel,
             RightDetailPannel
-        },
-
-        computed: {
-            getWindowClientHeight(){       
-                return this.$store.state.windowClientHeight;
-            }
         },
 
         props:{
@@ -327,7 +324,7 @@
             
             let url = user_id +  "/usermessage";
             var params = { projectId:this.pid,
-                           pageSize: 2,
+                           pageSize: 10,
                            isActive:"-1",
                            pageIndex: 1}
 
@@ -342,6 +339,7 @@
                 }
              },response => {
                 //TODO 
+
         });
     },
 
@@ -382,6 +380,40 @@
             this.require_project_detail();
             this.require_remind_list();
             this.require_task_list();
+        },
+
+        getCurrentRemindId : function (newOne, oldOne) {
+            if(null == newOne || newOne === 0 ) return;
+
+            this.remindList.forEach(function (each) {
+                if(each.id === newOne) {
+                    each.isLike = 1;
+                }
+            });
+        },
+
+        getCurrentTaskId : function (newOne, oldONe) {
+            if(null == newOne || 0 === newOne) return;
+
+            this.taskList.forEach(function (each) {
+                if(each.id === newOne) {
+                    each.isActive = 0;
+                }
+            })
+        }
+    },
+
+    computed:{
+        getCurrentRemindId(){
+            return this.$store.getters.getCurrentRemindId
+        },
+
+        getCurrentTaskId(){
+            return this.$store.getters.getCurrentTaskId
+        },
+        
+        getWindowClientHeight(){
+            return this.$store.state.windowClientHeight;
         }
     }
 

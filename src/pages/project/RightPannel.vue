@@ -10,19 +10,19 @@
 <template>
     <div>
         <div v-if="this.showType === 0">
-                <RemindList :pid="this.projectId" 
+                <RemindList :pid="this.projectId"
                 @closeRightPannel="this.closeRightPannel"
                 @getRemindDetail="this.getRemindDetail" ></RemindList>
         </div>
 
-        <div v-if="this.showType == 1"> 
+        <div v-if="this.showType === 1">
                 <TaskList :pid="this.projectId"
                 @getTaskDetail="this.getTaskDetail"
                 @closeRightPannel="this.closeRightPannel"></TaskList>
         </div>
 
-        <div v-if="this.showType == 2">
-            <UserItemList :pid="this.projectId" 
+        <div v-if="this.showType === 2">
+            <UserItemList :pid="this.projectId"
                           @closeRightPannel="this.closeRightPannel">
 
             </UserItemList>
@@ -39,12 +39,15 @@ import RemindList    from  "../../components/remind/RemindList.vue"
 import TaskList      from  "../../components/task/TaskList.vue"
 import UserItemList  from  "../../components/user/UserItemList.vue"
 
+import UploadPlugin  from  "../../components/image/UploadPlugin.vue"
+
 
 export default {
     components : {
         RemindList,
         TaskList,
         UserItemList,
+        UploadPlugin
     },
 
     props: {

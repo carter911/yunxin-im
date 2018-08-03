@@ -1,6 +1,6 @@
 <template>
         <div>
-            <div class="remind-item" v-for="(item,index) in this.remindList" 
+            <div class="remind-item" v-for="(item,index) in this.getSuitableTaskList()" 
                  :key="index"
                  onmouseover="this.style.backgroundColor='#F4F9FD'"  
                  onmouseout="this.style.backgroundColor='#FFFFFF'"
@@ -26,27 +26,44 @@
 <script>
 
 import Log from '../../common/Log';
+import sgb from "../../common/sgbLogic"
+import store from '../../store';
+
 
 export default {
     props : {
         remindList  : {
             type : Array,
             required:true 
+        },
+        
+        showUnRead: {
+            type:Boolean,
+            required:false
         }
     },
     
     data()  {
         return {
-
         }
     },
 
     methods : {
+        getSuitableTaskList(){
+            return sgb.getSuitableTaskList(this.showUnRead,this.remindList);
+        },
+
         getRemindDetail(item) {
             //this.$router.push("/project/remind/detail/" + id)
-            item.isLike = 1 ;
+            // 发送当前state值
+            if(item.isLike === 0) {
+                this.$store.commit("saveTempCurrentRemindId",item.id);
+                item.isLike = 1 ;
+            }
+
             this.$emit("getRemindDetail",item.id);
         },
+
 
         get_remind_avatar(item) {
             if(item == null || item == undefined || item.createUser == null || item.createUser.avatar == undefined) 

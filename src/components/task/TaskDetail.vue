@@ -60,7 +60,7 @@
 
                 <el-col :span="20" >
                     <div>
-                        <el-upload 
+                        <el-upload
                                 ref="upload"
                                 class="el-upload-class"
                                 action=""
@@ -80,6 +80,7 @@
                         <el-button type="primary" @click="handle2upload"> 确定上传 </el-button>
                     </div>
                 </el-col>
+
 
             </el-row>
 
@@ -151,11 +152,17 @@ import TaskImageList from '../image/TaskImageList.vue'
 import Loading from "../common/Loading.vue";
 
 import * as qiniu from 'qiniu-js'
+
+import UploadPlugin from "../image/UploadPlugin"
+
+
 export default {
     components : {
       ImageCheckDialog  ,
       TaskImageList,
-      Loading
+      Loading,
+      UploadPlugin
+
     },
 
     props: {
@@ -231,24 +238,24 @@ export default {
 
         //检查是否存在图片审核权限
         hasCheckPicAuth(){
-            if(null == this.taskDetail || undefined == this.taskDetail.optionRoleId) return false;
-            return this.taskDetail.optionRoleId == this.taskDetail.roleId;
+            if(null == this.taskDetail || undefined === this.taskDetail.optionRoleId) return false;
+            return this.taskDetail.optionRoleId === this.taskDetail.roleId;
         },
 
         //检查是否可以上传图片
         checkRolePicAuth(){
-            if(null == this.taskDetail || undefined == this.taskDetail.auth) return false;
+            if(null == this.taskDetail || undefined === this.taskDetail.auth) return false;
             
             return this.taskDetail.auth.indexOf(Log.TASK_UPLOAD_PICTURE()) >= 0
                    &&
-                   this.taskDetail.statusCode != Log.TASK_COMPLETED();
+                   this.taskDetail.statusCode !== Log.TASK_COMPLETED();
         },
 
         //检查是否存在提交任务提交权限
         checkOptionTask() {
-            if(null == this.taskDetail || undefined == this.taskDetail.auth) return false;
+            if(null == this.taskDetail || undefined === this.taskDetail.auth) return false;
 
-            let taskOperation = this.taskDetail.optionRoleId == this.taskDetail.roleId;
+            let taskOperation = this.taskDetail.optionRoleId === this.taskDetail.roleId;
             let taskAuth = this.taskDetail.auth.indexOf(Log.TASK_UP_LOAD()) >= 0;
             let taskStatus = this.taskDetail.statusCode === 0 || this.taskDetail.statusCode === 3 ;
 
@@ -259,13 +266,13 @@ export default {
 
         //检查是否存在审核任务权限
         checkCheckTask(){
-            if(null == this.taskDetail || undefined == this.taskDetail.auth) return false;
+            if(null == this.taskDetail || undefined === this.taskDetail.auth) return false;
             Log.L("--Log---");
 
             //内部审核权限
             if(this.taskDetail.statusCode === 1) {
                 let taskInnerCheckAuth          = this.taskDetail.auth.indexOf(Log.TASK_INNER_TASK_CHECK()) >= 0;
-                let taskCheckStatus             = this.taskDetail.checkRoleId == this.taskDetail.roleId;
+                let taskCheckStatus             = this.taskDetail.checkRoleId === this.taskDetail.roleId;
                 let innerAuth                   = taskInnerCheckAuth && taskCheckStatus;
 
                 //业主权限
@@ -365,19 +372,19 @@ export default {
         } ,
 
         onFileChange(file, fileList) {
-            var filterList = fileList.filter(item=>{
-                var isLt2M = item.size/1024/1024<2
-                if (isLt2M) {
-                    return item;
-                }else{
-                    this.$message.error('上传图片大小不能超过 2MB!');
-                }
+            let filterList = fileList.filter(item=>{
+                    let isLt2M = item.size/1024/1024 < 2
+                    if (isLt2M) {
+                        return item;
+                    }else{
+                        this.$message.error('上传图片大小不能超过 2MB!');
+                    }
             });
             this.uploadFileList = filterList;
-        },  
+        },
+
         uploadLimit(file, fileList){
             this.$message.error('每次最多只能上传9张图片');
-                return;
         },
 
         beforeUpload(file){
@@ -462,7 +469,7 @@ export default {
         onFileUpload(obj) {
             let self = this;
 
-            if(undefined == obj || null == obj) return;
+            if(undefined === obj || null == obj) return;
             //check the imageToken;
             let url = Log.getRandomImageFileName();
             Log.L2("upload url : " , url) ;

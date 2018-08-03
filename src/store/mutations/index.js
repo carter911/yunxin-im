@@ -614,10 +614,21 @@ export default {
   getSupplierBanner (state, banner) {
     state.supplierBanner = banner
   },
+
   getGoods (state, goods) {
     state.supplierGoods = goods
   },
+  
   getGoodsDetail (state, goodsDetail) {
     state.supplierGoodsDetail = goodsDetail
+  },
+
+  saveTempCurrentRemindId(state, remindId) {
+    state.currentRemindId = remindId;
+  },
+  
+  saveTempCurrentTaskId(state, taskId) {
+    state.currentTaskId = taskId ;
   }
+
 }
