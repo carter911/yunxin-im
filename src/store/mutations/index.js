@@ -137,7 +137,8 @@ export default {
       state.sessionMap[item.id] = item
     })
     this.state.unreadNum = num;
-    console.error('未读数量',state.unreadNum)
+
+    console.log('未读数量',state.unreadNum)
   },
   deleteSessions (state, sessionIds) {
     const nim = state.nim

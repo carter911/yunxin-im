@@ -66,8 +66,8 @@ export default {
     },
     methods: {
         isTab(){
-            console.error('header luoyou',this.$route.path);
-            if(this.$route.path == '/admin/chat' || this.$route.path == '/admin/project'){
+            //console.error('header luoyou',this.$route.path);
+            if(this.$route.path === '/admin/chat' || this.$route.path === '/admin/project'){
                 this.isBack = false;
             }else{
                 this.isBack = true;

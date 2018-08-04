@@ -51,7 +51,8 @@ export default {
           ipc.on('got-app-version', function (event, version) {
             console.log(current_version,version)
             if(current_version>version){
-                console.error('更新当前版本',current_version)
+                //console.error('更新当前版本',current_version)
+
                 that.isUpdate = true;
             }
           })

@@ -69,9 +69,7 @@
 
         mounted() {
             let self = this;
-
-            console.log("created------->>");
-
+            //console.log("created------->>");
             window.document.getElementById("sendText").addEventListener('paste', function (e) {
 
                 //window.clipboardData.getData("Text") ie下获取黏贴的内容 e.clipboardData.getData("text/plain")火狐谷歌下获取黏贴的内容

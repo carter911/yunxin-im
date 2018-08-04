@@ -300,22 +300,24 @@
             },
 
             currSessionId() {
-                let projectInfo = localStorage.getItem('currSessionProjectInfo')
-                console.error('------------>', projectInfo)
-                let sessionId = this.$store.state.currSessionId
+                //let projectInfo = localStorage.getItem('currSessionProjectInfo')
+                //console.error('------------>', projectInfo)
 
+                let sessionId = this.$store.state.currSessionId
                 if (sessionId != null) {
                     if (sessionId.indexOf('p2p') >= 0) {
                         this.isP2p = true;
                         this.isTeam = false;
                         sessionId = sessionId.replace(/^p2p-/, '')
                         this.p2pName = this.userInfos[sessionId]['nick']
-                        console.error('单聊', sessionId)
+
+                        //console.error('单聊', sessionId)
                     } else if (sessionId.indexOf('team') >= 0) {
                         this.isTeam = true;
                         this.isP2p = false;
-                        console.error('群聊', this.$store.state.currSessionProjectInfo)
                         this.selectTeam(sessionId)
+
+                        //console.error('群聊', this.$store.state.currSessionProjectInfo)
                     }
                 }
                 return this.$store.state.currSessionId
@@ -555,7 +557,7 @@
             },
             selectTeam(sessionId) {
                 var projectInfo = this.currSessionProjectInfo
-                this.projectId = projectInfo.id;
+                this.projectId = projectInfo.id || 0;
 
                 this.projectDetail.messageNum = projectInfo.messageNum
                 this.projectDetail.taskNum = projectInfo.taskNum

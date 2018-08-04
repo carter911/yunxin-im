@@ -24,7 +24,7 @@ function updateSessionAccount (sessions) {
 
 // onSessions只在初始化完成后回调
 export function onSessions (sessions) {
-  console.error('session初始化信息',sessions);
+  //console.error('session初始化信息',sessions);
   updateSessionAccount(sessions)
   store.commit('updateSessions', sessions)
   //console.error('当前的session----->', sessions)

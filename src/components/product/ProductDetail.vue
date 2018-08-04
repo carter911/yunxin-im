@@ -218,7 +218,7 @@ export default {
         },
         beforeChat(done){
             let sessionId = localStorage.getItem('supplierChatId')
-            console.error('供应商聊天关闭',sessionId)
+            //console.error('供应商聊天关闭',sessionId)
             this.$store.commit('updateCurrSessionId', {
                 type: 'init',
                 sessionId:sessionId
@@ -231,10 +231,10 @@ export default {
             done();
         },
         chat(){
-            console.error('供应商聊天1',this.$store.state.currSessionId)
+            //console.error('供应商聊天1',this.$store.state.currSessionId)
             localStorage.setItem('supplierChatId',this.$store.state.currSessionId)
             let sessionId = 'p2p-'+this.productDetail.client
-            console.error('供应商聊天',sessionId)
+            //console.error('供应商聊天',sessionId)
             this.$store.commit('updateCurrSessionId', {
                 type: 'init',
                 sessionId:sessionId

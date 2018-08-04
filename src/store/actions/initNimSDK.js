@@ -125,7 +125,8 @@ export function initNimSDK ({ state, commit, dispatch }, loginInfo) {
       // 说明在聊天列表页
       //dispatch('onSessions')
       if (store.state.currSessionId) {
-        console.error('init success')
+
+        //console.error('init success')
         dispatch('setCurrSession', store.state.currSessionId)
       }
     }

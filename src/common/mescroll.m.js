@@ -949,7 +949,9 @@
 	MeScroll.prototype.getDomById = function(id) {
 		var dom;
 		if(id) dom = document.getElementById(id);
-		if(!dom) console.error("the element with id as \"" + id + "\" can not be found: document.getElementById(\"" + id + "\")==null");
+		if(!dom) {
+			//console.error("the element with id as \"" + id + "\" can not be found: document.getElementById(\"" + id + "\")==null");
+        }
 		return dom;
 	}
 

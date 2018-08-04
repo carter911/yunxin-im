@@ -231,7 +231,7 @@ module.exports = {
                     successCb && successCb('success');
                 } else {
                     errorCb && errorCb('error');
-                    console.error('error when generating rootCA', error);
+                    // console.error('error when generating rootCA', error);
                 }
             });
         } else {

@@ -321,9 +321,12 @@
             if(null != userInfo) {
                 user_id = userInfo.userId;
             }
-            
+
+            console.log("-----require_remind_list---->>deddd---->>" + this.pid)
+
+
             let url = user_id +  "/usermessage";
-            var params = { projectId:this.pid,
+            let params = { projectId:this.pid,
                            pageSize: 10,
                            isActive:"-1",
                            pageIndex: 1}
@@ -411,7 +414,7 @@
         getCurrentTaskId(){
             return this.$store.getters.getCurrentTaskId
         },
-        
+
         getWindowClientHeight(){
             return this.$store.state.windowClientHeight;
         }

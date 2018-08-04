@@ -201,11 +201,11 @@ export default {
                 Log.L(response.data);
                 let result = response.data;
 
-                if (this.status == "0") {  //未读List
-                    if(result.code == 200) {
+                if (this.status === "0") {  //未读List
+                    if(result.code === 200) {
                         let newRemindList = result.data || [];
                         
-                        if(page.num == 1) {
+                        if(page.num === 1) {
                             this.un_finish_array = [];
                         }
 

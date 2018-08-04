@@ -1,34 +1,39 @@
 // Action 提交的是 mutation，而不是直接变更状态。
 // Action 可以包含任意异步操作。
-import cookie from '../../utils/cookie'
-import pageUtil from '../../utils/page'
-
 /* 导出actions方法 */
-import {showLoading, hideLoading, showFullscreenImg, hideFullscreenImg} from './widgetUi'
+import {hideFullscreenImg, hideLoading, showFullscreenImg, showLoading} from './widgetUi'
 import {initNimSDK} from './initNimSDK'
 import {initChatroomSDK, resetChatroomSDK} from './initChatroomSDK'
 import {updateBlack} from './blacks'
-import {updateFriend, addFriend, deleteFriend} from './friends'
-import {resetSearchResult, searchUsers, searchTeam} from './search'
-import {deleteSession, setCurrSession, resetCurrSession, resetSessionUnread} from './session'
-import {sendMsg, sendBase64Url,sendFileMsg, sendMsgReceipt, sendRobotMsg, revocateMsg, getHistoryMsgs, resetNoMoreHistoryMsgs, continueRobotMsg} from './msgs'
-import {markSysMsgRead, resetSysMsgs, deleteSysMsgs, markCustomSysMsgRead} from './sysMsgs'
-import {sendChatroomMsg, sendChatroomRobotMsg, sendChatroomFileMsg, getChatroomHistoryMsgs} from './chatroomMsgs'
-import {initChatroomInfos, getChatroomInfo, getChatroomMembers, clearChatroomMembers} from './chatroomInfos'
-import { delegateTeamFunction, onTeamNotificationMsg, enterSettingPage, getTeamMembers, checkTeamMsgReceipt, getTeamMsgReads} from './team'
+import {addFriend, deleteFriend, updateFriend} from './friends'
+import {resetSearchResult, searchTeam, searchUsers} from './search'
+import {deleteSession, resetCurrSession, resetSessionUnread, setCurrSession} from './session'
+import {
+    continueRobotMsg, getHistoryMsgs, resetNoMoreHistoryMsgs, revocateMsg, sendBase64Url, sendFileMsg, sendMsg,
+    sendMsgReceipt, sendRobotMsg
+} from './msgs'
+import {deleteSysMsgs, markCustomSysMsgRead, markSysMsgRead, resetSysMsgs} from './sysMsgs'
+import {getChatroomHistoryMsgs, sendChatroomFileMsg, sendChatroomMsg, sendChatroomRobotMsg} from './chatroomMsgs'
+import {clearChatroomMembers, getChatroomInfo, getChatroomMembers, initChatroomInfos} from './chatroomInfos'
+import {
+    checkTeamMsgReceipt, delegateTeamFunction, enterSettingPage, getTeamMembers, getTeamMsgReads,
+    onTeamNotificationMsg
+} from './team'
 
-import {updateCurrSessionProjectInfo, getCurrentProjectInfo} from './project'
-import {getGoods, getSupplierBanner, getGoodsDetail} from './supplier'
+import {getCurrentProjectInfo, updateCurrSessionProjectInfo} from './project'
+import {getGoods, getGoodsDetail, getSupplierBanner} from './supplier'
 
 
 function connectNim ({state, commit, dispatch}, obj) {
   let {force} = Object.assign({}, obj)
+
   // 操作为内容页刷新页面，此时无nim实例
-  console.error(state.nim);
+  console.log(state.nim);
+
   // 切换账户
-  var uid = localStorage.getItem("uid");
-  var  ischange = 0;
-  if(state.nim &&  state.nim.account != uid){
+  let uid = localStorage.getItem("uid");
+  let  ischange = 0;
+  if(state.nim &&  state.nim.account !== uid){
     ischange =1
   }
 
@@ -37,13 +42,14 @@ function connectNim ({state, commit, dispatch}, obj) {
       uid: localStorage.getItem("uid"),
       sdktoken: localStorage.getItem("sdktoken")
     }
-    console.error('初始化用户信息', loginInfo,localStorage.getItem("uid"),localStorage.getItem("sdktoken"))
+
+    //console.error('初始化用户信息', loginInfo,localStorage.getItem("uid"),localStorage.getItem("sdktoken"))
     if (!loginInfo.uid) {
       // 无cookie，直接跳转登录页
       //pageUtil.turnPage('无历史登录记录，请重新登录', 'login')
     } else {
       // 有cookie，重新登录
-      console.log('----连接云信用户信息------', loginInfo)
+      //console.log('----连接云信用户信息------', loginInfo)
       dispatch('initNimSDK', loginInfo)
     }
   }
@@ -82,7 +88,8 @@ export default {
 
   // 连接sdk请求，false表示强制重连
   connect (store, obj) {
-    console.log('重新连接------------------------')
+    //console.log('重新连接------------------------')
+      
     let {type} = Object.assign({}, obj)
     // type 可为 nim chatroom
     type = type || 'nim'

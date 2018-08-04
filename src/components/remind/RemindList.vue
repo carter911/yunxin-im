@@ -68,7 +68,7 @@
         props: {
             pid: {
                 type: Number,
-                require: true
+                require: false
             }
         },
 
@@ -187,6 +187,9 @@
 
             //请求提醒列表
             request_remind_list(refresh = true) {
+                //console.log("---request_remind_list---->>" + this.pid)
+                if(null == this.pid || 0 === this.pid) return ;
+                
                 if (this.get_data_has_loaded() && refresh) return;
                 let self = this;
                 let url = this.pid + "/usermessage";
