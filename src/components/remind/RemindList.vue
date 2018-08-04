@@ -34,13 +34,13 @@
 
             <RemindItem :remindList="get_current_remind_list()"
                         @getRemindDetail="getRemindDetail"
-                        v-if="!checkPageDataEmpty()"></RemindItem>
+                        v-if="!this.checkPageDataEmpty"></RemindItem>
 
-            <div v-if="checkPageDataEmpty()">
+            <div v-if="this.checkPageDataEmpty">
                 <img class="data-img-empty" src="../../../static/pic_content_empty.png"/>
             </div>
 
-            <div v-if="this.shouldShowLoadMore()">
+            <div v-if="this.shouldShowLoadMore">
                 <BottomLoading :loadingType="this.buttomLoadingType"
                                @loadingMore="loadingMore">
                 </BottomLoading>
@@ -106,7 +106,18 @@
         computed: {
             getCurrentRemindId: function () {
                 return this.$store.getters.getCurrentRemindId;
+            },
+
+            shouldShowLoadMore() {
+                if (this.currentType === '0') return this.unReadRemindEntity.canLoadMore;
+                return this.allRemindEntity.canLoadMore;
+            },
+
+            checkPageDataEmpty() {
+                if (this.currentType === '0') return this.unReadRemindEntity.dataIsEmpty;
+                return this.allRemindEntity.dataIsEmpty;
             }
+
         },
 
         methods: {
@@ -120,6 +131,20 @@
 
             getRemindDetail(remindId) {
                 this.$emit("getRemindDetail", remindId);
+
+                // if(this.currentType === "0") {
+                //     let index = -1 ;
+                //     this.unReadRemindEntity.list.forEach((item,i) => {
+                //         if(item.id === remindId){
+                //             index = i ;
+                //         }
+                //     });
+                //
+                //     if(index >= 0) {
+                //         this.unReadRemindEntity.list.splice(index,1);
+                //         this.unReadRemindEntity.dataIsEmpty = this.unReadRemindEntity.list.length === 0;
+                //     }
+                // }
             },
 
             action_add_new() {
@@ -132,15 +157,6 @@
                 this.$emit("closeRightPannel");
             },
 
-            shouldShowLoadMore() {
-                if (this.currentType === '0') return this.unReadRemindEntity.canLoadMore;
-                return this.allRemindEntity.canLoadMore;
-            },
-
-            checkPageDataEmpty() {
-                if (this.currentType === '0') return this.unReadRemindEntity.dataIsEmpty;
-                return this.allRemindEntity.dataIsEmpty;
-            },
 
             get_data_has_loaded() {
                 if (this.currentType === '0') return this.unReadRemindEntity.hasBeenLoading;
@@ -235,10 +251,13 @@
             clearRedDot(remindId) {
                 console.log("-----clearRedDot-------->>" + remindId);
 
+
+                let self = this ;
                 if (null == remindId || remindId === 0) return;
-                this.unReadRemindEntity.list.forEach(function (each) {
+                this.unReadRemindEntity.list.forEach(function (each, index) {
                     if (each.id === remindId) {
-                        each.isLike = 1;
+                        self.unReadRemindEntity.list.splice(index, 1);
+                        self.unReadRemindEntity.dataIsEmpty = self.unReadRemindEntity.list.length === 0;
                     }
                 });
 

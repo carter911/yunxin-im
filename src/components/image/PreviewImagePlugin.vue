@@ -4,11 +4,12 @@
         <div style="width:200px; height:auto; text-align:center">
             <img id="id_img_source" :src="imageUrl"/>
         </div>
-
+        
         <div style="text-align:center;margin-top:12px;">
-            <el-button type="primary" @click="rotate()">旋转图片</el-button>
+            <el-button type="primary" @click="sendImage()">确认发送</el-button>
         </div>
     </div>
+
 
 </template>
 
@@ -23,21 +24,13 @@ export default {
 
     data() {
         return {
-            deg : 0 ,
+
         }
     },
 
     methods : {
-        rotate() {
-            let img = document.getElementById("id_img_source");
-            if(null == img) return ;
-
-            this.deg = (this.deg + 90) % 360 ;
-    		img.style.webkitTransform="rotate("+this.deg+"deg)"
-			img.style.MozTransform="rotate("+this.deg+"deg)"
-			img.style.msTransform="rotate("+this.deg+"deg)"
-			img.style.OTransform="rotate("+this.deg+"deg)"
-			img.style.transform="rotate("+this.deg+"deg)";
+        sendImage(){
+            this.$emit("sendImage",this.imageUrl);
         }
     }
 }

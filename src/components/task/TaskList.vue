@@ -34,11 +34,11 @@
                 <TaskItem :taskList="get_current_task_list()" @getTaskDetail="this.getTaskDetail"></TaskItem>
             </div>
 
-            <div v-if="checkPageDataEmpty()">
+            <div v-if="this.checkPageDataEmpty">
                 <img class="data-img-empty" src="../../../static/pic_content_empty.png"/>
             </div>
 
-            <div v-if="this.shouldShowLoadMore()">
+            <div v-if="this.shouldShowLoadMore">
                 <BottomLoading :loadingType="this.buttomLoadingType"
                                @loadingMore="loadingMore">
                 </BottomLoading>
@@ -98,28 +98,19 @@
                 this.$emit("closeRightPannel");
             },
 
-            shouldShowLoadMore() {
-                if (this.currentType == '0') return this.unReadTaskEntity.canLoadMore;
-                return this.allTaskEntity.canLoadMore;
-            },
-
-            checkPageDataEmpty() {
-                if (this.currentType == '0') return this.unReadTaskEntity.dataIsEmpty;
-                return this.allTaskEntity.dataIsEmpty;
-            },
 
             get_data_has_loaded() {
-                if (this.currentType == '0') return this.unReadTaskEntity.hasBeenLoading;
+                if (this.currentType === '0') return this.unReadTaskEntity.hasBeenLoading;
                 return this.allTaskEntity.hasBeenLoading;
             },
 
             get_current_task_list() {
-                if (this.currentType == '0') return this.unReadTaskEntity.list;
+                if (this.currentType === '0') return this.unReadTaskEntity.list;
                 return this.allTaskEntity.list;
             },
 
             get_current_page() {
-                if (this.currentType == '0') return this.unReadTaskEntity.currentPageIndex;
+                if (this.currentType === '0') return this.unReadTaskEntity.currentPageIndex;
                 return this.allTaskEntity.currentPageIndex;
             },
 
@@ -194,15 +185,20 @@
             //清除小红点
             clearRedDot(taskId) {
                 if(null == taskId || taskId === 0 ) return;
+
+                let self = this ;
                 this.allTaskEntity.list.forEach(function (each) {
                     if(each.id === taskId) {
-                        each.isLike = 1;
+                        each.isLike = 0;
                     }
                 });
 
-                this.unReadTaskEntity.list.forEach(function (each) {
+                this.unReadTaskEntity.list.forEach(function (each,index) {
                     if(each.id === taskId) {
-                        each.isLike = 1;
+                        if(index >= 0) {
+                            self.unReadTaskEntity.list.splice(index,1);
+                            self.unReadTaskEntity.dataIsEmpty = self.unReadTaskEntity.list.length === 0;
+                        }
                     }
                 });
             }
@@ -227,7 +223,9 @@
                 }
             },
 
-            getCurrentTaskId: function (newOne, oneOne) {
+            getCurrentTaskId: function (newOne, oldOne) {
+                console.log("-----getCurrentTaskId----->>" + newOne + "--" + oldOne)
+
                 this.clearRedDot(newOne);
             }
 
@@ -236,7 +234,18 @@
         computed: {
             getCurrentTaskId: function () {
                 return this.$store.getters.getCurrentTaskId
-            }
+            },
+
+            shouldShowLoadMore() {
+                if (this.currentType === '0') return this.unReadTaskEntity.canLoadMore;
+                return this.allTaskEntity.canLoadMore;
+            },
+
+            checkPageDataEmpty() {
+                if (this.currentType === '0') return this.unReadTaskEntity.dataIsEmpty;
+                return this.allTaskEntity.dataIsEmpty;
+            },
+
         }
     }
 

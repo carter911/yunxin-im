@@ -33,8 +33,7 @@ let sgb = Object.create(null)
         }
     }
 
-
-    console.log("-------getSuitablTaskList----", result);
+    //console.log("-------getSuitablTaskList----", result);
 
    return result; 
 }

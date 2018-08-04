@@ -232,6 +232,48 @@ export function sendFileMsg ({state, commit}, obj) {
   })
 }
 
+
+// 发送图片的base64图片
+// obj = {scene, to, dataURL}
+export function sendBase64Url({state, commit}, obj) {
+    const nim = state.nim
+    let {scene, to, dataURL} = obj
+    let type = 'image'
+    if(dataURL == null || dataURL.length === 0) return ;
+
+    store.dispatch('showLoading')
+    let custom = getCustom({state, commit})
+    nim.sendFile({
+        scene,
+        to,
+        type,
+        dataURL,
+        custom: custom,
+        uploadprogress: function (data) {
+            // console.log(data.percentageText)
+        },
+        uploaderror: function () {
+            console && console.log('上传失败')
+        },
+        uploaddone: function(error, file) {
+            // console.log(error);
+            // console.log(file);
+        },
+        beforesend: function (msg) {
+            // console && console.log('正在发送消息, id=', msg);
+        },
+        done: function (error, msg) {
+            onSendMsgDone (error, msg)
+        }
+    })
+
+
+
+
+
+}
+
+
 // 发送机器人消息
 export function sendRobotMsg ({state, commit}, obj) {
   const nim = state.nim
