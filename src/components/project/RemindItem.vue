@@ -70,15 +70,17 @@ export default {
                 return Log.DEFAULT_IMAGE();
 
             let avatar = item.createUser.avatar;
-            return (avatar == null || avatar.length == 0 ) ? Log.DEFAULT_IMAGE() : avatar + Log.QINIU_PICTURE_SUFFIX();
+            return (avatar == null || avatar.length === 0 ) ? Log.DEFAULT_IMAGE() : avatar + Log.QINIU_PICTURE_SUFFIX();
         },
 
         parse_remind_detail(detail) {
-            if(detail == null || detail == undefined) return "";
-            var dd = detail.replace(/<\/?.+?>/g,"");
-            var dds = dd.replace(/ /g,"");//dds为得到后的内容
-            
-            return dds.length >= 30 ? dds.substring(0,30) + "..." : dds ;
+
+            if(detail == null || detail === undefined) return "";
+            let dd = detail.replace(/<\/?.+?>/g,"");
+            let dds = dd.replace(/ /g,"");    //dds为得到后的内容
+            let ddds = dds.replace("\s+","");
+
+            return dds.length >= 30 ? ddds.substring(0,30) + "..." : ddds ;
         }
     }
 
