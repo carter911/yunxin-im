@@ -111,6 +111,7 @@
     overflow: auto;
     padding-bottom: 20px;
   }
+  
   .p-chat-list {
     padding: 5px;
     .u-icon {
@@ -120,4 +121,6 @@
       vertical-align: bottom;
     }
   }
+  
+  
 </style>

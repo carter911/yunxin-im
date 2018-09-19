@@ -28,7 +28,7 @@
         <p style="">{{msg.fromNick}}<span v-if="msg.role">({{msg.role}})</span></p>
         
         <div class="msg_content">
-          <span style="height:14px;width:14px;" v-if="msg.type==='text'" class="msg-text" v-html="msg.showText"></span>
+          <span style="height:14px;width:14px" v-if="msg.type==='text'" class="msg-text" v-html="msg.showText"></span>
           <span v-else-if="msg.type==='custom-type1'" class="msg-text" >
             <p @click="lookGoods">{{this.shareItem.content}}</p>
             <img @click="lookGoods" v-if="this.shareItem.image !=''" class="shareImage" :src="shareItem.image"/>
@@ -37,11 +37,13 @@
           </span>
           <span v-else-if="msg.type==='custom-type3'" class="msg-text" ref="mediaMsg"></span>
           <span v-else-if="msg.type==='image'" class="msg-text msg-image">
-              <img alt="111" preview="1" preview-text="描述文字" :src="imageUrl"/>
+              <img style="width:100%;height: auto" alt="111" preview="1" preview-text="" :src="imageUrl"/>
           </span>
           <span v-else-if="msg.type==='video'" class="msg-text" ref="mediaMsg">
           </span>
-          <span v-else-if="msg.type==='audio'" class="msg-text" @click="playAudio(msg.audioSrc)">{{msg.showText}}</span>
+          <span v-else-if="msg.type==='audio'" class="msg-text" @click="playAudio(msg.audioSrc)">
+            {{msg.showText}}
+          </span>
           <span v-else-if="msg.type==='file'" class="msg-text"><a :href="msg.fileLink" target="_blank"><i class="u-icon icon-file"></i>{{msg.showText}}</a></span>
           <span v-else-if="msg.type==='notification'" class="msg-text notify">{{msg.showText}}</span>
           <span v-else class="msg-text" v-html="msg.showText"></span>
@@ -139,6 +141,7 @@
           custom:{}
         },
         imageUrl:'',
+        videoUrl:'',
         videoItem:{
           src:'',
           width : 440,
@@ -147,6 +150,7 @@
           preload : 'metadata',
           controls : 'controls',
         },
+          isAt:false,
         show_chat_list: false,
       }
     },
@@ -205,16 +209,21 @@
         item.showText = item.text
       } else if (item.type === 'text') {
         // 文本消息
+          console.log(this.myInfo);
         item.showText = util.escape(item.text)
         if (/\[[^\]]+\]/.test(item.showText)) {
-          let emojiItems = item.showText.match(/\[[^\]]+\]/g)
-          emojiItems.forEach(text => {
-            let emojiCnt = emojiObj.emojiList.emoji
-            if (emojiCnt[text]) {
-              item.showText = item.showText.replace(text, `<img class="emoji-small" src="${emojiCnt[text].img}">`)
-            }
-          })
-        }
+              let emojiItems = item.showText.match(/\[[^\]]+\]/g)
+              emojiItems.forEach(text => {
+                  let emojiCnt = emojiObj.emojiList.emoji
+                  if (emojiCnt[text]) {
+                      item.showText = item.showText.replace(text, `<img class="emoji-small" src="${emojiCnt[text].img}">`)
+                  }
+              })
+          }
+          if(item.text.indexOf("@"+this.myInfo.nick) !=-1){
+              item.showText = "<span style='color: red'>"+item.showText+"</span>";
+          }
+          
       } else if (item.type === 'custom') {
         let content = JSON.parse(item.content)
         // type 1 为猜拳消息
@@ -245,7 +254,8 @@
         item.originLink = item.file.url
         this.imageUrl = item.file.url
       } else if (item.type === 'video') {
-        // ...
+          console.error('video',item)
+          this.videoUrl = item.file.url;
       } else if (item.type === 'audio') {
         item.audioSrc = item.file.mp3Url
         item.showText = Math.round(item.file.dur / 1000) + '" 点击播放'
@@ -345,11 +355,12 @@
           media.className = 'emoji-big'
           media.src = item.imgUrl
         } else if (item.type === 'video') {
+            console.log('url---------->',item.file.url)
           if (/(mov|mp4|ogg|webm)/i.test(item.file.ext)) {
-
+            this.videoUrl = item.file.url;
             media = document.createElement('video')
             media.src = item.file.url
-            media.width = 440
+            media.width = 300
             media.height = 280
             media.autoStart = false
             media.preload = 'metadata'
@@ -361,6 +372,7 @@
             aLink.innerHTML = `<i class="u-icon icon-file"></i>${video.name}`
             this.$refs.mediaMsg.appendChild(aLink)
           }
+
         }
 
         if (media) {
@@ -514,7 +526,7 @@
   .item-you .msg_body{
     float: left;
     padding: 0px;
-    max-width: 60%;
+    max-width: 80%;
   }
 
   .item-me{
@@ -541,7 +553,7 @@
     margin-right: 10px;
     float: right;
     padding: 0px;
-    max-width: 60%;
+    max-width: 80%;
   }
 
  .item-me .msg_content:after{

@@ -3,7 +3,8 @@
     <el-container>
       <el-aside  class="pannel-left" width="22rem" v-bind:style="{'height' : (this.$store.state.windowClientHeight - 60) + 'px'}">
       <el-menu :router="false"   :default-active="this.status"  class="el-menu-demo" mode="horizontal" @select="handleSelect">
-          <el-menu-item index="-1">全部</el-menu-item>
+          <!--<el-menu-item index="-1">全部</el-menu-item>-->
+          <el-menu-item index="-2">意向</el-menu-item>
           <el-menu-item index="0">进行中</el-menu-item>
           <el-menu-item index="3">已延期</el-menu-item>
           <el-menu-item index="5">已结束</el-menu-item>
@@ -11,7 +12,7 @@
 
       <div class="block">
             <!-- 主体展示container -->
-            <el-main class='project_content_class' v-bind:style="{'height' : (this.$store.state.windowClientHeight - 181) + 'px'}" v-loading='request_data_loading'>
+            <el-main class='project_content_class' v-bind:style="{'height' : (this.$store.state.windowClientHeight - 121) + 'px'}" v-loading='request_data_loading'>
               <div v-for="item in this.getTargetArray()" 
                    :style="{'background-color': current_pid == item.id ? '#f2f2f2' : '#fff'}"
                    class="project_list" :key="item.id" 
@@ -65,8 +66,8 @@ export default {
       return {
         temp : true,
 
-        status:"-1",
-        currentStatus: -1,  //默认先加载全部
+        status:"-2",
+        currentStatus: -2,  //默认先加载全部
         pageShow :0,
         pageSize:15,
         projectTotal:0,
@@ -221,6 +222,10 @@ export default {
 
       parseProjectInfo(status , pageIndex, data){
           switch(status) {
+
+              case -2 :  //全部
+                  this.innerParseData(this.allProject,pageIndex, data);
+                  break;
               case -1 :  //全部
                 this.innerParseData(this.allProject,pageIndex, data);
                 break;

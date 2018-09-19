@@ -29,6 +29,7 @@
     text-align: left;
     float: left;
     cursor: pointer;
+    -webkit-app-region: no-drag;
 }
 
 .header_left:hover{

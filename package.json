@@ -28,6 +28,7 @@
     "vue-gemini-scrollbar": "^2.0.0",
     "vue-photo-preview": "^1.0.9",
     "vue-router": "^3.0.1",
+    "vue-video-player": "^5.0.2",
     "vue2-scrollbar": "0.0.3",
     "vuex": "^3.0.1"
   },

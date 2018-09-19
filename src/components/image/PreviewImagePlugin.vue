@@ -1,10 +1,10 @@
 <template>
 
     <div>
-        <div style="width:200px; height:auto; text-align:center">
-            <img id="id_img_source" :src="imageUrl"/>
+        <div style="text-align: center; width: 100%; border: green solid 1px;">
+            <img style="margin: 0 auto;max-width: 100%" id="id_img_source" :src="imageUrl"/>
         </div>
-        
+
         <div style="text-align:center;margin-top:12px;">
             <el-button type="primary" @click="sendImage()">确认发送</el-button>
         </div>

@@ -32,7 +32,7 @@
         </span>
             </div>
             <div class="u-editor-input">
-                <el-input id='sendText' @keyup.enter.native="sendTextMsg" placeholder="请输入聊天消息 按回车键发送" type="textarea"
+                <el-input id='sendText' @keyup.enter.native="sendTextMsg" placeholder="请输入聊天消息 按回车键发送(可以粘贴qq 微信等截图)" type="textarea"
                           :rows="4" resize="none" v-model="msgToSent" @focus='onInputFocus'></el-input>
                 <!-- <textarea v-model="msgToSent" @focus='onInputFocus'></textarea> -->
             </div>

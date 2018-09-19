@@ -1,23 +1,24 @@
 <template>
-    <div id="chat">
-        <el-container>
+    <div id="chat" >
+        <el-container >
             <el-aside class="chat-left" width="270px"
                       v-bind:style="{height: (this.$store.state.windowClientHeight-60)+'px'}">
+                <div v-on:click="this.hidePanel">
                 <div class="grid-content bg-purple chatBar">
                     <el-menu :default-active="this.defaultActive" class="el-menu-demo" mode="horizontal"
                              @select="chatSelect">
                         <el-menu-item index="message">我的消息</el-menu-item>
                         <el-menu-item index="project">项目列表</el-menu-item>
                     </el-menu>
-                </div>
-                <el-col :span="24" class="pannel-left"
-                        v-bind:style="{height: (this.$store.state.windowClientHeight-107)+'px'}">
                     <div class="keyword">
                         <el-input v-model="keyword" placeholder="请输入要查找的群组或者名称">
                             <i slot="prefix" class="el-input__icon el-icon-search"></i>
                         </el-input>
                     </div>
-                    <div>
+                </div>
+                <el-col :span="24" class="pannel-left"
+                        v-bind:style="{height: (this.$store.state.windowClientHeight-160)+'px'}">
+                    <div >
                         <el-row v-if="this.defaultActive == 'message'">
                             <projectMessage
                                     v-for='(item,index) in sessionlist'
@@ -36,7 +37,9 @@
                         </el-row>
                     </div>
                 </el-col>
+                </div>
             </el-aside>
+            
             <el-main v-if="isP2p">
                 <el-container style="" v-if="isP2p"
                               v-bind:style="{height: (this.$store.state.windowClientHeight-60)+'px'}">
@@ -57,6 +60,7 @@
                     <div><img src="../../../static/nochat.png"/></div>
                 </el-container>
             </el-main>
+            
             <el-main v-if="isTeam">
                 <el-container class="empty-chat" v-if="!isTeam"
                               v-bind:style="{height: (this.$store.state.windowClientHeight-60)+'px'}">
@@ -82,7 +86,7 @@
                                 </li>
                             </ul>
                         </div>
-                        <div style="chat_body">
+                        <div style="chat_body" v-on:click="hidePanel">
                             <Message :chatType="worker" v-if="currentChat=='worker'" :sessionId="currSessionId"
                                      :chatHeight="(this.$store.state.windowClientHeight-236)+'px'"/>
                             <Message :chatType="owner" v-if="currentChat=='owner'" :sessionId="currSessionId"
@@ -102,6 +106,8 @@
                             </li>
                             <li v-if="currSessionProjectInfo.auth.indexOf('801')>=0"><i class="el-icon-goods"></i><span
                                     @click="this.lookSupplier">查看材料商</span></li>
+                            <!--<li v-if="currSessionProjectInfo.auth.indexOf('801')>=0"><i class="el-icon-goods"></i><span-->
+                                    <!--@click="this.lookSupplier">查看电器</span></li>-->
                             <li v-if="currSessionProjectInfo.auth.indexOf('212')>=0"><i
                                     class="el-icon-tickets"></i><span @click="this.lookUserList">成员列表</span></li>
                             <li v-if="currSessionProjectInfo.auth.indexOf('704')>=0"><i
@@ -115,7 +121,8 @@
                 </el-container>
             </el-main>
         </el-container>
-
+        
+        
         <!-- 右侧显示提醒/任务/用户列表 -->
         <div id="right-popup-1" class="right-popup"
              :style="{'right' : show_right_pop ? '0px' : '-100%', 'height' : (this.$store.state.windowClientHeight - 61) + 'px' }">
@@ -165,14 +172,11 @@
                           @closeNewRemindAddDialog='closeNewRemindAddDialog'>
             </NewRemindAdd>
         </div>
-
         <div v-if="this.showAddNewTask">
             <NewTaskAdd :pid="this.projectId"
                         @closeTaskAddDialog="closeTaskAddDialog">
             </NewTaskAdd>
         </div>
-
-
     </div>
 </template>
 <script>
@@ -345,6 +349,9 @@
                     if (this.defaultActive == 'project' && team.name.indexOf(keyword) == -1) {
                         return false;
                     }
+                    if(team.owner.indexOf("sgb")>-1){
+                        return false;
+                    }
                     return team.type === this.teamType && team.validToCurrentUser
                 })
             },
@@ -371,7 +378,10 @@
                         let teamInfo = null
                         teamInfo = this.$store.state.teamlist.find(team => {
                             return team.teamId === item.to
-                        })
+                        });
+                        if(teamInfo.owner.indexOf("sgb")>-1){
+                            return false;
+                        }
                         if (teamInfo) {
                             item.name = teamInfo.name
                             item.avatar = teamInfo.avatar || (teamInfo.type === 'normal' ? this.myGroupIcon : this.myAdvancedIcon)
@@ -533,6 +543,14 @@
                 this.defaultActive = key
                 this.keyword = ""
             },
+            hidePanel(){
+                console.log(11111111111111111111);
+                this.showAddNewTask = false;
+                this.show_right_pop = false;
+                this.show_collection_list = false;
+                this.show_right_supplier_pop = false;
+                this.show_right_detail_pop = false;
+            },
             ownerSelect(tab) {
                 let currSessionProjectInfo = this.currSessionProjectInfo
                 console.log('当前项目详情', currSessionProjectInfo)
@@ -621,8 +639,24 @@
 
     .pannel-left {
         overflow: auto;
+        
     }
 
+    .pannel-left::-webkit-scrollbar {/*滚动条整体样式*/
+        width: 5px;     /*高宽分别对应横竖滚动条的尺寸*/
+        height: 1px;
+    }
+
+    .pannel-left::-webkit-scrollbar-thumb {/*滚动条里面小方块*/
+        border-radius: 5px;
+        -webkit-box-shadow: inset 0 0 5px rgba(0,0,0,0.2);
+        background: #888;
+    }
+    .pannel-left::-webkit-scrollbar-track {/*滚动条里面轨道*/
+        -webkit-box-shadow: inset 0 0 5px rgba(0,0,0,0.2);
+        border-radius: 5px;
+        background: #ddd;
+    }
     .el-menu {
         height: 45px;
         line-height: 45px;
