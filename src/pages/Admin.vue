@@ -2,11 +2,13 @@
   <div id="sgb-main">
   <el-container>
     <Navagate></Navagate>
+
     <el-container>
       <Header></Header>
       <el-main><router-view/></el-main>
       <el-footer>上海奇已信息科技有限公司-施公宝</el-footer>
     </el-container>
+
 
     <el-dialog 
       title="更新提示"
@@ -146,6 +148,15 @@ body,{
 }
 
 
+.el-badge__content.is-fixed {
+  position: absolute;
+  top: 0;
+  right: 24px;
+  -webkit-transform: translateY(-50%) translateX(100%);
+  transform: translateY(-50%) translateX(100%);
+}
+
+
 
 ::-webkit-scrollbar {/*滚动条整体样式*/
   width: 5px;     /*高宽分别对应横竖滚动条的尺寸*/
@@ -154,13 +165,13 @@ body,{
 
 ::-webkit-scrollbar-thumb {/*滚动条里面小方块*/
   border-radius: 5px;
-  -webkit-box-shadow: inset 0 0 5px rgba(0,0,0,0.2);
-  background: #888;
+  -webkit-box-shadow: inset 0 0 5px #1ab6ff;
+  background: #1ab6ff;
 }
 ::-webkit-scrollbar-track {/*滚动条里面轨道*/
   -webkit-box-shadow: inset 0 0 5px rgba(0,0,0,0.2);
   border-radius: 5px;
-  background: #ddd;
+  background: #f2f2f2;
 }
 </style>
 

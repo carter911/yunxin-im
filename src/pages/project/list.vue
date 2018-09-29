@@ -405,6 +405,8 @@ class ProjectListEntity {
   width: 100%;
   min-width: 200px;
 }
+
+
 .project{
   padding: 0px;
   margin: 0px;

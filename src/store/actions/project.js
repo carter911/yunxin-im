@@ -4,8 +4,11 @@ import types from '../../api/types.js'
 
 export function updateCurrSessionProjectInfo ({state, commit}, SessionId) {
     let chatType = SessionId.slice(0, 4)
+
+    console.log("updateCurrentSessionProjectInfo","-------->>" + SessionId);
+
     if (chatType === 'team') {
-        var projectId = SessionId.slice(5)
+        var projectId = SessionId.replace("team-","").replace("oa-","")
         var url = projectId + '/'+ types.PROJECTS
         var params = {type: 2}
 

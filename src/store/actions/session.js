@@ -82,6 +82,7 @@ export function setCurrSession ({state, commit, dispatch}, sessionId) {
       type: 'init',
       sessionId
     })
+
     if (nim) {
       // 如果在聊天页面刷新，此时还没有nim实例，需要在onSessions里同步
       nim.setCurrSession(sessionId)
@@ -104,7 +105,10 @@ export function resetCurrSession ({state, commit}) {
 }
 
 export function resetSessionUnread ({state, commit, dispatch}, sessionId) {
-  const nim = state.nim
-  nim.resetSessionUnread(sessionId)
+  const nim = state.nim;
+  nim.resetSessionUnread(sessionId);
+
+  console.log("resetSessionUnread","------>>" + sessionId);
+
 }
 //nim.resetSessionUnread('sessionId')

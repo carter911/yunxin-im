@@ -19,6 +19,9 @@ import ProductDetail from "@/components/product/ProductDetail.vue"
 
 import UploadPlugin from "@/components/image/UploadPlugin.vue"
 
+import OAFragment from "@/components/oa/OAFragment.vue"
+import MeetingRecord from "@/components/oa/MeetingRecord.vue"
+
 
 Vue.use(Router)
 export default new Router({
@@ -53,6 +56,19 @@ export default new Router({
                         //keepAlive: true
                     },
                 },
+
+                {
+                    name:'oa',
+                    path:'oa',
+                    component:OAFragment,
+                },
+
+                {
+                    name:'meetingRecord',
+                    path:'meetingRecord',
+                    component:MeetingRecord
+                },
+
                 {
                     name: 'admin_supplier',
                     path: 'supplier/supplierId/:supplierId/projectId/:projectId',
@@ -70,6 +86,7 @@ export default new Router({
 
             ]
         },
+
         {
             path: '/',
             name: 'login',
@@ -85,6 +102,7 @@ export default new Router({
             name: 'login',
             component: Login
         },
+
         {
             path: '/project/list',
             name: 'projectList',
@@ -153,6 +171,7 @@ export default new Router({
             component: UploadPlugin,
             meta: {auth: true}
         },
+
 
         {
             path: '*',

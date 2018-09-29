@@ -209,7 +209,8 @@
         item.showText = item.text
       } else if (item.type === 'text') {
         // 文本消息
-          console.log(this.myInfo);
+        // console.log(this.myInfo);
+
         item.showText = util.escape(item.text)
         if (/\[[^\]]+\]/.test(item.showText)) {
               let emojiItems = item.showText.match(/\[[^\]]+\]/g)

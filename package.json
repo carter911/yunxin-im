@@ -25,6 +25,7 @@
     "rc-gallery": "^1.0.8",
     "vue": "^2.5.2",
     "vue-axios": "^2.1.1",
+    "vue-froala-wysiwyg": "^2.8.5",
     "vue-gemini-scrollbar": "^2.0.0",
     "vue-photo-preview": "^1.0.9",
     "vue-router": "^3.0.1",

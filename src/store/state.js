@@ -62,17 +62,38 @@ export default {
   msgsMap: {}, // 以idClient作为key，诸如消息撤回等的消息查找
   // 会话列表
   sessionlist: [],
+
+  //消息未读数目
+  // @Desperate 已过期
   unreadNum: 0,
+
+  //项目未读数据
+  projectUnReadNum:0,
+  //OA系统未读数据
+  oaUnReadNum:0 ,
+
   sessionMap: {},
+
   // 当前会话ID（即当前聊天列表，只有单聊群聊采用，可用于判别）
   currSessionId: null,
   // 当前会话ID 用户信息
   currSessionProjectInfo: {},
 
-    // 当前会话ID 用户信息
+  // 当前会话ID 项目信息
   currSessionProjectId: null,
 
+  //当前系统聊天信息
   currSessionMsgs: [],
+
+  //当前OA系统会话系统
+  OACurrentSessionId:null,
+
+  //当前OA系统聊天
+  OACurrentSessionMsg:[] ,
+
+  //当前OA系统聊天中最后一条消息
+  OACurrentSessionLastMsg:null,
+
   // 是否有更多历史消息，用于上拉加载更多
   noMoreHistoryMsgs: false,
   // 继续对话的机器人id

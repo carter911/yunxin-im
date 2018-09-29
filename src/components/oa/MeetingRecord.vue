@@ -1,0 +1,339 @@
+<template>
+
+    <div class="meeting_layer_top">
+
+
+        <div id="id_meeting_detail" class="meeting_detail">
+
+            <el-container v-show="!this.showAddDialog">
+                <el-aside class="panel-left" width="22rem" v-bind:style="{'height' : (this.$store.state.windowClientHeight - 61) + 'px'}">
+
+                    <el-menu :router="false" :default-active="this.status" class="el-menu-demo" mode="horizontal">
+                        <el-menu-item index="0">会议记录列表</el-menu-item>
+                    </el-menu>
+
+                    <div v-if="this.showCreateBtn" class="add_new_record" @click="addNewRecord">新增会议记录</div>
+
+                    <div v-if="!this.checkPageDataEmpty"
+                         class="meeting_list_item"
+                         v-bind:style="{'height' : (this.$store.state.windowClientHeight - 160) + 'px'}">
+                        <MeetingRecordItem @onItemClick="onItemClick" v-for="(item,index) in this.getCurrentMeetingList"
+                                           :key="index" :item="item"></MeetingRecordItem>
+                    </div>
+
+                    <div v-if="this.checkPageDataEmpty">
+                        <img class="data-img-empty" src="../../../static/pic_content_empty.png"/>
+                    </div>
+
+
+                </el-aside>
+
+                <el-main v-show="checkMeetingDetail" class="panel-right"
+                         v-bind:style="{'height' : (this.$store.state.windowClientHeight - 106) + 'px'}">
+
+                    <el-card>
+                        <div class="add_meeting_btn">
+                            <button class="add_btn" v-if="this.showCreateBtn" @click="openDialog">重新编辑</button>
+                        </div>
+
+                        <div class="meeting_detail_html" v-html="meetingDetail"></div>
+
+                    </el-card>
+                </el-main>
+
+            </el-container>
+
+            <div v-if="this.showAddDialog"><AddMeetingRecord @closeMeetingAddDialog="closeMeetingAddDialog"
+                    :meeting_title="this.meetingTitle"
+                    :meeting_desc="this.meetingDesc"
+                    :meeting_detail="this.meetingUpdateDetail"
+                    :meeting_id="this.meetingId"></AddMeetingRecord>
+            </div>
+
+        </div>
+
+    </div>
+
+
+</template>
+
+<script>
+
+    import AddMeetingRecord from "./AddMeetingRecord"
+    import MeetingRecordItem from './MeetingRecordItem'
+    import MeetingDetail from './MeetingDetail'
+
+
+    import http from "../../utils/http"
+    import Log from '../../common/Log';
+    import ElAside from "element-ui/packages/aside/src/main";
+    import ElMain from "element-ui/packages/main/src/main";
+
+    export default {
+        name: "meeting-record",
+        components: {
+            ElMain,
+            ElAside,
+            AddMeetingRecord,
+            MeetingRecordItem,
+            MeetingDetail
+        },
+
+
+        data() {
+            return {
+
+                status: '0',
+
+                dialogShow: false,
+                showAddDialog: false,
+
+                pageIndex: 1,
+                pageSize: 52,
+
+                meetingItemList: [],
+
+                meetingDetail: "",
+                meetingTitle:"",
+                meetingDesc:"",
+                meetingUpdateDetail:"",
+
+                meetingId: '',
+
+            }
+        },
+
+        computed: {
+            showCreateBtn(){
+              return false ;
+            },
+
+            showEditBtn() {
+                return false;
+            },
+
+            //获取当前会议列表
+            getCurrentMeetingList() {
+                return this.meetingItemList;
+            },
+
+            checkPageDataEmpty() {
+                console.log("--empty--",this.meetingItemList.length);
+                console.dir(this.meetingItemList);
+                return this.meetingItemList.length === 0 ;
+            },
+
+            checkMeetingDetail(){
+                return null != this.meetingDetail && this.meetingDetail.length > 0 ;
+            }
+        },
+
+        methods: {
+            addNewRecord(){
+                this.meetingId = "";
+                this.meetingTitle = "";
+                this.meetingDesc = "";
+                this.meetingUpdateDetail = "";
+                this.showAddDialog = true;
+            },
+
+            onItemClick(item) {
+                console.log("onItemClick:" + item.id);
+
+                if (this.meetingId !== item.id) {
+                    this.meetingId = item.id;
+                    this.meetingTitle = item.title;
+                    this.meetingDesc = item.desc;
+                    this.meetingUpdateDetail = item.content;
+
+                    this.get_meeting_detail();
+                }
+            },
+
+
+            dialogBeforeClose(action, instance, done) {
+                this.clearAndReset('remindForm');
+            },
+
+            openDialog() {
+                this.showAddDialog = true;
+            },
+
+            closeMeetingAddDialog() {
+                this.showAddDialog = false;
+                this.pageIndex = 1 ;
+                this.request_meeting_record();
+            },
+
+            showMsg(type, msg) {
+                this.$message({
+                    message: msg,
+                    type: type
+                })
+            },
+
+            //获取会议的详细内容
+            get_meeting_detail() {
+                if (null === this.meetingId || '' === this.meetingId) return;
+                let url = 'Share/Meeting/index/id/' + this.meetingId;
+
+                http.get(url).then(response => {
+                    //console.log("result 1", response);
+
+                    let regex = /<body[^>]*>([\s\S]*)<\/body>/;
+                    let result = response.match(regex);
+
+                    this.meetingDetail = result[0];
+                })
+            },
+
+
+            request_meeting_record() {
+                let params = {
+                    pageIndex: this.pageIndex,
+                    pageSize: this.pageSize
+                };
+
+                let url = "meetingList";
+                http.get(url, params).then(response => {
+                    let result = response;
+                    Log.L(result);
+
+                    if (result.code === 200) {
+                        this.parseData(result.data);
+
+                    } else {
+                        this.showMsg("error", "请求数据失败(" + result.code + ")")
+                    }
+                }, error => {
+                    this.showMsg("error", "请求失败,请稍后重试")
+                })
+            },
+
+            parseData(data) {
+                if (this.pageIndex === 1) {
+                    this.meetingItemList = [];
+                }
+
+                if(null != data && data.length > 0) {
+                    this.meetingItemList = this.meetingItemList.concat(data);
+                }
+
+                if(null != this.meetingItemList && this.meetingItemList.length > 0) {
+                    this.meetingId = this.meetingItemList[0].id;
+                    this.get_meeting_detail();
+                }
+
+                console.dir(this.meetingItemList);
+            }
+        },
+
+        created() {
+            this.request_meeting_record();
+            this.get_meeting_detail();
+        }
+    }
+
+</script>
+
+
+<style scoped>
+
+    #id_meeting_detail .el-menu-item {
+        height: 45px;
+        line-height: 43px;
+        width:100%;
+    }
+
+    .add_new_record{
+        padding: 6px 8px;
+        background-color: #1ab6ff;
+        color: #FFF;
+        border-bottom-left-radius: 4px;
+        border-bottom-right-radius: 4px;
+    }
+
+    .add_meeting_btn{
+        text-align: right;
+        font-size: 14px;
+    }
+
+    .meeting_list_item{
+        overflow: auto;
+    }
+
+    .meeting_list_item::-webkit-scrollbar {/*滚动条整体样式*/
+        width: 0px;     /*高宽分别对应横竖滚动条的尺寸*/
+        height: 0px;
+    }
+
+    .meeting_list_item::-webkit-scrollbar-thumb {/*滚动条里面小方块*/
+        border-radius: 0px;
+        -webkit-box-shadow: inset 0 0 0px #1ab6ff;
+        background: #1ab6ff;
+    }
+
+    .meeting_list_item::-webkit-scrollbar-track {/*滚动条里面轨道*/
+        -webkit-box-shadow: inset 0 0 0px rgba(0,0,0,0.2);
+        border-radius: 0;
+        background: rgba(0,0,0,0.1);
+    }
+
+    .meeting_detail_html{
+        text-align: left;
+    }
+
+    .el-card__body p {
+        text-align: left;
+        font-size: 14px;
+    }
+
+
+    .add_btn{
+        background-color: #5daf34;
+        border-radius: 4px;
+        padding:6px 12px;
+        margin-right: 2%;
+        color: #FFF;
+    }
+
+    .meeting_layer_top {
+        background-color: #FFF;
+        display: block;
+
+    }
+
+    .meeting_detail {
+        display: flex;
+        margin-top: 0px;
+        align-items: flex-start;
+        padding-left: 6px;
+        padding-right: 6px;
+        border-bottom: solid 1px #e6e6e6;
+    }
+
+    .panel-left {
+        cursor: pointer;
+        margin: 0px;
+        background: white;
+        border-right: rgb(237, 237, 237) 1px solid;
+        height: 100%;
+    }
+
+    .panel-right {
+        background: #ffffff;
+        float: right;
+        margin: 2%;
+        height: 100%;
+        width: 96%;
+        min-width: 200px;
+    }
+
+    .data-img-empty {
+        width: 180px;
+        height: 180px;
+        margin-top: 12px;
+    }
+
+
+</style>

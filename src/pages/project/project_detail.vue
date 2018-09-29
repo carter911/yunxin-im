@@ -117,7 +117,6 @@
             <NewRemindAdd :pid="this.pid" 
                         @closeNewRemindAddDialog='closeNewRemindAddDialog'>
             </NewRemindAdd>
-
         </div>
 
         <div v-if="this.showAddNewTask">

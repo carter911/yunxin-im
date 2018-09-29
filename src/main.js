@@ -14,6 +14,7 @@ import 'vue-photo-preview/dist/skin.css'
 import EasyScroll from 'easyscroll';
 
 Vue.use(EasyScroll);
+
 if (typeof module === 'object') {
 window.jQuery = window.$ = module.exports;
 };
@@ -41,6 +42,22 @@ Vue.filter('formatDate', function (time) {
   let date = new Date(time * 1000)
   return formatDate(date, "yyyy-MM-dd")
 })
+
+//----------------froala editor start---------------------------------
+// Require Froala Editor js file.
+require('froala-editor/js/froala_editor.pkgd.min')
+
+// Require Froala Editor css files.
+require('froala-editor/css/froala_editor.pkgd.css')
+require('froala-editor/css/froala_style.css')
+require('font-awesome/css/font-awesome.css')
+
+// Import and use Vue Froala lib.
+import VueFroala from 'vue-froala-wysiwyg'
+Vue.use(VueFroala)
+//-----------------froala editor end-----------------------------------
+
+
 
 var vm = new Vue({
   el: '#app',

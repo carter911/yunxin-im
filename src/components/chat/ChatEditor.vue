@@ -32,7 +32,8 @@
         </span>
             </div>
             <div class="u-editor-input">
-                <el-input id='sendText' @keyup.enter.native="sendTextMsg" placeholder="请输入聊天消息 按回车键发送(可以粘贴qq 微信等截图)" type="textarea"
+                <el-input id='sendText' @keyup.enter.native="sendTextMsg" placeholder="请输入聊天消息 按回车键发送(可以粘贴qq 微信等截图)"
+                          type="textarea"
                           :rows="4" resize="none" v-model="msgToSent" @focus='onInputFocus'></el-input>
                 <!-- <textarea v-model="msgToSent" @focus='onInputFocus'></textarea> -->
             </div>
@@ -69,7 +70,6 @@
 
         mounted() {
             let self = this;
-            //console.log("created------->>");
             window.document.getElementById("sendText").addEventListener('paste', function (e) {
 
                 //window.clipboardData.getData("Text") ie下获取黏贴的内容 e.clipboardData.getData("text/plain")火狐谷歌下获取黏贴的内容
@@ -131,6 +131,14 @@
             advancedTeam: {
                 type: Boolean,
                 default: false
+            },
+
+            isOAItem: {
+                type: Boolean,
+                required: false,
+                default() {
+                    return false
+                }
             }
         },
         watch: {
@@ -289,11 +297,14 @@
                                 })
                             }
                         } else {
+                            //console.log("chatEditor", "--->>>" + this);
+
                             this.$store.dispatch('sendMsg', {
                                 type: 'text',
                                 scene: this.scene,
                                 to: this.to,
-                                text: this.msgToSent
+                                text: this.msgToSent,
+                                isOAItem: this.isOAItem
                             })
                         }
                     }
@@ -351,7 +362,8 @@
                         this.$store.dispatch('sendFileMsg', {
                             scene: this.scene,
                             to: this.to,
-                            fileInput: ipt
+                            fileInput: ipt,
+                            isOAItem: this.isOAItem
                         })
                     } else if (this.type === 'chatroom') {
                         this.$store.dispatch('sendChatroomFileMsg', {
@@ -374,7 +386,8 @@
                     this.$store.dispatch('sendBase64Url', {
                         scene: this.scene,
                         to: this.to,
-                        dataURL: imageSrc
+                        dataURL: imageSrc,
+                        isOAItem: this.isOAItem
                     })
 
                 } else if (this.type === 'chatroom') {

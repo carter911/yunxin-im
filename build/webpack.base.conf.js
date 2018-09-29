@@ -77,7 +77,13 @@ module.exports = {
           limit: 10000,
           name: utils.assetsPath('fonts/[name].[hash:7].[ext]')
         }
-      }
+      },
+
+      // Css loader.
+      // {
+      //   test: /\.css$/,
+      //   loader: 'vue-style-loader!css-loader'
+      // }
     ]
   },
   node: {

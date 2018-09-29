@@ -5,7 +5,9 @@ export function onTeams(teams) {
   if (!Array.isArray(teams)) {
     teams = [teams]
   }
+
   teams.forEach(team=>{
+
     if (team.validToCurrentUser === undefined) {
       team.validToCurrentUser = true
     }
@@ -165,6 +167,7 @@ export function getTeamMembers({ state }, teamId) {
   })
 }
 
+//TODO
 export function checkTeamMsgReceipt({state}, msgs) {
   var result = /team-(\d+)/.exec(state.currSessionId)
   if (!result) {

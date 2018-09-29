@@ -31,6 +31,7 @@
         components: {
             ChatItem
         },
+
         props: {
             type: String, // 类型，chatroom, session
             canLoadMore: [String, Boolean],

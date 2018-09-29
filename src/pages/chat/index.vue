@@ -4,6 +4,7 @@
             <el-aside class="chat-left" width="270px"
                       v-bind:style="{height: (this.$store.state.windowClientHeight-60)+'px'}">
                 <div v-on:click="this.hidePanel">
+
                 <div class="grid-content bg-purple chatBar">
                     <el-menu :default-active="this.defaultActive" class="el-menu-demo" mode="horizontal"
                              @select="chatSelect">
@@ -16,6 +17,8 @@
                         </el-input>
                     </div>
                 </div>
+
+
                 <el-col :span="24" class="pannel-left"
                         v-bind:style="{height: (this.$store.state.windowClientHeight-160)+'px'}">
                     <div >
@@ -27,6 +30,7 @@
                                     :currSessionId="currSessionId"
                             />
                         </el-row>
+
                         <el-row v-if="this.defaultActive == 'project'">
                             <projectList
                                     v-for="(item,index) in teamList"
@@ -44,7 +48,7 @@
                 <el-container style="" v-if="isP2p"
                               v-bind:style="{height: (this.$store.state.windowClientHeight-60)+'px'}">
                     <el-main>
-                        <div v-if="isP2p" id="chat_info">
+                        <div v-if="isP2p" id="chat_info1">
                             <ul class="chat_nav" width="90px">
                                 <li style="width:90px;" class="active" v-if="showOwner">{{this.p2pName}}</li>
                             </ul>
@@ -68,7 +72,7 @@
                 </el-container>
                 <el-container v-if="isTeam" v-bind:style="{height: (this.$store.state.windowClientHeight-60)+'px'}">
                     <el-main>
-                        <div v-if="isTeam" id="chat_info">
+                        <div v-if="isTeam" id="chat_info2">
                             <ul class="chat_nav">
                                 <li
                                         @click="ownerSelect(owner)"
@@ -93,6 +97,8 @@
                                      :chatHeight="(this.$store.state.windowClientHeight-236)+'px'"/>
                         </div>
                     </el-main>
+
+
                     <el-aside class="project-option" width="150px"
                               v-bind:style="{height: (this.$store.state.windowClientHeight-60)+'px'}">
                         <div class="project-name">{{this.projectName}}</div>
@@ -194,6 +200,7 @@
     import supplierList from "../../components/supplier/suplierList.vue"
     import collectionList from "../../components/supplier/collectionList.vue"
 
+
     export default {
         components: {
             projectMessage,
@@ -210,6 +217,7 @@
         created() {
             let projectInfo = localStorage.getItem('currSessionProjectInfo')
         },
+
 
         data() {
             return {
@@ -266,9 +274,9 @@
                     messageNum: 0,
                     taskNum: 0,
                 }
-
             }
         },
+
 
         watch: {
             getCurrentRemindId:function(newOne,oldOne){
@@ -281,6 +289,8 @@
                 this.projectDetail.taskNum = Math.max(0,this.projectDetail.taskNum -1)
             }
         },
+
+
         computed: {
             getCurrentRemindId: function () {
                 return this.$store.getters.getCurrentRemindId;
@@ -343,24 +353,32 @@
             myPhoneId() {
                 return `${this.$store.state.userUID}`
             },
+
             teamList: function () {
                 let keyword = this.keyword;
                 return this.$store.state.teamlist && this.$store.state.teamlist.filter(team => {
                     if (this.defaultActive == 'project' && team.name.indexOf(keyword) == -1) {
                         return false;
                     }
+
                     if(team.owner.indexOf("sgb")>-1){
                         return false;
                     }
+
                     return team.type === this.teamType && team.validToCurrentUser
                 })
             },
+
+
             sessionlist() {
+
                 let keyword = this.keyword;
                 let sessionlist = this.$store.state.sessionlist.filter(item => {
+
                     item.name = ''
                     item.avatar = ''
                     //console.log('未读条数',item)
+
                     if (item.scene === 'p2p') {
                         //console.error('p2p用户信息',item.scene,this.userInfos[item.to])
                         let userInfo = null
@@ -566,6 +584,7 @@
                         type: 'init',
                         sessionId: sessionId
                     });
+
                     this.$store.commit('updateCurrSessionMsgs', {
                         type: 'init',
                         sessionId: sessionId
@@ -573,6 +592,7 @@
                 }
                 this.defaultChat = tab.name
             },
+
             selectTeam(sessionId) {
                 var projectInfo = this.currSessionProjectInfo
                 this.projectId = projectInfo.id || 0;
@@ -639,7 +659,6 @@
 
     .pannel-left {
         overflow: auto;
-        
     }
 
     .pannel-left::-webkit-scrollbar {/*滚动条整体样式*/

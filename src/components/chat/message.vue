@@ -9,7 +9,7 @@
         <ChatList type="session" :msglist="msglist" :userInfos="userInfos" :myInfo="myInfo" :isRobot="isRobot" @msgs-loaded="msgsLoaded"/>
       </div>
       <div>
-        <ChatEditor type="session" :scene="scene" :to="to" :isRobot="isRobot" :invalid="teamInvalid || muteInTeam" :invalidHint="sendInvalidHint" :advancedTeam="teamInfo && teamInfo.type === 'advanced'"/>
+        <ChatEditor type="session" :scene="scene" :to="to" :isOAItem="isOAItem" :isRobot="isRobot" :invalid="teamInvalid || muteInTeam" :invalidHint="sendInvalidHint" :advancedTeam="teamInfo && teamInfo.type === 'advanced'"/>
       </div>
     </div>
   </div>
@@ -27,20 +27,50 @@ export default {
         ChatEditor,
         ChatList
     },
-    props:['chatType','sessionId','chatHeight'],
+
+    props: {
+        isOAItem: {
+            type: Boolean,
+            required: false,
+            default() {
+                return false
+            },
+        },
+
+        chatType: {
+            type: String,
+            required: false
+        },
+
+        sessionId: {
+            type: String,
+            required: true
+        },
+
+        chatHeight: {
+            type: String,
+            required: true
+        }
+    },
+
+
     // 进入该页面，文档被挂载
     mounted() {
-        this.$store.dispatch("setCurrSession", this.sessionId);
+        //#
+        // this.$store.dispatch("setCurrSession", this.sessionId);
     },
+
     created() {
-        console.log('更新当前数据',this.chatType)
-        if(this.chatType == 'worker'){
+
+        console.log('更新当前数据',this.chatType);
+        if(this.chatType === 'worker'){
             pageUtil.scrollChatListDown();
         }
-        if(this.chatType == 'owner'){
+        if(this.chatType === 'owner'){
             pageUtil.scrollChatOwnerDown()
         } 
     },
+
     // 离开该页面，此时重置当前会话
     data() {
         return {
@@ -55,12 +85,13 @@ export default {
         sessionId(){
             pageUtil.scrollChatListDown();
             // if(this.chatType == 'worker'){
-                
+
             // }
             // if(this.chatType == 'owner'){
             //     pageUtil.scrollChatOwnerDown()
             // }
         },
+
         chatHeight(){
             console.log(this.chatHeight);
             // let height =  this.$store.state.windowClientHeight
@@ -68,6 +99,7 @@ export default {
             // console.error('聊天高度',height)
         }
     },
+
     computed: {
 
         sessionName() {
@@ -101,17 +133,27 @@ export default {
                 }
             }
         },
+
         scene() {
             if(this.sessionId == null){
                 return null;
             }
-            return util.parseSession(this.sessionId).scene;
+
+            //在父组件出入的变量，子组件中修改会直接报错
+            let newSessionId = this.sessionId;
+            newSessionId = newSessionId.replace("oa-","team-");
+
+            return util.parseSession(newSessionId).scene;
         },
         to() {
             if(this.sessionId == null){
                 return null;
             }
-            return util.parseSession(this.sessionId).to;
+
+            let newSessionId = this.sessionId;
+            newSessionId = newSessionId.replace("oa-","team-");
+
+            return util.parseSession(newSessionId).to;
         },
 
         // 判断是否是机器人
@@ -135,18 +177,22 @@ export default {
         robotInfos() {
             return this.$store.state.robotInfos;
         },
+
         msglist() {
-            let msgs = this.$store.state.currSessionMsgs;
-            var arr2 = msgs.filter(function(msg, index) {
-                //console.log('------------->'+msg.type,msg);
-            });
-            
+            //let msgs = this.$store.state.currSessionMsgs;
+            // var arr2 = msgs.filter(function(msg, index) {
+            //     //console.log('------------->'+msg.type,msg);
+            // });
             //console.log('------------->',msgs);
-            return msgs;
+
+            console.log("isOAItem","-------->>" + this.isOAItem);
+
+            return this.isOAItem ? this.$store.state.OACurrentSessionMsg : this.$store.state.currSessionMsgs ;
         },
+
         teamInfo() {
             if (this.scene === "team") {
-                var teamId = this.sessionId.replace("team-", "");
+                var teamId = this.sessionId.replace("oa-","").replace("team-", "");
                 return this.$store.state.teamlist.find(team => {
                     return team.teamId === teamId;
                 });
@@ -164,6 +210,7 @@ export default {
                 });
             return (selfInTeam && selfInTeam.mute) || false;
         },
+
         teamInvalid() {
             if (this.scene === "team") {
                 return !(this.teamInfo && this.teamInfo.validToCurrentUser);

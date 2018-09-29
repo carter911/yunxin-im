@@ -21,7 +21,7 @@
 .header_right{
     text-align: right;
     float:right;
-    width: 160px;
+    width: 460px;
     -webkit-app-region: no-drag;
 }
 .header_left{
@@ -68,9 +68,15 @@ export default {
     methods: {
         isTab(){
             //console.error('header luoyou',this.$route.path);
-            if(this.$route.path === '/admin/chat' || this.$route.path === '/admin/project'){
+            if(this.$route.path === '/admin/chat' ||
+               this.$route.path === '/admin/project' ||
+               this.$route.path === '/admin/meetingRecord' ||
+               this.$route.path === '/admin/oa'){
+
                 this.isBack = false;
+
             }else{
+
                 this.isBack = true;
             }
         },
