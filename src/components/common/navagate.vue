@@ -103,8 +103,8 @@
                 closeWindows: false,
                 home_url: '../../../static/tab_icon_home_selected.png',
                 chat_url: '../../../static/tab_icon_chat_unselected.png',
-                oa_url: '../../../static/ic_member.png',
-                meeting_url: '../../../static/ic_member.png',
+                oa_url: '../../../static/oa_image_more.png',
+                meeting_url: '../../../static/ic_operation.png',
                 heightData: document.documentElement.clientHeight + 'px',
             }
         },
@@ -129,19 +129,43 @@
             }
             console.log('当前路由', this.$route.path)
             let curr = localStorage.getItem('currentMenu')
-            if (this.$route.path == '/admin/chat') {
-                this.chat_url = "../../../static/tab_icon_chat_selected.png"
-                this.home_url = "../../../static/tab_icon_home_unselected.png"
-            } else if (this.$route.path == '/admin/project') {
-                this.chat_url = "../../../static/tab_icon_chat_unselected.png"
-                this.home_url = "../../../static/tab_icon_home_selected.png"
-            } else {
-                this.chat_url = "../../../static/tab_icon_chat_unselected.png"
-                this.home_url = "../../../static/tab_icon_home_selected.png"
-            }
+            this.changeUrls();
+
             console.log('当前路由', this.$route.path)
         },
+
+
         methods: {
+            changeUrls(){
+
+                if (this.$route.path === '/admin/chat') {
+                    this.chat_url = "../../../static/tab_icon_chat_selected.png"
+                    this.home_url = "../../../static/tab_icon_home_unselected.png"
+                    this.oa_url = '../../../static/oa_image.png'
+                    this.meeting_url = '../../../static/ic_operation.png'
+
+                } else if (this.$route.path === '/admin/project') {
+                    this.chat_url = "../../../static/tab_icon_chat_unselected.png"
+                    this.home_url = "../../../static/tab_icon_home_selected.png"
+                    this.oa_url = '../../../static/oa_image.png'
+                    this.meeting_url = '../../../static/ic_operation.png'
+
+                } else if(this.$route.path === '/admin/oa') {
+
+                    this.chat_url = "../../../static/tab_icon_chat_unselected.png"
+                    this.home_url = "../../../static/tab_icon_home_unselected.png"
+                    this.oa_url = '../../../static/oa_image_more.png'
+                    this.meeting_url = '../../../static/ic_operation.png'
+
+                } else {
+                    this.chat_url = "../../../static/tab_icon_chat_unselected.png"
+                    this.home_url = "../../../static/tab_icon_home_unselected.png"
+                    this.oa_url = '../../../static/oa_image.png'
+                    this.meeting_url = '../../../static/ic_operation_more.png'
+                }
+            },
+
+
             handleResize(event) {
                 this.heightData = (document.documentElement.clientHeight) + 'px'
                 console.log("heightData:" + this.heightData);
@@ -155,6 +179,9 @@
                     if (this.$store.state.sessionlist.length > 0) {
                         this.chat_url = "../../../static/tab_icon_chat_selected.png"
                         this.home_url = "../../../static/tab_icon_home_unselected.png"
+                        this.oa_url = '../../../static/oa_image.png'
+                        this.meeting_url = '../../../static/ic_operation.png'
+
                         let sessionId = this.$store.state.currSessionId
                         if (!sessionId) {
 
@@ -185,8 +212,10 @@
 
                     }
                 } else {
-                    this.chat_url = "../../../static/tab_icon_chat_unselected.png"
-                    this.home_url = "../../../static/tab_icon_home_selected.png"
+                    //this.chat_url = "../../../static/tab_icon_chat_unselected.png"
+                    //this.home_url = "../../../static/tab_icon_home_selected.png"
+
+                    this.changeUrls();
                 }
                 //console.log( keyPath);
             },
