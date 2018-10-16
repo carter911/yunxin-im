@@ -5,7 +5,7 @@
         <el-row>
             <el-col>
 
-                <el-card >
+                <el-card :style="{'background-color': this.currentId === item.id ? '#f2f2f2' : '#fff'}">
 
                     <div class="item_title">{{item.title}}</div>
 
@@ -37,6 +37,11 @@
             item: {
                 type: Object,
                 required: true
+            },
+
+            currentId: {
+                type:String,
+                required:false
             }
         },
 

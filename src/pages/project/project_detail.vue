@@ -237,10 +237,12 @@
 
         getProjectStatusColor(){
             if(this.project == null) return '#FFF';
-            if(this.project.statusCode == 0) return "#12bd83" ;
-            if(this.project.statusCode == 3) return "#f32234" ;
-            if(this.project.statusCode == 5) return "#464646";
+            if(this.project.statusCode === 4) return "#f32234" ;
+            if(this.project.statusCode === 5) return "#464646";
+
+            return "#12bd83" ;
         },
+
 
         addNewRemind() {
             if(this.project == null) {

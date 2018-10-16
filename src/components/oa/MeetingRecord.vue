@@ -16,9 +16,21 @@
 
                     <div v-if="!this.checkPageDataEmpty"
                          class="meeting_list_item"
-                         v-bind:style="{'height' : (this.$store.state.windowClientHeight - 160) + 'px'}">
+                         v-bind:style="{'height' : (this.$store.state.windowClientHeight - 140) + 'px'}">
+
                         <MeetingRecordItem @onItemClick="onItemClick" v-for="(item,index) in this.getCurrentMeetingList"
-                                           :key="index" :item="item"></MeetingRecordItem>
+                                           :key="index"
+                                           :currentId="meetingId"
+                                           :item="item">
+
+                        </MeetingRecordItem>
+
+                        <div v-if="this.shouldShowLoadMore">
+                            <BottomLoading :loadingType="this.bottomLoadingType"
+                                           @loadingMore="loadingMore">
+                            </BottomLoading>
+                        </div>
+
                     </div>
 
                     <div v-if="this.checkPageDataEmpty">
@@ -32,8 +44,9 @@
                          v-bind:style="{'height' : (this.$store.state.windowClientHeight - 106) + 'px'}">
 
                     <el-card>
-                        <div class="add_meeting_btn">
+                        <div class="add_meeting_btn" style="cursor: pointer">
                             <button class="add_btn" v-if="this.showCreateBtn" @click="openDialog">重新编辑</button>
+                            <button class="delete_btn" v-if="this.showCreateBtn" @click="deleteMeetingRecord">删除记录</button>
                         </div>
 
                         <div class="meeting_detail_html" v-html="meetingDetail"></div>
@@ -43,7 +56,7 @@
 
             </el-container>
 
-            <div v-if="this.showAddDialog"><AddMeetingRecord @closeMeetingAddDialog="closeMeetingAddDialog"
+            <div class="meeting_edit" v-if="this.showAddDialog"><AddMeetingRecord @closeMeetingAddDialog="closeMeetingAddDialog"
                     :meeting_title="this.meetingTitle"
                     :meeting_desc="this.meetingDesc"
                     :meeting_detail="this.meetingUpdateDetail"
@@ -69,6 +82,9 @@
     import ElAside from "element-ui/packages/aside/src/main";
     import ElMain from "element-ui/packages/main/src/main";
 
+    import BottomLoading from "../../components/common/BottomLoading.vue"
+
+
     export default {
         name: "meeting-record",
         components: {
@@ -76,20 +92,20 @@
             ElAside,
             AddMeetingRecord,
             MeetingRecordItem,
-            MeetingDetail
+            MeetingDetail,
+            BottomLoading
         },
 
 
         data() {
             return {
-
                 status: '0',
 
                 dialogShow: false,
                 showAddDialog: false,
 
                 pageIndex: 1,
-                pageSize: 52,
+                pageSize: 10,
 
                 meetingItemList: [],
 
@@ -100,16 +116,17 @@
 
                 meetingId: '',
 
+                canCreateMeeting:false,
+
+                bottomLoadingType : 0 ,
+                bottomCanLoadMore : true,
+
             }
         },
 
         computed: {
             showCreateBtn(){
-              return false ;
-            },
-
-            showEditBtn() {
-                return false;
+              return this.canCreateMeeting ;
             },
 
             //获取当前会议列表
@@ -125,10 +142,50 @@
 
             checkMeetingDetail(){
                 return null != this.meetingDetail && this.meetingDetail.length > 0 ;
+            },
+
+            shouldShowLoadMore(){
+                return this.bottomCanLoadMore ;
             }
+
         },
 
         methods: {
+
+            deleteMeetingRecord () {
+                this.$confirm('您将删除该会议记录？', '确定', {
+                    confirmButtonText: '确认',
+                    cancelButtonText: '暂不删除',
+                    type: 'error'
+                }).then(() => {
+                    console.log("------>>>delete")
+
+                }).catch(() => {
+                });
+            },
+
+            //TODO
+            realDelete() {
+                let _that = this;
+
+                let url = "" ;
+                http.get(url,{
+                    id:this.meetingId
+                }).then(response => {
+                    if(response.code === 200){
+                        this.showMsg("success","删除成功");
+
+                        _that.pageIndex = 1 ;
+                        _that.request_meeting_record();
+
+                    }else{
+                        this.showMsg("info","删除异常(" + response.code + ")");
+                    }
+                }, error => {
+                    this.showMsg("error", "会议记录删除,请稍后重试")
+                })
+            },
+
             addNewRecord(){
                 this.meetingId = "";
                 this.meetingTitle = "";
@@ -159,10 +216,12 @@
                 this.showAddDialog = true;
             },
 
-            closeMeetingAddDialog() {
+            closeMeetingAddDialog(hasCommitData) {
                 this.showAddDialog = false;
-                this.pageIndex = 1 ;
-                this.request_meeting_record();
+                if(hasCommitData) {
+                    this.pageIndex = 1 ;
+                    this.request_meeting_record();
+                }
             },
 
             showMsg(type, msg) {
@@ -177,14 +236,20 @@
                 if (null === this.meetingId || '' === this.meetingId) return;
                 let url = 'Share/Meeting/index/id/' + this.meetingId;
 
+                console.log("----url---",url);
                 http.get(url).then(response => {
-                    //console.log("result 1", response);
 
                     let regex = /<body[^>]*>([\s\S]*)<\/body>/;
                     let result = response.match(regex);
 
                     this.meetingDetail = result[0];
                 })
+            },
+
+            loadingMore(){
+              this.bottomLoadingType = 1 ;
+              this.pageIndex++ ;
+              this.request_meeting_record();
             },
 
 
@@ -210,19 +275,44 @@
                 })
             },
 
+            //查询用户权限
+            request_user_auth(){
+                let _that = this;
+
+                let url = "oaAuth" ;
+                http.get(url,{}).then(response => {
+                    if(response.code === 200){
+                        _that.canCreateMeeting = response.data.is_meeting_create === 1
+                    }
+
+                }, error => {
+                    //ignore
+                })
+
+            },
+
             parseData(data) {
                 if (this.pageIndex === 1) {
                     this.meetingItemList = [];
                 }
 
+                this.bottomCanLoadMore = null != data && data.length >= this.pageSize;
+
                 if(null != data && data.length > 0) {
                     this.meetingItemList = this.meetingItemList.concat(data);
                 }
 
-                if(null != this.meetingItemList && this.meetingItemList.length > 0) {
+                if(null != this.meetingItemList && this.meetingItemList.length > 0 && this.pageIndex === 1) {
                     this.meetingId = this.meetingItemList[0].id;
+                    this.meetingTitle = this.meetingItemList[0].title;
+                    this.meetingDesc = this.meetingItemList[0].desc;
+                    this.meetingUpdateDetail = this.meetingItemList[0].content;
+
                     this.get_meeting_detail();
                 }
+
+                //更改底部加载状态
+                this.bottomLoadingType = 0 ;
 
                 console.dir(this.meetingItemList);
             }
@@ -231,6 +321,7 @@
         created() {
             this.request_meeting_record();
             this.get_meeting_detail();
+            this.request_user_auth();
         }
     }
 
@@ -243,6 +334,10 @@
         height: 45px;
         line-height: 43px;
         width:100%;
+    }
+
+    .meeting_edit{
+        width: 100%;
     }
 
     .add_new_record{
@@ -279,7 +374,7 @@
         background: rgba(0,0,0,0.1);
     }
 
-    .meeting_detail_html{
+    .meeting_detail_html {
         text-align: left;
     }
 
@@ -290,10 +385,19 @@
 
 
     .add_btn{
+        cursor: pointer;
         background-color: #5daf34;
         border-radius: 4px;
         padding:6px 12px;
         margin-right: 2%;
+        color: #FFF;
+    }
+
+    .delete_btn {
+        cursor: pointer;
+        background-color: #ff4d51;
+        border-radius: 4px;
+        padding: 6px 12px;
         color: #FFF;
     }
 

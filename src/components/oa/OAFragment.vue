@@ -9,7 +9,7 @@
 
                     <div class="grid-content bg-purple chatBar">
                         <el-menu :default-active="this.defaultActive" class="el-menu-demo" mode="horizontal">
-                            <el-menu-item index="project">OA列表</el-menu-item>
+                            <el-menu-item index="project">{{this.oaTeamTitle}}</el-menu-item>
                         </el-menu>
 
                         <div class="keyword">
@@ -93,10 +93,15 @@
 
                 isTeam: true,
                 keyword: '',
+                teamCount:0,
             }
         },
 
         computed: {
+             oaTeamTitle() {
+                 return this.teamCount > 0 ? "OA列表(" + this.teamCount + ")" : "OA列表";
+             },
+
             oaName() {
                 let oaSessionId = this.$store.state.OACurrentSessionId;
                 if (null == oaSessionId) return "";
@@ -125,7 +130,7 @@
                 let keyword = this.keyword;
                 if(null == keyword) keyword = "";
 
-                return this.$store.state.teamlist && this.$store.state.teamlist.filter(team => {
+                let totalResultList =  this.$store.state.teamlist && this.$store.state.teamlist.filter(team => {
 
                     let teamOwner = team.owner;
                     let result = null != teamOwner &&
@@ -141,18 +146,16 @@
                     }
 
                     return result;
-                })
-            },
+                });
 
+                this.teamCount = totalResultList === null ? 0 : totalResultList.length;
+
+                return totalResultList;
+            },
         },
 
-
         methods: {
-
-            chatSelect(key) {
-
-            },
-
+            chatSelect(key) {},
 
             hidePanel() {
                 console.log("click there...")

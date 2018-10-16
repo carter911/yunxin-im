@@ -98,12 +98,14 @@ export default {
         background: #f0f2f7;
         pointer-events: none;
     }
+
     .badge{
         background:#f13f37;
         text-align: center;
         border-radius: 15px;
         color: #fff;
         padding: 0px 5px;
+        margin-left: 6px;
         font-size: 9px;
     }
 </style>

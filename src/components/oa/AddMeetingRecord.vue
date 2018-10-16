@@ -2,14 +2,18 @@
 
     <div id="id_content">
 
-        <!--<el-dialog title="新增会议记录"-->
-        <!--:visible.sync="dialogTableVisible"-->
-        <!--width="95%"-->
-        <!--top="4vh"-->
-        <!--:beforeClose="dialogBeforeClose">-->
-
         <div>
-            <h3>{{getTitleName()}}</h3>
+
+            <el-row>
+                <el-col :span="2" style="margin-top: 24px; margin-bottom: 20px">
+                    <img src="../../../static/go_left.png" class="edit_back_left" @click="resetFormAndClose"/>
+                </el-col>
+
+                <el-col :span="18">
+                    <h3>{{getTitleName()}}</h3>
+
+                </el-col>
+            </el-row>
 
         </div>
 
@@ -23,11 +27,11 @@
                 <el-input v-model="form.meetingIntro"></el-input>
             </el-form-item>
 
-            <froala :tag="'textarea'" :config="config" v-model="form.meetingDetail"></froala>
+            <froala id="froala" :tag="'textarea'" :config="config" v-html="form.meetingDetail"></froala>
 
             <el-form-item class="form_submit">
                 <el-button type="primary" @click="submit('form')">提交记录</el-button>
-                <el-button type="warning" @click="resetFormAndClose">取消新增</el-button>
+                <el-button type="warning" @click="resetFormAndClose">{{this.getCancelButtonName()}}</el-button>
 
             </el-form-item>
 
@@ -87,6 +91,10 @@
         name: "add-meeting-record",
         data() {
             return {
+                froalaObject: Object,
+
+                hasCommitData: false,
+
                 formSubmit: false,
 
                 meetingId: this.meeting_id,
@@ -116,9 +124,9 @@
                 closeOnClickModal: false,
 
                 config: {
-                    heightMin: 300,
-                    heightMax: 300,
-                    toolbarButtons: ['fontFamily', '|', 'fontSize', '|', 'paragraphFormat', '|', 'bold', 'italic', 'underline', 'strikeThrough', 'paragraphFormat', 'align', 'formatOL', 'formatUL', 'indent', 'outdent', 'insertImage', 'undo', 'redo'],
+                    heightMin: '45%',
+                    heightMax: '45%',
+                    toolbarButtons: ['fontSize', '|', 'paragraphFormat', '|', 'bold', 'italic', 'underline', 'strikeThrough', 'paragraphFormat', 'align', 'formatOL', 'formatUL', 'indent', 'outdent', 'insertImage', 'undo', 'redo'],
                     charCounterCount: false,
                     fontFamilySelection: true,
                     fontSizeSelection: true,
@@ -136,16 +144,26 @@
 
                     //上传地址
                     imageUploadURL: 'http://dev.e-shigong.com/Admin/Common/uploadFroala',
+
+                    //语言
+                    language: 'zh_cn',
+
+                    html: 'hello word'
+
                 },
             }
         },
 
         methods: {
-            getTitleName(){
-              if(null == this.meetingId || this.meetingId.length === 0) return "新增会议记录";
-              return "修改会议记录";
+            getTitleName() {
+                if (null == this.meetingId || this.meetingId.length === 0) return "新增会议记录";
+                return "修改会议记录";
             },
 
+            getCancelButtonName(){
+                if(null == this.meetingId || this.meetingId.length === 0) return "取消新增";
+                return "取消修改";
+            },
 
             dialogBeforeClose() {
                 this.resetFormAndClose();
@@ -169,16 +187,19 @@
             },
 
             realCommit() {
-                let that = this;
+                let html = this.froalaObject.innerHTML;
 
+                let that = this;
                 if (this.formSubmit) return;
                 this.formSubmit = true;
+                this.hasCommitData = true;
 
                 let url = "meetingadd";
                 let params = {
                     title: this.form.meetingTitle,
                     desc: this.form.meetingIntro,
-                    content: this.form.meetingDetail,
+                    content: html,
+                    id: this.meeting_id
                 };
 
                 http.post(url, params).then(response => {
@@ -201,9 +222,15 @@
 
             resetFormAndClose() {
                 this.$refs["form"].resetFields();
-                this.$emit("closeMeetingAddDialog");
-            }
+                this.$emit("closeMeetingAddDialog", this.hasCommitData);
+            },
+        },
+
+        mounted() {
+           this.froalaObject = document.getElementsByClassName("fr-element fr-view")[0];
+           //console.log("------>>" + this.froalaObject)
         }
+
     }
 </script>
 
@@ -213,9 +240,19 @@
         margin-top: 24px;
     }
 
+    .edit_back_left {
+        width: 20px;
+        height: 20px;
+        margin: 0 auto;
+    }
+
     #id_content {
         width: 98%;
         margin: 0 auto;
+    }
+
+    #id_content p img {
+        margin: auto 0;
     }
 
 </style>

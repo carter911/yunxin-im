@@ -12,7 +12,7 @@
 
         <el-col :span="16">
             <div @click='projectInfo(item)' class="project-list grid-content bg-purple-dark">
-                <h2>{{item.name}}</h2>
+                <h2>{{item.name}}({{item.memberNum}})</h2>
             </div>
         </el-col>
 
@@ -56,6 +56,7 @@
         },
 
         methods: {
+
             unReadNum() {
                 if (!this.isOAItem) return 0;
 
@@ -63,9 +64,11 @@
                 let s = this.$store.state.sessionlist;
                 console.log("--unReadNum--","----to refresh msg");
 
+
                 let currentSession =  this.$store.state.sessionMap["team-"+ this.item.teamId];
                 return null == currentSession ? 0 : currentSession.unread ;
             },
+
 
             projectInfo(item) {
                 //console.log('项目 列表 -----------------', item);
