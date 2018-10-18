@@ -10,7 +10,7 @@ import {resetSearchResult, searchTeam, searchUsers} from './search'
 import {deleteSession, resetCurrSession, resetSessionUnread, setCurrSession} from './session'
 import {
     continueRobotMsg, getHistoryMsgs, resetNoMoreHistoryMsgs, revocateMsg, sendBase64Url, sendFileMsg, sendMsg,
-    sendMsgReceipt, sendRobotMsg
+    sendMsgReceipt, sendRobotMsg,loadMoreChatData
 } from './msgs'
 import {deleteSysMsgs, markCustomSysMsgRead, markSysMsgRead, resetSysMsgs} from './sysMsgs'
 import {getChatroomHistoryMsgs, sendChatroomFileMsg, sendChatroomMsg, sendChatroomRobotMsg} from './chatroomMsgs'
@@ -28,7 +28,7 @@ function connectNim ({state, commit, dispatch}, obj) {
   let {force} = Object.assign({}, obj)
 
   // 操作为内容页刷新页面，此时无nim实例
-  console.log(state.nim);
+  console.log('nim connectNim 开始连接',state.nim);
 
   // 切换账户
   let uid = localStorage.getItem("uid");
@@ -49,7 +49,8 @@ function connectNim ({state, commit, dispatch}, obj) {
       //pageUtil.turnPage('无历史登录记录，请重新登录', 'login')
     } else {
       // 有cookie，重新登录
-      //console.log('----连接云信用户信息------', loginInfo)
+
+      console.log('nim connect初始化initNimSDK', loginInfo)
       dispatch('initNimSDK', loginInfo)
     }
   }
@@ -88,7 +89,7 @@ export default {
 
   // 连接sdk请求，false表示强制重连
   connect (store, obj) {
-    //console.log('重新连接------------------------')
+    console.log('nim开始connect','开始连接------------------------')
       
     let {type} = Object.assign({}, obj)
     // type 可为 nim chatroom
@@ -135,6 +136,8 @@ export default {
   resetSessionUnread,
 
   // 发送消息
+  loadMoreChatData,
+
   sendMsg,
   sendFileMsg,
   sendBase64Url,

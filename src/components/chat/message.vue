@@ -6,7 +6,7 @@
         {{`您已退出该${teamInfo && teamInfo.type==='normal' ? '讨论组':'群'}`}}
       </div>
       <div  id="chat_list" class="chat_list" v-bind:style="{height: chatHeight}">
-        <ChatList type="session" :msglist="msglist" :userInfos="userInfos" :myInfo="myInfo" :isRobot="isRobot" @msgs-loaded="msgsLoaded"/>
+        <ChatList type="session" :canLoadMore="chatCanLoadMore" :isOAItem="isOAItem" :msglist="msglist" :userInfos="userInfos" :myInfo="myInfo" :isRobot="isRobot" @msgs-loaded="msgsLoaded"/>
       </div>
       <div>
         <ChatEditor type="session" :scene="scene" :to="to" :isOAItem="isOAItem" :isRobot="isRobot" :invalid="teamInvalid || muteInTeam" :invalidHint="sendInvalidHint" :advancedTeam="teamInfo && teamInfo.type === 'advanced'"/>
@@ -75,6 +75,8 @@ export default {
     data() {
         return {
             chat_height:(this.$store.state.windowClientHeight-236)+'px',
+            chatCanLoadMore:true ,
+
             leftBtnOptions: {
                 backText: " ",
                 preventGoBack: true

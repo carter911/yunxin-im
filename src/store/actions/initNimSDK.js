@@ -15,23 +15,29 @@ import {onRoamingMsgs, onOfflineMsgs, onMsg} from './msgs'
 import {onSysMsgs, onSysMsg, onSysMsgUnread, onCustomSysMsgs} from './sysMsgs'
 import { onTeams, onSynCreateTeam, onCreateTeam, onUpdateTeam, onTeamMembers, onUpdateTeamMember, onAddTeamMembers, onRemoveTeamMembers, onUpdateTeamManagers, onDismissTeam, onUpdateTeamMembersMute, onTeamMsgReceipt} from './team'
 
-const SDK = require('@/sdk/NIM_Web_SDK_v5.0.0.js')
+const SDK = require('@/sdk/NIM_Web_SDK_v5.6.0.js')
 // 重新初始化 NIM SDK
 export function initNimSDK ({ state, commit, dispatch }, loginInfo) {
   if (state.nim) {
     state.nim.disconnect()
   }
+
+  console.log("nim初始化sdk");
   // 初始化SDK
   window.nim = state.nim = SDK.NIM.getInstance({
-    //debug: true && { api: 'info', style: 'font-size:12px;color:blue;background-color:rgba(0,0,0,0.1)' },
+    debug: true && { api: 'info', style: 'font-size:12px;color:blue;background-color:rgba(0,0,0,0.1)' },
     appKey: config.appkey,
     account: loginInfo.uid,
     token: loginInfo.sdktoken,
-    db: false,
+
+    db: true,
     syncSessionUnread: true,
+
     syncRobots: true,
     isUnreadable: true,
     autoMarkRead: true, // 默认为true
+    syncTeamMembers: false, //全成员先不同步了
+
     onconnect: function onConnect (event) {
       console.log('建立云信连接')
       if (loginInfo) {
@@ -104,8 +110,10 @@ export function initNimSDK ({ state, commit, dispatch }, loginInfo) {
     // // 会话
     onsessions: onSessions,
     onupdatesession: onUpdateSession,
-    // // 消息
+
+    //漫游消息回调
     onroamingmsgs: onRoamingMsgs,
+    //离线消息回调
     onofflinemsgs: onOfflineMsgs,
     onmsg: onMsg,
     // // 系统通知

@@ -58,6 +58,7 @@ function onSendMsgDone(error, msg) {
     onMsg(msg)
 }
 
+
 export function onMsg(msg) {
     msg = formatMsg(msg)
     console.log('我更新了数据', msg)
@@ -146,6 +147,50 @@ export function onRevocateMsg(error, msg) {
         }
     })
 }
+
+
+export function loadMoreChatData({state, commit}, isOAItem) {
+    //alert("----loadMoreChatData----->>>")
+    let sessionId = state.currSessionId;
+    //获取当前session
+    let currentSession = state.msgs[sessionId] || [];
+
+    console.dir(currentSession);
+
+
+    let currentTime = Date.parse(new Date());
+    if(currentSession.length > 0 ){
+        currentTime = currentSession[0].time ;
+    }
+
+    console.log("----get the target time---" , currentTime);
+
+    const nim = state.nim;
+    nim.getLocalMsgs({
+        sessionId: sessionId,
+        end: currentTime,
+        desc: true,
+        limit: config.localMsglimit,
+        done: function (error , obj) {
+            if(error == null) {
+                let historyMsgList = obj.msgs || [] ;
+                if(isOAItem){
+                    state.OACurrentSessionMsg = historyMsgList.concat(state.OACurrentSessionMsg || []);
+                    state.msgs[sessionId] = state.OACurrentSessionMsg;
+
+                }else {
+                    state.currSessionMsgs     = historyMsgList.concat(state.currSessionMsgs || []);
+                    state.msgs[sessionId] = state.currSessionMsgs;
+                }
+            }
+
+            console.log("getLocalHistory------>>", error , obj.msgs);
+        }
+    });
+
+}
+
+
 
 export function revocateMsg({state, commit}, msg) {
     const nim = state.nim

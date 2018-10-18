@@ -1,7 +1,8 @@
 <template>
     <ul  class="m-chat-list p-chat-list" v-bind:style="{height: (this.$store.state.windowClientHeight-370)+'px'}">
-        <li  class="u-msg item-time" v-if="canLoadMore">
-        ---- 上拉加载更多 ----
+        <li  class="u-msg item-time" v-if="canLoadMore" @click="loadChatData()">
+        ---- 暂无更多记录 ----
+
         </li>
         <li class="u-msg item-time" v-else>
         ---- 已无更多记录 ----
@@ -62,9 +63,17 @@
             isHistory: {
                 type: Boolean,
                 default() {
-                return false
+                    return false
+                }
+            },
+
+            isOAItem :{
+                type: Boolean,
+                default(){
+                    return false
                 }
             }
+
             // robotInfos: {
             //   type: Object,
             //   default () {
@@ -90,7 +99,11 @@
                 this.msgLoadedTimer = setTimeout(() => {
                 this.$emit('msgs-loaded')
                 }, 20)
-            }
+            },
+
+            loadChatData(){
+                //this.$store.dispatch("loadMoreChatData",this.isOAItem)
+            },
         },
         computed:{
         // chatHeight(){

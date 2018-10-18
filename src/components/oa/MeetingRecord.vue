@@ -159,17 +159,17 @@
                     type: 'error'
                 }).then(() => {
                     console.log("------>>>delete")
+                    this.realDelete()
 
                 }).catch(() => {
                 });
             },
 
-            //TODO
             realDelete() {
                 let _that = this;
 
-                let url = "" ;
-                http.get(url,{
+                let url = "meetingdel" ;
+                http.post(url,{
                     id:this.meetingId
                 }).then(response => {
                     if(response.code === 200){

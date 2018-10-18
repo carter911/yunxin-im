@@ -337,32 +337,11 @@ export default {
             }
 
             let currSessionMsgs = [].concat(state.msgs[oaSessionId] || []);
-            // 做消息截断
-            let limit = config.localMsglimit;
-            let msgLen = currSessionMsgs.length;
-            if (msgLen - limit > 0) {
-                state.OACurrentSessionLastMsg = currSessionMsgs[msgLen - limit];
-                currSessionMsgs = currSessionMsgs.slice(msgLen - limit, msgLen);
-            } else if (msgLen > 0) {
-                state.OACurrentSessionLastMsg = currSessionMsgs[0]
-            } else {
-                state.OACurrentSessionLastMsg = null
+            if(currSessionMsgs.length === 0){
+                store.commit("getOALocalHistory", oaSessionId);
+            }else{
+                store.commit("setCurrentOASessionLogic",currSessionMsgs);
             }
-            state.OACurrentSessionMsg = [];
-            let lastMsgTime = 0
-            console.log('OA初始化会话', currSessionMsgs)
-
-            currSessionMsgs.forEach(msg => {
-                if ((msg.time - lastMsgTime) > 1000 * 60 * 5) {
-                    lastMsgTime = msg.time
-                    state.OACurrentSessionMsg.push({
-                        type: 'timeTag',
-                        text: util.formatDate(msg.time, false)
-                    })
-                }
-                state.OACurrentSessionMsg.push(msg)
-            });
-            store.dispatch('checkTeamMsgReceipt', state.OACurrentSessionMsg)
 
         } else if (type === 'put') { // 追加一条消息
             let newMsg = obj.msg
@@ -459,34 +438,14 @@ export default {
         } else if (type === 'init') { // 初始化会话消息列表
             if (state.currSessionId) {
                 let sessionId = state.currSessionId;
+                console.log("----currentSessionId----", sessionId);
 
                 let currSessionMsgs = [].concat(state.msgs[sessionId] || [])
-                // 做消息截断
-                let limit = config.localMsglimit
-                let msgLen = currSessionMsgs.length
-                if (msgLen - limit > 0) {
-                    state.currSessionLastMsg = currSessionMsgs[msgLen - limit]
-                    currSessionMsgs = currSessionMsgs.slice(msgLen - limit, msgLen)
-                } else if (msgLen > 0) {
-                    state.currSessionLastMsg = currSessionMsgs[0]
-                } else {
-                    state.currSessionLastMsg = null
+                if(currSessionMsgs.length === 0) {
+                    store.commit("getLocalHistory", sessionId);
+                }else {
+                    store.commit("setCurrentSessionLogic", currSessionMsgs);
                 }
-                state.currSessionMsgs = []
-                let lastMsgTime = 0
-                console.log('初始化会话', currSessionMsgs)
-
-                currSessionMsgs.forEach(msg => {
-                    if ((msg.time - lastMsgTime) > 1000 * 60 * 5) {
-                        lastMsgTime = msg.time
-                        state.currSessionMsgs.push({
-                            type: 'timeTag',
-                            text: util.formatDate(msg.time, false)
-                        })
-                    }
-                    state.currSessionMsgs.push(msg)
-                })
-                store.dispatch('checkTeamMsgReceipt', state.currSessionMsgs)
             }
         } else if (type === 'put') { // 追加一条消息
             let newMsg = obj.msg
@@ -539,6 +498,117 @@ export default {
                 }
             }
         }
+    },
+
+
+    //搜索本地聊天记录[OA]系统
+    getOALocalHistory(state, sessionId){
+        const nim = state.nim ;
+        nim.getLocalMsgs({
+            sessionId: sessionId,
+            limit: config.localMsglimit,
+            done: function (error , obj) {
+                console.log("getOALocalHistory------>>", error , obj);
+
+                if(obj.msgs){
+                    let newMsgs = obj.msgs.reverse();
+                    store.commit('updateMsgs', newMsgs);
+                    store.commit("setCurrentOASessionLogic",newMsgs);
+
+                }else{
+                    store.commit("setCurrentOASessionLogic",[]);
+                }
+            }
+        })
+    },
+
+
+    //搜索本地聊天记录
+    getLocalHistory(state, sessionId){
+        const nim = state.nim;
+        nim.getLocalMsgs({
+            sessionId: sessionId,
+            limit: config.localMsglimit,
+            done: function (error , obj) {
+                console.log("getLocalHistory------>>", error , obj);
+
+                if(obj.msgs){
+                    let newMsgs = obj.msgs.reverse();
+
+                    store.commit('updateMsgs', newMsgs);
+                    store.commit("setCurrentSessionLogic",newMsgs);
+
+                }else{
+                    store.commit("setCurrentSessionLogic",[]);
+                }
+            }
+        })
+    },
+
+    //截断OA数据
+    setCurrentOASessionLogic(state, currSessionMsgs){
+        console.log("----setCurrentOASessionLogic----", currSessionMsgs);
+
+        // 做消息截断
+        let limit = config.localMsglimit;
+        let msgLen = currSessionMsgs.length;
+        if (msgLen - limit > 0) {
+            state.OACurrentSessionLastMsg = currSessionMsgs[msgLen - limit];
+            currSessionMsgs = currSessionMsgs.slice(msgLen - limit, msgLen);
+        } else if (msgLen > 0) {
+            state.OACurrentSessionLastMsg = currSessionMsgs[0]
+        } else {
+            state.OACurrentSessionLastMsg = null
+        }
+        state.OACurrentSessionMsg = [];
+        let lastMsgTime = 0
+        console.log('OA初始化会话', currSessionMsgs)
+
+        currSessionMsgs.forEach(msg => {
+            if ((msg.time - lastMsgTime) > 1000 * 60 * 5) {
+                lastMsgTime = msg.time
+                state.OACurrentSessionMsg.push({
+                    type: 'timeTag',
+                    text: util.formatDate(msg.time, false)
+                })
+            }
+            state.OACurrentSessionMsg.push(msg)
+        });
+        store.dispatch('checkTeamMsgReceipt', state.OACurrentSessionMsg)
+
+    },
+
+
+    //截断当前数据
+    setCurrentSessionLogic(state, currSessionMsgs){
+        console.log("----setCurrentSessionLogic----", currSessionMsgs);
+
+        // 做消息截断
+        let limit = config.localMsglimit;
+        let msgLen = currSessionMsgs.length;
+        if (msgLen - limit > 0) {
+            state.currSessionLastMsg = currSessionMsgs[msgLen - limit]
+            currSessionMsgs = currSessionMsgs.slice(msgLen - limit, msgLen)
+        } else if (msgLen > 0) {
+            state.currSessionLastMsg = currSessionMsgs[0]
+        } else {
+            state.currSessionLastMsg = null
+        }
+        state.currSessionMsgs = [];
+        let lastMsgTime = 0
+        console.log('初始化会话', currSessionMsgs)
+
+        currSessionMsgs.forEach(msg => {
+            if ((msg.time - lastMsgTime) > 1000 * 60 * 5) {
+                lastMsgTime = msg.time
+                state.currSessionMsgs.push({
+                    type: 'timeTag',
+                    text: util.formatDate(msg.time, false)
+                })
+            }
+            state.currSessionMsgs.push(msg)
+        })
+        store.dispatch('checkTeamMsgReceipt', state.currSessionMsgs)
     },
 
 
@@ -838,6 +908,7 @@ function checkSessionIsOAProjectTeam(session) {
 
         let lastMsg = session.lastMsg ;
 
+        if(null == lastMsg) return false;
         //判断每条消息中是否存在附加信息
         if(lastMsg.hasOwnProperty("custom")){
             let custom = JSON.parse(lastMsg.custom) ;
