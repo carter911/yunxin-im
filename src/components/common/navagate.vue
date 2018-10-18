@@ -88,6 +88,7 @@
                 <el-menu-item index="/admin/meetingRecord">
                     <img class="menu" :src="meeting_url"/>
                 </el-menu-item>
+                
 
 
             </el-menu>
@@ -99,6 +100,14 @@
     export default {
         data() {
             return {
+                
+                nav_list:[
+                    {
+                        url:'/admin/project',
+                        icon:'../../../static/tab_icon_home_selected.png',
+                    }
+                ],
+                active_url:'/admin/project',
                 web: true,
                 closeWindows: false,
                 home_url: '../../../static/tab_icon_home_selected.png',
@@ -137,26 +146,24 @@
 
         methods: {
             changeUrls(){
-
-                if (this.$route.path === '/admin/chat') {
+                if (this.active_url === '/admin/chat') {
                     this.chat_url = "../../../static/tab_icon_chat_selected.png"
                     this.home_url = "../../../static/tab_icon_home_unselected.png"
                     this.oa_url = '../../../static/oa_image.png'
                     this.meeting_url = '../../../static/ic_operation.png'
 
-                } else if (this.$route.path === '/admin/project') {
+                } else if (this.active_url === '/admin/project') {
                     this.chat_url = "../../../static/tab_icon_chat_unselected.png"
                     this.home_url = "../../../static/tab_icon_home_selected.png"
                     this.oa_url = '../../../static/oa_image.png'
                     this.meeting_url = '../../../static/ic_operation.png'
 
-                } else if(this.$route.path === '/admin/oa') {
+                } else if(this.active_url === '/admin/oa') {
 
                     this.chat_url = "../../../static/tab_icon_chat_unselected.png"
                     this.home_url = "../../../static/tab_icon_home_unselected.png"
                     this.oa_url = '../../../static/oa_image_more.png'
                     this.meeting_url = '../../../static/ic_operation.png'
-
                 } else {
                     this.chat_url = "../../../static/tab_icon_chat_unselected.png"
                     this.home_url = "../../../static/tab_icon_home_unselected.png"
@@ -172,7 +179,7 @@
             },
 
             handleSelect(key, keyPath) {
-                console.log(key);
+                this.active_url = key;
                 localStorage.setItem('currentNav', key)
                 if (key == '/admin/chat') {
 
@@ -212,12 +219,8 @@
 
                     }
                 } else {
-                    //this.chat_url = "../../../static/tab_icon_chat_unselected.png"
-                    //this.home_url = "../../../static/tab_icon_home_selected.png"
-
                     this.changeUrls();
                 }
-                //console.log( keyPath);
             },
             closeWindow() {
                 this.$confirm('确定退出将会退出程序,确定吗？', '退出', {

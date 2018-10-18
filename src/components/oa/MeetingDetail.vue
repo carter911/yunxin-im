@@ -1,8 +1,6 @@
 <template>
 
     <div class="meeting_detail" v-html="meetingDetail">
-
-
     </div>
     
 </template>

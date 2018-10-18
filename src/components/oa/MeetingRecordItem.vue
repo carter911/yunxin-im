@@ -1,29 +1,16 @@
 <template>
 
-    <div id="id_content" @click="onItemClick()">
-
+    <div  id="id_content" @click="onItemClick()">
         <el-row>
             <el-col>
-
                 <el-card :style="{'background-color': this.currentId === item.id ? '#f2f2f2' : '#fff'}">
-
                     <div class="item_title">{{item.title}}</div>
-
                     <div class="item_record_time">记录时间: {{item.create_time}}</div>
-
                     <div class="item_desc">记录简介: {{item.desc}}</div>
-
                 </el-card>
-
             </el-col>
-
-
         </el-row>
-
-
     </div>
-
-
 </template>
 
 <script>

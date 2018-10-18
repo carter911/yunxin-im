@@ -12,12 +12,11 @@
                         <el-menu-item index="0">会议记录列表</el-menu-item>
                     </el-menu>
 
-                    <div v-if="this.showCreateBtn" class="add_new_record" @click="addNewRecord">新增会议记录</div>
+                    <el-button style="margin-top: 10px;width: 95%;text-align: center" type="primary" v-if="this.showCreateBtn" @click="addNewRecord">新增会议记录</el-button>
 
                     <div v-if="!this.checkPageDataEmpty"
                          class="meeting_list_item"
                          v-bind:style="{'height' : (this.$store.state.windowClientHeight - 140) + 'px'}">
-
                         <MeetingRecordItem @onItemClick="onItemClick" v-for="(item,index) in this.getCurrentMeetingList"
                                            :key="index"
                                            :currentId="meetingId"
@@ -45,8 +44,8 @@
 
                     <el-card>
                         <div class="add_meeting_btn" style="cursor: pointer">
-                            <button class="add_btn" v-if="this.showCreateBtn" @click="openDialog">重新编辑</button>
-                            <button class="delete_btn" v-if="this.showCreateBtn" @click="deleteMeetingRecord">删除记录</button>
+                            <el-button type="primary" size="mini" v-if="this.showCreateBtn" @click="openDialog">重新编辑</el-button>
+                            <el-button type="danger" size="mini" v-if="this.showCreateBtn" @click="deleteMeetingRecord">删除记录</el-button>
                         </div>
 
                         <div class="meeting_detail_html" v-html="meetingDetail"></div>
