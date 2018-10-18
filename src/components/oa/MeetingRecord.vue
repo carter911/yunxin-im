@@ -56,11 +56,13 @@
 
             </el-container>
 
-            <div class="meeting_edit" v-if="this.showAddDialog"><AddMeetingRecord @closeMeetingAddDialog="closeMeetingAddDialog"
+            <div class="meeting_edit" v-if="this.showAddDialog">
+
+                <WangEditorRecord @closeMeetingAddDialog="closeMeetingAddDialog"
                     :meeting_title="this.meetingTitle"
                     :meeting_desc="this.meetingDesc"
                     :meeting_detail="this.meetingUpdateDetail"
-                    :meeting_id="this.meetingId"></AddMeetingRecord>
+                    :meeting_id="this.meetingId"></WangEditorRecord>
             </div>
 
         </div>
@@ -72,7 +74,7 @@
 
 <script>
 
-    import AddMeetingRecord from "./AddMeetingRecord"
+    import WangEditorRecord from "./WangEditorRecord"
     import MeetingRecordItem from './MeetingRecordItem'
     import MeetingDetail from './MeetingDetail'
 
@@ -90,10 +92,10 @@
         components: {
             ElMain,
             ElAside,
-            AddMeetingRecord,
             MeetingRecordItem,
             MeetingDetail,
-            BottomLoading
+            BottomLoading,
+            WangEditorRecord
         },
 
 

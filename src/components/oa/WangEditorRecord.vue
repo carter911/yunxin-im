@@ -27,7 +27,7 @@
                 <el-input v-model="form.meetingIntro"></el-input>
             </el-form-item>
 
-            <froala id="froala" :tag="'textarea'" :config="config" v-html="form.meetingDetail"></froala>
+            <div ref="editor" style="text-align:left" :style="{height : (this.$store.state.windowClientHeight - 300) + 'px'}"></div>
 
             <el-form-item class="form_submit">
                 <el-button type="primary" @click="submit('form')">提交记录</el-button>
@@ -36,9 +36,6 @@
             </el-form-item>
 
         </el-form>
-
-
-        <!--</el-dialog>-->
 
     </div>
 
@@ -50,18 +47,21 @@
     import ElForm from "element-ui/packages/form/src/form";
     import ElInput from "element-ui/packages/input/src/input";
     import ElDialog from "element-ui/packages/dialog/src/component";
-    import VueFroala from 'vue-froala-wysiwyg';
     import ElFormItem from "element-ui/packages/form/src/form-item";
+
+    import E from 'wangeditor';
+
 
     import http from "../../utils/http"
     import Log from '../../common/Log';
+
 
     export default {
         components: {
             ElFormItem,
             ElDialog,
             ElInput,
-            ElForm
+            ElForm,
         },
 
         props: {
@@ -90,7 +90,7 @@
         name: "add-meeting-record",
         data() {
             return {
-                froalaObject: Object,
+                editorContent : '',
 
                 hasCommitData: false,
 
@@ -122,38 +122,23 @@
                 dialogTableVisible: true,
                 closeOnClickModal: false,
 
-                config: {
-                    heightMin: '45%',
-                    heightMax: '45%',
-                    toolbarButtons: ['fontSize', '|', 'paragraphFormat', '|', 'bold', 'italic', 'underline', 'strikeThrough', 'paragraphFormat', 'align', 'formatOL', 'formatUL', 'indent', 'outdent', 'insertImage', 'undo', 'redo'],
-                    charCounterCount: false,
-                    fontFamilySelection: true,
-                    fontSizeSelection: true,
-                    paragraphFormatSelection: true,
 
-                    placeholderText: '在这里编辑会议内容吧...',
-                    quickInsertButtons: [],
-                    quickInsertTags: [],
-
-                    events: {
-                        'froalaEditor.initialized': function () {
-                            console.log('initialized')
-                        }
-                    },
-
-                    //上传地址
-                    imageUploadURL: 'http://dev.e-shigong.com/Admin/Common/uploadFroala',
-
-                    //语言
-                    language: 'zh_cn',
-
-                    html: 'hello word'
-
-                },
             }
         },
 
         methods: {
+            //html解码
+            htmlDecode(text) {
+                //1.首先动态创建一个容器标签元素，如DIV
+                let temp = document.createElement("div");
+                //2.然后将要转换的字符串设置为这个元素的innerHTML(ie，火狐，google都支持)
+                temp.innerHTML = text;
+                //3.最后返回这个元素的innerText(ie支持)或者textContent(火狐，google支持)，即得到经过HTML解码的字符串了。
+                let output = temp.innerText || temp.textContent;
+                temp = null;
+                return output;
+            },
+
             getTitleName() {
                 if (null == this.meetingId || this.meetingId.length === 0) return "新增会议记录";
                 return "修改会议记录";
@@ -172,7 +157,6 @@
                 let that = this;
                 this.$refs[formName].validate((validate) => {
                     if (validate) {
-                        //alert("commit")
                         that.realCommit()
                     }
                 })
@@ -186,7 +170,6 @@
             },
 
             realCommit() {
-                let html = this.froalaObject.innerHTML;
 
                 let that = this;
                 if (this.formSubmit) return;
@@ -197,7 +180,7 @@
                 let params = {
                     title: this.form.meetingTitle,
                     desc: this.form.meetingIntro,
-                    content: html,
+                    content: this.editorContent,
                     id: this.meeting_id
                 };
 
@@ -226,8 +209,38 @@
         },
 
         mounted() {
-           this.froalaObject = document.getElementsByClassName("fr-element fr-view")[0];
-           //console.log("------>>" + this.froalaObject)
+
+            let editor = new E(this.$refs.editor);
+
+            editor.customConfig.debug = location.href.indexOf('wangeditor_debug_mode=1') > 0
+            editor.customConfig.onchange = (html) => {
+                this.editorContent = html
+            };
+
+            editor.customConfig.menus = [
+                'head',  // 标题
+                'bold',  // 粗体
+                'fontSize',  // 字号
+                'fontName',  // 字体
+                'italic',  // 斜体
+                'underline',  // 下划线
+                'strikeThrough',  // 删除线
+                'foreColor',  // 文字颜色
+                'backColor',  // 背景颜色
+                'link',  // 插入链接
+                'list',  // 列表
+                'justify',  // 对齐方式
+                'image',  // 插入图片
+                'undo',  // 撤销
+                'redo'  // 重复
+            ];
+
+            //配置图片上传路径
+            editor.customConfig.uploadImgServer = 'http://dev.e-shigong.com/Admin/Common/uploadWang';
+            //创建
+            editor.create();
+            //设置内容
+            editor.txt.html(this.htmlDecode(this.meeting_detail));
         }
 
     }

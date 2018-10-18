@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+
+
+<h1>云信 Web SDK Online Test</h1>
+<meta charset="utf-8"/>
+<div>
+    <p>
+        <span>APPKEY:</span>
+        <input type="text" id="appkey" value="83b923ebee8f6bdcbaff301239021b4a">
+    </p>
+    <p>
+        <span>ACCOUNT:</span>
+        <input type="text" id="account" value="sgb577">
+    </p>
+    <p>
+        <span>TOKEN:</span>
+        <input type="text" id="token" value="123456">
+    </p>
+    <p>
+        <button id="connect-sdk" onclick="connectSDK()">连接SDK</button>
+    </p>
+</div>
+
+<script src="NIM_Web_SDK_v5.6.0.js"></script>
+
+<script type="text/javascript">
+    function connectSDK() {
+        var appkey = document.getElementById('appkey').value;
+        var account = document.getElementById('account').value;
+        var token = document.getElementById('token').value;
+
+        SDK.NIM.getInstance({
+            appKey: appkey,
+            account: account,
+            token: token,
+            onconnect: function () {
+                alert('SDK 连接成功')
+            },
+            ondisconnect: function (obj) {
+                console.log('SDK 连接断开', obj)
+            },
+            onerror: function (error) {
+                console.log('SDK 连接失败', error)
+            },
+
+            onsessions: function (sessions) {
+                console.dir(sessions);
+            },
+
+            onteams:function (teams) {
+                console.dir(teams);
+            },
+
+            onUpdateSession:function(session){
+
+                console.log("update session",session);
+            }
+        })
+    }
+
+    // window.onload = function () {
+    //
+    // }
+
+
+</script>
+
+</body>
+</html>
