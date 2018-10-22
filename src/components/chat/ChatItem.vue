@@ -1,5 +1,5 @@
 <template>
-  
+
   <li class="u-msg"
     :class="{
       'item-me': msg.flow==='out',
@@ -19,22 +19,24 @@
       :time="msg.time"
       :flow="msg.flow"
       :type="msg.type">
-      
+
     <div class="msg-head" v-if="msg.avatar">
       <img  class="icon u-circle" :src="msg.avatar">
     </div>
 
     <div class="msg_body" >
         <p style="">{{msg.fromNick}}<span v-if="msg.role">({{msg.role}})</span></p>
-        
+
         <div class="msg_content">
           <span style="height:14px;width:14px" v-if="msg.type==='text'" class="msg-text" v-html="msg.showText"></span>
+
           <span v-else-if="msg.type==='custom-type1'" class="msg-text" >
             <p @click="lookGoods">{{this.shareItem.content}}</p>
             <img @click="lookGoods" v-if="this.shareItem.image !=''" class="shareImage" :src="shareItem.image"/>
             <img @click="lookGoods" v-if="this.shareItem.image2!=''" class="shareImage" :src="shareItem.image2"/>
             <img @click="lookGoods" v-if="this.shareItem.image3!=''" class="shareImage" :src="shareItem.image3"/>
           </span>
+
           <span v-else-if="msg.type==='custom-type3'" class="msg-text" ref="mediaMsg"></span>
           <span v-else-if="msg.type==='image'" class="msg-text msg-image">
               <img style="width:100%;height: auto" alt="111" preview="1" preview-text="" :src="imageUrl"/>
@@ -44,7 +46,14 @@
           <span v-else-if="msg.type==='audio'" class="msg-text" @click="playAudio(msg.audioSrc)">
             {{msg.showText}}
           </span>
-          <span v-else-if="msg.type==='file'" class="msg-text"><a :href="msg.fileLink" target="_blank"><i class="u-icon icon-file"></i>{{msg.showText}}</a></span>
+
+          <span v-else-if="msg.type==='file'" class="msg-text" @click="getFileDetail(msg)">
+             <div>
+                 <p style="font-size: 15px"><span style="color: #F00;margin-right: 4px">[文件]</span>{{msg.showText}}</p>
+                 <p style="color: #696969; font-size: 12px">{{this.calculateFileSize(msg.file.size)}}</p>
+             </div>
+          </span>
+
           <span v-else-if="msg.type==='notification'" class="msg-text notify">{{msg.showText}}</span>
           <span v-else class="msg-text" v-html="msg.showText"></span>
           <span v-if="msg.status==='fail'" class="msg-failed"><i class="weui-icon-warn"></i></span>
@@ -159,11 +168,11 @@
         return this.$store.state.robotInfos
       },
       teamMsgUnRead() {
-        var obj = !this.isHistory 
-        && this.msg.needMsgReceipt 
-        && this.msg.flow==='out' 
+        var obj = !this.isHistory
+        && this.msg.needMsgReceipt
+        && this.msg.flow==='out'
         && this.$store.state.teamMsgReads.find(item => item.idServer === this.msg.idServer)
-        
+
         return obj ? parseInt(obj.unread) : -1
       }
     },
@@ -174,7 +183,7 @@
         var ext = JSON.parse(item.custom);
         item.role = util.formatRole(ext.user_project_role);
         item.avatar = ext.user_icon_url;
-      } 
+      }
       // 标记用户，区分聊天室、普通消息
       if (this.type === 'session') {
         if (item.flow === 'in') {
@@ -194,7 +203,7 @@
             item.link = `#/namecard/${item.from}`
             //todo  如果是未加好友的人发了消息，是否能看到名片
           } else {
-            
+
             item.avatar = this.myInfo.avatar
           }
         } else if (item.flow === 'out') {
@@ -224,7 +233,7 @@
           if(item.text.indexOf("@"+this.myInfo.nick) !=-1){
               item.showText = "<span style='color: red'>"+item.showText+"</span>";
           }
-          
+
       } else if (item.type === 'custom') {
         let content = JSON.parse(item.content)
         // type 1 为猜拳消息
@@ -392,7 +401,26 @@
       }) // end this.nextTick
     },
     methods: {
-      lookGoods(){
+        getFileDetail(file){
+            this.$emit("msg-file-detail",file);
+        },
+
+        calculateFileSize(value) {
+            if (null == value || value === '' || value === 0) {
+                return "0 Bytes";
+            }
+
+            let unitArr = ["Bytes", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB"];
+            let index = 0, srcsize = parseFloat(value);
+
+            index = Math.floor(Math.log(srcsize) / Math.log(1024));
+            let size = srcsize / Math.pow(1024, index);
+            //  保留的小数位数
+            size = size.toFixed(2);
+            return size + unitArr[index];
+        },
+
+        lookGoods(){
           this.show_chat_list = true
       },
       artarError(url){
@@ -457,7 +485,7 @@
             // 显示的文本消息
             body
           })
-        } 
+        }
       },
       continueRobotMsg (robotAccid) {
         this.$store.dispatch('continueRobotMsg', robotAccid)
@@ -466,7 +494,7 @@
         done();
       },
       showFullImg (src) {
-        
+
         this.dialogVisible = true;
         this.fullImageUrl = src
         // this.$store.dispatch('showFullscreenImg', {
@@ -491,6 +519,12 @@
 
 <style scoped>
 
+    .msg-file-picture{
+        float: left;
+        width: 40px;
+        height: 40px;
+    }
+
   .msg-unread {
     position: relative;
     float: right;
@@ -508,7 +542,7 @@
   .msg_option{
     float: right;
   }
-  
+
 
   .item-you{
     position: relative;
@@ -522,7 +556,7 @@
     margin-top: 2px;
     float: left;
     width:40px;
-    
+
   }
   .item-you .msg_body{
     float: left;
@@ -564,7 +598,7 @@
         right: 26px;
         margin: 20px;
         background: #cce5ff;
-        width: 10px; height: 10px; 
+        width: 10px; height: 10px;
         transform: rotate(135deg);
         -o-transform: rotate(135deg);
         -webkit-transform: rotate(135deg);
@@ -588,7 +622,7 @@
   .tip{
     text-align: center;
   }
-  
+
 
   .msg_body p{
       font-size: 13px;
@@ -601,18 +635,17 @@
     background: #f3f3f3;
     /* border-radius: 10px; */
     font-size: 14px;
-    border-radius: 14px;
+    border-radius: 6px;
     padding: 10px;
     min-width: 10%;
   }
-
 
   .item-me  .msg_content{
     color: #333;
     background: #cce5ff;
     /* border-radius: 10px; */
     font-size: 14px;
-    border-radius: 14px;
+    border-radius: 6px;
     padding: 10px;
 
   }
@@ -624,7 +657,7 @@
         left: 16px;
         margin: 20px;
         background: #f3f3f3;
-        width: 10px; height: 10px; 
+        width: 10px; height: 10px;
         transform: rotate(135deg);
         -o-transform: rotate(135deg);
         -webkit-transform: rotate(135deg);
@@ -636,7 +669,7 @@
 </style>
 <style>
   .msg-text{
-   cursor: pointer; 
+   cursor: pointer;
   }
   .msg-text img{
       height: 20px;
@@ -655,11 +688,10 @@
     width:80px;
     height:80px;
     margin-right:10px;
-    border-radius: 10x;
+    border-radius: 10px;
   }
 
 
 
 
-  
 </style>

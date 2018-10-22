@@ -17,7 +17,8 @@
         :myInfo="myInfo"
         :key="msg.idClient"
         :isHistory='isHistory'
-        @msg-loaded="msgLoaded">
+        @msg-loaded="msgLoaded"
+        @msg-file-detail="msgFileDetail">
         </chat-item>
         
     </ul>
@@ -89,6 +90,10 @@
                 }
         },
         methods: {
+            msgFileDetail(file){
+              this.$emit("msgFileDetail",file)
+            },
+
             showFullImg (src) {
                 this.$store.dispatch('showFullscreenImg', {
                 src

@@ -6,12 +6,17 @@
         {{`您已退出该${teamInfo && teamInfo.type==='normal' ? '讨论组':'群'}`}}
       </div>
       <div  id="chat_list" class="chat_list" v-bind:style="{height: chatHeight}">
-        <ChatList type="session" :canLoadMore="chatCanLoadMore" :isOAItem="isOAItem" :msglist="msglist" :userInfos="userInfos" :myInfo="myInfo" :isRobot="isRobot" @msgs-loaded="msgsLoaded"/>
+        <ChatList type="session" :canLoadMore="chatCanLoadMore" :isOAItem="isOAItem" :msglist="msglist" :userInfos="userInfos" :myInfo="myInfo" :isRobot="isRobot" @msgs-loaded="msgsLoaded" @msgFileDetail="msgFileDetail"/>
       </div>
       <div>
         <ChatEditor type="session" :scene="scene" :to="to" :isOAItem="isOAItem" :isRobot="isRobot" :invalid="teamInvalid || muteInTeam" :invalidHint="sendInvalidHint" :advancedTeam="teamInfo && teamInfo.type === 'advanced'"/>
       </div>
     </div>
+
+    <div v-if="this.showFileDetailDialog">
+      <FileDetailDialog :detailMessage="this.detailMessage" @closeFileDetailDialog="closeFileDetailDialog"></FileDetailDialog>
+    </div>
+
   </div>
   </keep-alive>
 </template>
@@ -22,10 +27,13 @@ import util from "../../utils";
 import pageUtil from "../../utils/page";
 import store from '../../store';
 
+import FileDetailDialog from "./FileDetailDialog";
+
 export default {
     components: {
         ChatEditor,
-        ChatList
+        ChatList,
+        FileDetailDialog
     },
 
     props: {
@@ -74,6 +82,9 @@ export default {
     // 离开该页面，此时重置当前会话
     data() {
         return {
+            showFileDetailDialog:false,
+            detailMessage:{},
+
             chat_height:(this.$store.state.windowClientHeight-236)+'px',
             chatCanLoadMore:true ,
 
@@ -236,6 +247,19 @@ export default {
         msgsLoaded() {
             pageUtil.scrollChatListDown();
         },
+
+        msgFileDetail(message){
+            this.detailMessage = message ;
+            this.showFileDetailDialog = true ;
+
+            console.log("----------->>------>>---->>>" );
+            console.dir(message);
+        },
+
+        closeFileDetailDialog() {
+            this.showFileDetailDialog = false;
+
+        }
     }
 };
 </script>

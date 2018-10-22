@@ -9,7 +9,6 @@
                    :beforeClose="dialogBeforeClose"
                    :closeOnClickModal="closeOnClickModal" >
 
-
             <el-form ref="remindForm" :model="form" label-width="120px" :rules="form_rules">
 
                 <el-form-item label="提醒时间" prop="startTime">

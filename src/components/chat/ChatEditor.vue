@@ -13,16 +13,25 @@
             <img class="icon u-circle" slot="icon" width="20" height="20" :src="robot.avatar">
           </cell>
         </group> -->
+
         <div class="m-chat-editor-main" :class="{robot:isRobot}">
             <div class="edit-bar">
+
         <span class="u-editor-icons">
           <span v-if="!isRobot" class="u-editor-icon" @click.stop="showEmoji">
             <i class="u-icon-img"><img :src="icon1"></i>
           </span>
+
           <span v-if="!isRobot" class="u-editor-icon img" @change="sendFileMsg">
             <i class="u-icon-img"><img :src="icon2"></i>
             <input type="file" ref="fileToSent">
           </span>
+
+          <!--<span v-if="!isRobot" class="u-editor-icons img" @change="sendWordMsg">-->
+              <!--<i class="u-icon-img"><img :src="icon3"></i>-->
+              <!--<input type="file" ref="wordFile">-->
+          <!--</span>-->
+
             <!-- <span v-if="!isRobot && !advancedTeam" class="u-editor-icon" @click.stop="sendPlayMsg">
               <i class="u-icon-img"><img :src="icon3"></i>
             </span> -->
@@ -141,6 +150,7 @@
                 }
             }
         },
+
         watch: {
             continueRobotAccid(curVal, oldVal) {
                 if (curVal && this.robotInfos[curVal]) {
@@ -164,6 +174,8 @@
                 // }
             }
         },
+
+
         data() {
             return {
                 dialogVisible: false,
@@ -197,6 +209,7 @@
                 return this.$store.state.robotInfosByNick
             }
         },
+
         methods: {
             handleClose() {
                 this.dialogVisible = false;
@@ -359,12 +372,29 @@
                 let ipt = this.$refs.fileToSent
                 if (ipt.value) {
                     if (this.type === 'session') {
+
+                        /*let type = 'file'
+                        if (/\.(png|jpg|bmp|jpeg|gif)$/i.test(ipt.value)) {
+                            type = 'image'
+                        } else if (/\.(mov|mp4|ogg|webm)$/i.test(ipt.value)) {
+                            type = 'video'
+                        }
+
+                        if (type === 'file') {
+                            this.uploadWordExcel(ipt);
+
+                        } else {*/
+
+
                         this.$store.dispatch('sendFileMsg', {
                             scene: this.scene,
                             to: this.to,
                             fileInput: ipt,
                             isOAItem: this.isOAItem
                         })
+
+                        //}
+
                     } else if (this.type === 'chatroom') {
                         this.$store.dispatch('sendChatroomFileMsg', {
                             fileInput: ipt
@@ -397,13 +427,15 @@
                 }
             },
 
-
             showEmoji() {
                 this.isEmojiShown = true
             },
+
             hideEmoji() {
                 this.isEmojiShown = false
             },
+
+
             addEmoji(emojiName) {
 
                 this.msgToSent += emojiName
@@ -411,6 +443,7 @@
                 var idObj = document.getElementById('sendText');
                 idObj.focus();
             },
+
             chooseRobot(robot) {
                 if (robot && robot.account) {
                     let len = this.msgToSent.length
@@ -422,9 +455,11 @@
                     }
                 }
             },
+
             hideRobotList() {
                 this.isRobotListShown = false
             },
+
             onInputFocus(e) {
                 setTimeout(() => {
                     // todo fixme 解决iOS输入框被遮挡问题，但会存在空白缝隙
@@ -432,6 +467,7 @@
                     pageUtil.scrollChatListDown()
                 }, 200)
             },
+
             turnToMsgReceipt() {
                 if (this.invalid) {
                     this.$toast(this.invalidHint)
@@ -439,7 +475,9 @@
                 }
                 location = `#/teamSendMsgReceipt/${this.to}`
             }
+
         }
+
     }
 </script>
 

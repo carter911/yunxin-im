@@ -5,6 +5,7 @@
         'message-info' : 1===1,
         } "
         :span="24" >
+
     <el-col :span="4">
         <img class="avatar" :onerror="avatar(item.avatar)" v-bind:src="item.avatar"/>
     </el-col>

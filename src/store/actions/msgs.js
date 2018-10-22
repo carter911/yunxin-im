@@ -295,6 +295,7 @@ export function sendFileMsg({state, commit}, obj) {
     }
     store.dispatch('showLoading')
     let custom = getCustom({state, commit})
+
     nim.sendFile({
         scene,
         to,
@@ -354,7 +355,6 @@ export function sendBase64Url({state, commit}, obj) {
             onSendMsgDone(error, msg)
         }
     })
-
 
 }
 
