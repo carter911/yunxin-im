@@ -21,6 +21,7 @@ import UploadPlugin from "@/components/image/UploadPlugin.vue"
 
 import OAFragment from "@/components/oa/OAFragment.vue"
 import MeetingRecord from "@/components/oa/MeetingRecord.vue"
+import BudgetFragment from  "@/components/budget/BudgetFragment.vue"
 
 
 Vue.use(Router)
@@ -61,6 +62,12 @@ export default new Router({
                     name:'oa',
                     path:'oa',
                     component:OAFragment,
+                },
+
+                {
+                    name:'budget',
+                    path:'budget',
+                    component:BudgetFragment,
                 },
 
                 {

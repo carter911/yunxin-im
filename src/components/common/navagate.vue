@@ -85,11 +85,16 @@
 
                 </el-menu-item>
 
+                <!--会议记录-->
                 <el-menu-item index="/admin/meetingRecord">
                     <img class="menu" :src="meeting_url"/>
                 </el-menu-item>
-                
 
+                <!--预算系统-->
+                <!--<el-menu-item index="/admin/budget">-->
+                    <!--<img class="menu" :src="meeting_url"/>-->
+                <!--</el-menu-item>-->
+                <!---->
 
             </el-menu>
         </el-aside>
@@ -222,6 +227,7 @@
                     this.changeUrls();
                 }
             },
+
             closeWindow() {
                 this.$confirm('确定退出将会退出程序,确定吗？', '退出', {
                     confirmButtonText: '确认',

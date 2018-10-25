@@ -25,7 +25,7 @@ export function initNimSDK ({ state, commit, dispatch }, loginInfo) {
   console.log("nim初始化sdk");
   // 初始化SDK
   window.nim = state.nim = SDK.NIM.getInstance({
-    debug: true && { api: 'info', style: 'font-size:12px;color:blue;background-color:rgba(0,0,0,0.1)' },
+    debug: false && { api: 'info', style: 'font-size:12px;color:blue;background-color:rgba(0,0,0,0.1)' },
     appKey: config.appkey,
     account: loginInfo.uid,
     token: loginInfo.sdktoken,

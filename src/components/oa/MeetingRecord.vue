@@ -44,8 +44,8 @@
 
                     <el-card>
                         <div class="add_meeting_btn" style="cursor: pointer">
-                            <el-button type="primary" size="mini" v-if="this.showCreateBtn" @click="openDialog">重新编辑</el-button>
-                            <el-button type="danger" size="mini" v-if="this.showCreateBtn" @click="deleteMeetingRecord">删除记录</el-button>
+                            <el-button type="primary" size="mini" v-if="this.showCanEditOrDeleteBtn" @click="openDialog">重新编辑</el-button>
+                            <el-button type="danger" size="mini" v-if="this.showCanEditOrDeleteBtn" @click="deleteMeetingRecord">删除记录</el-button>
                         </div>
 
                         <div class="meeting_detail_html" v-html="meetingDetail"></div>
@@ -58,6 +58,7 @@
             <div class="meeting_edit" v-if="this.showAddDialog">
 
                 <WangEditorRecord @closeMeetingAddDialog="closeMeetingAddDialog"
+                    :oaGroupIds="this.oaGroupIds"
                     :meeting_title="this.meetingTitle"
                     :meeting_desc="this.meetingDesc"
                     :meeting_detail="this.meetingUpdateDetail"
@@ -114,6 +115,8 @@
                 meetingTitle:"",
                 meetingDesc:"",
                 meetingUpdateDetail:"",
+                oaGroupIds:[],
+                meetingCreatedUId:"0",
 
                 meetingId: '',
 
@@ -129,6 +132,14 @@
             showCreateBtn(){
               return this.canCreateMeeting ;
             },
+
+            showCanEditOrDeleteBtn(){
+                let userInfo = JSON.parse(localStorage.getItem('userinfo'));
+                console.log("---showEditOrDelete---", this.meetingCreatedUId  , userInfo.userId);
+
+                return null != userInfo && (this.meetingCreatedUId === ""+userInfo.userId) ;
+            },
+
 
             //获取当前会议列表
             getCurrentMeetingList() {
@@ -192,6 +203,7 @@
                 this.meetingTitle = "";
                 this.meetingDesc = "";
                 this.meetingUpdateDetail = "";
+                this.oaGroupIds = [] ;
                 this.showAddDialog = true;
             },
 
@@ -203,9 +215,16 @@
                     this.meetingTitle = item.title;
                     this.meetingDesc = item.desc;
                     this.meetingUpdateDetail = item.content;
+                    this.meetingCreatedUId = item.user_id;
 
                     this.get_meeting_detail();
                 }
+
+                if(null != item.look_list && item.look_list.length > 0){
+                    this.oaGroupIds = [].concat(item.look_list.split(","));
+                }
+
+                console.log("oaGroupIds", this.oaGroupIds);
             },
 
 
@@ -304,10 +323,17 @@
                 }
 
                 if(null != this.meetingItemList && this.meetingItemList.length > 0 && this.pageIndex === 1) {
-                    this.meetingId = this.meetingItemList[0].id;
-                    this.meetingTitle = this.meetingItemList[0].title;
-                    this.meetingDesc = this.meetingItemList[0].desc;
-                    this.meetingUpdateDetail = this.meetingItemList[0].content;
+                    let item = this.meetingItemList[0];
+
+                    this.meetingId = item.id;
+                    this.meetingTitle = item.title;
+                    this.meetingDesc = item.desc;
+                    this.meetingUpdateDetail = item.content;
+                    this.meetingCreatedUId = item.user_id;
+
+                    if(null != item.look_list && item.look_list.length > 0){
+                        this.oaGroupIds = [].concat(item.look_list.split(","));
+                    }
 
                     this.get_meeting_detail();
                 }

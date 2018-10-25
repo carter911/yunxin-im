@@ -71,7 +71,9 @@ export default {
             if(this.$route.path === '/admin/chat' ||
                this.$route.path === '/admin/project' ||
                this.$route.path === '/admin/meetingRecord' ||
-               this.$route.path === '/admin/oa'){
+               this.$route.path === '/admin/oa' ||
+               this.$route.path === '/admin/budget'){
+
 
                 this.isBack = false;
 

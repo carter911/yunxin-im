@@ -3,7 +3,6 @@
     <div id="id_content">
 
         <div>
-
             <el-row>
                 <el-col :span="2" style="margin-top: 24px; margin-bottom: 20px">
                     <img src="../../../static/go_left.png" class="edit_back_left" @click="resetFormAndClose"/>
@@ -14,28 +13,35 @@
 
                 </el-col>
             </el-row>
+        </div>
+
+
+        <div class="meeting-content-class" :style="{height : (this.$store.state.windowClientHeight - 126) + 'px'}">
+            <el-form ref="form" :model="form" :rules="form_rules">
+
+                <el-form-item label="会议标题" label-width="80px" prop="meetingTitle">
+                    <el-input v-model="form.meetingTitle" style="color: #464646;"></el-input>
+                </el-form-item>
+
+                <el-form-item label="会议简介" label-width="80px" prop="meetingIntro">
+                    <el-input v-model="form.meetingIntro" style="color: #464646;"></el-input>
+                </el-form-item>
+
+                <el-form-item>
+                    <OAGroupDialog :oaGroupIds="this.oaGroupIds" ref="oaGroup"></OAGroupDialog>
+                </el-form-item>
+
+                <div ref="editor" style="text-align:left; height: 320px"></div>
+
+                <el-form-item class="form_submit">
+                    <el-button type="primary" @click="submit('form')">提交记录</el-button>
+                    <el-button type="warning" @click="resetFormAndClose">{{this.getCancelButtonName()}}</el-button>
+
+                </el-form-item>
+            </el-form>
 
         </div>
 
-        <el-form ref="form" :model="form" :rules="form_rules">
-
-            <el-form-item label="会议标题" label-width="80px" prop="meetingTitle">
-                <el-input v-model="form.meetingTitle"></el-input>
-            </el-form-item>
-
-            <el-form-item label="会议简介" label-width="80px" prop="meetingIntro">
-                <el-input v-model="form.meetingIntro"></el-input>
-            </el-form-item>
-
-            <div ref="editor" style="text-align:left" :style="{height : (this.$store.state.windowClientHeight - 300) + 'px'}"></div>
-
-            <el-form-item class="form_submit">
-                <el-button type="primary" @click="submit('form')">提交记录</el-button>
-                <el-button type="warning" @click="resetFormAndClose">{{this.getCancelButtonName()}}</el-button>
-
-            </el-form-item>
-
-        </el-form>
 
     </div>
 
@@ -49,10 +55,11 @@
     import ElDialog from "element-ui/packages/dialog/src/component";
     import ElFormItem from "element-ui/packages/form/src/form-item";
 
+    import OAGroupDialog from "./OAGroupDialog"
+
     import E from 'wangeditor';
 
-
-    import http from "../../utils/http"
+    import http from "../../utils/http";
     import Log from '../../common/Log';
 
 
@@ -62,6 +69,7 @@
             ElDialog,
             ElInput,
             ElForm,
+            OAGroupDialog
         },
 
         props: {
@@ -83,6 +91,11 @@
             meeting_id: {
                 type: String,
                 require: false
+            },
+
+            oaGroupIds:{
+                type:Array,
+                require:true
             }
         },
 
@@ -90,6 +103,9 @@
         name: "add-meeting-record",
         data() {
             return {
+
+                showOAGroupDialog : false,
+
                 editorContent : '',
 
                 hasCommitData: false,
@@ -121,7 +137,6 @@
 
                 dialogTableVisible: true,
                 closeOnClickModal: false,
-
 
             }
         },
@@ -169,9 +184,25 @@
                 })
             },
 
-            realCommit() {
+            createGroupIds(dataArray) {
+                let result = [] ;
+                dataArray.forEach(item => {
+                    result.push(item.id);
+                });
 
+                return result ;
+            },
+
+            realCommit() {
                 let that = this;
+                let choosedGroup = that.$refs.oaGroup.getAllChooseItemGroup();
+                if(null == choosedGroup || choosedGroup.length ===0){
+                    that.showMsg("error", "请选择会议可见群组");
+                    return
+                }
+
+                let groupIds = that.createGroupIds(choosedGroup);
+
                 if (this.formSubmit) return;
                 this.formSubmit = true;
                 this.hasCommitData = true;
@@ -181,7 +212,8 @@
                     title: this.form.meetingTitle,
                     desc: this.form.meetingIntro,
                     content: this.editorContent,
-                    id: this.meeting_id
+                    id: this.meeting_id,
+                    look_list:groupIds
                 };
 
                 http.post(url, params).then(response => {
@@ -206,6 +238,10 @@
                 this.$refs["form"].resetFields();
                 this.$emit("closeMeetingAddDialog", this.hasCommitData);
             },
+
+            editOAGroup() {
+                this.showOAGroupDialog = true;
+            }
         },
 
         mounted() {
@@ -237,12 +273,19 @@
 
             //配置图片上传路径
             editor.customConfig.uploadImgServer = 'http://dev.e-shigong.com/Admin/Common/uploadWang';
+
+            //配置z-index
+            editor.customConfig.zIndex = 100;
+
             //创建
             editor.create();
-            //设置内容
-            editor.txt.html(this.htmlDecode(this.meeting_detail));
-        }
 
+            let tempData = this.htmlDecode(this.meeting_detail);
+            //设置内容
+            editor.txt.html(tempData);
+            //设置默认内容 防止未更改时 数据提交为空
+            this.editorContent = tempData;
+        }
     }
 </script>
 
@@ -256,6 +299,15 @@
         width: 20px;
         height: 20px;
         margin: 0 auto;
+    }
+
+    .meeting-content-class{
+        overflow: auto;
+        overflow-x: hidden;
+    }
+
+    .meeting-content-class::-webkit-scrollbar {
+        display: none;
     }
 
     #id_content p {
