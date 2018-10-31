@@ -16,7 +16,7 @@
 
                     <div v-if="!this.checkPageDataEmpty"
                          class="meeting_list_item"
-                         v-bind:style="{'height' : (this.$store.state.windowClientHeight - 140) + 'px'}">
+                         v-bind:style="{'height' : (this.$store.state.windowClientHeight -156) + 'px'}">
                         <MeetingRecordItem @onItemClick="onItemClick" v-for="(item,index) in this.getCurrentMeetingList"
                                            :key="index"
                                            :currentId="meetingId"

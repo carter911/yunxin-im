@@ -151,29 +151,44 @@ export function onRevocateMsg(error, msg) {
 
 export function loadMoreChatData({state, commit}, isOAItem) {
     //alert("----loadMoreChatData----->>>")
-    let sessionId = state.currSessionId;
+    let sessionId = isOAItem ? state.OACurrentSessionId : state.currSessionId;
+    sessionId = sessionId.replace("oa-","team-");
+
     //获取当前session
     let currentSession = state.msgs[sessionId] || [];
+    //获取第一条消息
+    let firstMsg = {} ;
 
+    console.log("------get session id----", sessionId);
     console.dir(currentSession);
-
 
     let currentTime = Date.parse(new Date());
     if(currentSession.length > 0 ){
-        currentTime = currentSession[0].time ;
+        firstMsg = currentSession[0];
+        currentTime = firstMsg.time ;
     }
 
-    console.log("----get the target time---" , currentTime);
+    let idServer = firstMsg.idServer;
+    console.log("----idServer----",isOAItem, currentTime,  idServer , parseFloat(idServer));
+    //35814464662011939
+    //35814464662011940
 
+    //此处直接获取云端信息 不从本地数据库获取
     const nim = state.nim;
-    nim.getLocalMsgs({
-        sessionId: sessionId,
-        end: currentTime,
-        desc: true,
-        limit: config.localMsglimit,
+    nim.getHistoryMsgs({
+        scene: firstMsg.scene,
+        to: firstMsg.to,
+        lastMsgId: idServer ,
+        endTime: currentTime,
+        beginTime: 0,
+        reverse: false,
+        limit: 20,
+
         done: function (error , obj) {
+            //console.log("---load msgs---", error , obj);
+            
             if(error == null) {
-                let historyMsgList = obj.msgs || [] ;
+                let historyMsgList = (obj.msgs || []).reverse() ;
                 if(isOAItem){
                     state.OACurrentSessionMsg = historyMsgList.concat(state.OACurrentSessionMsg || []);
                     state.msgs[sessionId] = state.OACurrentSessionMsg;
@@ -184,12 +199,10 @@ export function loadMoreChatData({state, commit}, isOAItem) {
                 }
             }
 
-            console.log("getLocalHistory------>>", error , obj.msgs);
+            console.log("getLocalHistory------>>", error , obj.msgs, firstMsg.idServer);
         }
     });
-
 }
-
 
 
 export function revocateMsg({state, commit}, msg) {

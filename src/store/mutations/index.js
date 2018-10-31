@@ -137,14 +137,9 @@ export default {
         let oaNum=0 ;
 
         state.sessionlist.forEach((item, index) => {
-            if("626953355" === item.id){
-                console.log("---target session----", item);
-            }
-
             if(checkSessionIsOAProjectTeam(item)){
-                console.log("---item---",item);
+                //console.log("---item---",item);
                 oaNum += item.unread;
-
             }else{
                 projectNum += item.unread;
             }
@@ -280,8 +275,9 @@ export default {
         } else if (type === 'init') {
             console.log('更新当前的项目id', obj.sessionId)
 
-            localStorage.setItem('currSession', obj)
-            state.currSessionId = obj.sessionId
+            localStorage.setItem('currSession',obj);
+            state.currSessionId = obj.sessionId;
+
             if (obj.sessionId !== undefined && obj.sessionId.indexOf('team') >= 0) {
 
                 //更新当前项目信息
@@ -344,37 +340,35 @@ export default {
             }
 
         } else if (type === 'put') { // 追加一条消息
-            let newMsg = obj.msg
-            let lastMsgTime = 0
-            let lenCurrMsgs = state.OACurrentSessionMsg.length
-            if (lenCurrMsgs > 0) {
-                lastMsgTime = state.OACurrentSessionMsg[lenCurrMsgs - 1].time
-            }
+            let newMsg = obj.msg;
+
             if (newMsg) {
-                if ((newMsg.time - lastMsgTime) > 1000 * 60 * 5) {
-                    state.OACurrentSessionMsg.push({
-                        type: 'timeTag',
-                        text: util.formatDate(newMsg.time, false)
-                    })
-                }
-                state.OACurrentSessionMsg.push(newMsg)
-                store.dispatch('checkTeamMsgReceipt', [newMsg])
+                state.OACurrentSessionMsg.push(newMsg);
+                store.dispatch('checkTeamMsgReceipt', [newMsg]);
             }
 
+            //if((newMsg.time - lastMsgTime) > 1000 * 60 * 5) {
+            //state.OACurrentSessionMsg.push({
+            //type: 'timeTag',
+            //text: util.formatDate(newMsg.time, false)
+            //})
+            //}
+
         } else if (type === 'concat') {
+            // let lastMsgTime = 0
+            // if ((msg.time - lastMsgTime) > 1000 * 60 * 5) {
+            //     lastMsgTime = msg.time;
+            //     currSessionMsgs.push({
+            //         type: 'timeTag',
+            //         text: util.formatDate(msg.time, false)
+            //     })
+            // }
+
             // 一般用于历史消息拼接
             let currSessionMsgs = []
-            let lastMsgTime = 0
             obj.msgs.forEach(msg => {
-                if ((msg.time - lastMsgTime) > 1000 * 60 * 5) {
-                    lastMsgTime = msg.time;
-                    currSessionMsgs.push({
-                        type: 'timeTag',
-                        text: util.formatDate(msg.time, false)
-                    })
-                }
                 currSessionMsgs.push(msg)
-            })
+            });
 
             currSessionMsgs.reverse();
             currSessionMsgs.forEach(msg => {
@@ -440,7 +434,7 @@ export default {
                 let sessionId = state.currSessionId;
                 console.log("----currentSessionId----", sessionId);
 
-                let currSessionMsgs = [].concat(state.msgs[sessionId] || [])
+                let currSessionMsgs = [].concat(state.msgs[sessionId] || []);
                 if(currSessionMsgs.length === 0) {
                     store.commit("getLocalHistory", sessionId);
                 }else {
@@ -448,40 +442,44 @@ export default {
                 }
             }
         } else if (type === 'put') { // 追加一条消息
-            let newMsg = obj.msg
-            let lastMsgTime = 0
-            let lenCurrMsgs = state.currSessionMsgs.length
-            if (lenCurrMsgs > 0) {
-                lastMsgTime = state.currSessionMsgs[lenCurrMsgs - 1].time
-            }
+            let newMsg = obj.msg;
             if (newMsg) {
-                if ((newMsg.time - lastMsgTime) > 1000 * 60 * 5) {
-                    state.currSessionMsgs.push({
-                        type: 'timeTag',
-                        text: util.formatDate(newMsg.time, false)
-                    })
-                }
-                state.currSessionMsgs.push(newMsg)
-                store.dispatch('checkTeamMsgReceipt', [newMsg])
+                state.currSessionMsgs.push(newMsg);
+                store.dispatch('checkTeamMsgReceipt', [newMsg]);
             }
+
+            // let lastMsgTime = 0
+            // let lenCurrMsgs = state.currSessionMsgs.length
+            // if (lenCurrMsgs > 0) {
+            //     lastMsgTime = state.currSessionMsgs[lenCurrMsgs - 1].time
+            // }
+            // if ((newMsg.time - lastMsgTime) > 1000 * 60 * 5) {
+            //     state.currSessionMsgs.push({
+            //         type: 'timeTag',
+            //         text: util.formatDate(newMsg.time, false)
+            //    })
+            // }
+
         } else if (type === 'concat') {
+            // let lastMsgTime = 0
+            // if ((msg.time - lastMsgTime) > 1000 * 60 * 5) {
+            //     lastMsgTime = msg.time
+            //     currSessionMsgs.push({
+            //         type: 'timeTag',
+            //         text: util.formatDate(msg.time, false)
+            //     })
+            // }
+
             // 一般用于历史消息拼接
-            let currSessionMsgs = []
-            let lastMsgTime = 0
+            let currSessionMsgs = [];
             obj.msgs.forEach(msg => {
-                if ((msg.time - lastMsgTime) > 1000 * 60 * 5) {
-                    lastMsgTime = msg.time
-                    currSessionMsgs.push({
-                        type: 'timeTag',
-                        text: util.formatDate(msg.time, false)
-                    })
-                }
                 currSessionMsgs.push(msg)
-            })
-            currSessionMsgs.reverse()
+            });
+
+            currSessionMsgs.reverse();
             currSessionMsgs.forEach(msg => {
                 state.currSessionMsgs.unshift(msg)
-            })
+            });
             if (obj.msgs[0]) {
                 state.currSessionLastMsg = obj.msgs[0]
             }
@@ -560,22 +558,21 @@ export default {
         } else {
             state.OACurrentSessionLastMsg = null
         }
+
         state.OACurrentSessionMsg = [];
-        let lastMsgTime = 0
-        console.log('OA初始化会话', currSessionMsgs)
+        console.log('OA初始化会话', currSessionMsgs);
 
-        currSessionMsgs.forEach(msg => {
-            if ((msg.time - lastMsgTime) > 1000 * 60 * 5) {
-                lastMsgTime = msg.time
-                state.OACurrentSessionMsg.push({
-                    type: 'timeTag',
-                    text: util.formatDate(msg.time, false)
-                })
-            }
-            state.OACurrentSessionMsg.push(msg)
-        });
-        store.dispatch('checkTeamMsgReceipt', state.OACurrentSessionMsg)
+        currSessionMsgs.forEach(msg => {state.OACurrentSessionMsg.push(msg)} );
+        store.dispatch('checkTeamMsgReceipt', state.OACurrentSessionMsg);
 
+        //let lastMsgTime = 0
+        // if ((msg.time - lastMsgTime) > 1000 * 60 * 5) {
+        //     lastMsgTime = msg.time
+        //     state.OACurrentSessionMsg.push({
+        //         type: 'timeTag',
+        //         text: util.formatDate(msg.time, false)
+        //     })
+        // }
     },
 
 
@@ -583,6 +580,7 @@ export default {
     setCurrentSessionLogic(state, currSessionMsgs){
         console.log("----setCurrentSessionLogic----", currSessionMsgs);
 
+        //TODO
         // 做消息截断
         let limit = config.localMsglimit;
         let msgLen = currSessionMsgs.length;
@@ -594,21 +592,22 @@ export default {
         } else {
             state.currSessionLastMsg = null
         }
-        state.currSessionMsgs = [];
-        let lastMsgTime = 0
-        console.log('初始化会话', currSessionMsgs)
 
-        currSessionMsgs.forEach(msg => {
-            if ((msg.time - lastMsgTime) > 1000 * 60 * 5) {
-                lastMsgTime = msg.time
-                state.currSessionMsgs.push({
-                    type: 'timeTag',
-                    text: util.formatDate(msg.time, false)
-                })
-            }
-            state.currSessionMsgs.push(msg)
-        })
+        state.currSessionMsgs = [].concat(currSessionMsgs);
         store.dispatch('checkTeamMsgReceipt', state.currSessionMsgs)
+
+        // console.log('初始化会话', currSessionMsgs)
+        // currSessionMsgs.forEach(msg => {
+        //     // if ((msg.time - lastMsgTime) > 1000 * 60 * 5) {
+        //     //     lastMsgTime = msg.time
+        //     //     state.currSessionMsgs.push({
+        //     //         type: 'timeTag',
+        //     //         text: util.formatDate(msg.time, false)
+        //     //     })
+        //     // }
+        //     state.currSessionMsgs.push(msg)
+        // });
+
     },
 
 

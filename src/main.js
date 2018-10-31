@@ -41,7 +41,14 @@ Vue.filter('formatDate', function (time) {
   if (time == undefined || time == null || time == 0 ) return "";
   let date = new Date(time * 1000)
   return formatDate(date, "yyyy-MM-dd")
-})
+});
+
+Vue.filter("formatLongDate", function (time) {
+  if(time == undefined || time == null || time == 0) return "" ;
+  let date = new Date(time);
+  return formatDate(date, "yyyy/MM/dd hh:mm");
+});
+
 
 //----------------froala editor start---------------------------------
 // Require Froala Editor js file.

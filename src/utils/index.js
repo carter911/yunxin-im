@@ -136,7 +136,7 @@ Utils.stringifyDate = function (datetime, simple = false) {
       thatDay
     }
   }
-}
+};
 
 /* 格式化日期 */
 Utils.formatDate = function (datetime, simple = false) {

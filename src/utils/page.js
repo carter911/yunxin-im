@@ -25,21 +25,22 @@ var page = {
 
   // 滚动聊天列表到底部
   scrollChatListDown: (pos, initCount) => {
-
     let dom = document.getElementById('chat_list')
     if (!dom) {
       return
     }
-    let maxCount = 5
-    initCount = initCount || 1
+
+    let maxCount = 5;
+    initCount = initCount || 1;
     if (typeof pos !== 'number') {
       pos = Math.max(dom.scrollHeight - dom.clientHeight, 888888)
     }
-    dom.scrollTop = pos
+
+    dom.scrollTop = pos;
     if ((dom.scrollTop < pos) && (initCount < maxCount)) {
-      clearTimeout(scrollTimer)
+      clearTimeout(scrollTimer);
       scrollTimer = setTimeout(() => {
-        initCount++
+        initCount++;
         page.scrollChatListDown(pos, initCount)
       }, 200)
     }

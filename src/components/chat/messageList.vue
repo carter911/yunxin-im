@@ -24,10 +24,10 @@
     </el-col>
   </el-col>
 </template>
+
+
 <script>
-import util from '../../utils'
-import store from '../../store';
-export default {
+    export default {
     props: ['item','currSessionId'],
     // computed: {
     //     sessionId() {
@@ -36,13 +36,15 @@ export default {
     // },
     methods:{
         chatInfo(item){
-            let sessionId = item.id
+            let sessionId = item.id;
             // let sessionId ='p2p-sgb1693'
             // console.error('--------->sessionid',sessionId)
+
             this.$store.commit('updateCurrSessionId', {
                 type: 'init',
                 sessionId:sessionId
             });
+
             this.$store.commit('updateCurrSessionMsgs', {
                 type: 'init',
                 sessionId: sessionId

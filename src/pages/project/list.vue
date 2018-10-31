@@ -17,6 +17,7 @@
                     <el-main class='project_content_class'
                              v-bind:style="{'height' : (this.$store.state.windowClientHeight - 121) + 'px'}"
                              v-loading='request_data_loading'>
+
                         <div v-for="item in this.getTargetArray()"
                              :style="{'background-color': current_pid === item.id ? '#f2f2f2' : '#fff'}"
                              class="project_list" :key="item.id"
@@ -47,7 +48,7 @@
             <el-main class="pannel-right"
                      v-bind:style="{'height' : (this.$store.state.windowClientHeight - 60) + 'px'}">
 
-                <ProjectDetail :pid="current_pid"></ProjectDetail>
+                <ProjectDetail :pid="current_pid" v-show="this.current_pid > 0"></ProjectDetail>
 
             </el-main>
         </el-container>
@@ -230,12 +231,14 @@
 
 
             get_list(status = 0, isRefresh = true) {
-                console.log("----->>" + status);
-                if (this.dataHasBeenLoaded() && isRefresh) return;
+                console.log("---3-->>" + status);
+                if (this.dataHasBeenLoaded() && isRefresh) {
+                    return;
+                }
 
-                var url = 'projectlists';
+                let url = 'projectlists';
                 let pageIndex = this.getCurrentPageIndex();
-                if (pageIndex == 1) {
+                if (pageIndex === 1) {
                     let tempData = sgbLocalInfo.getStorage(this.getProjectLocalSaveKey())
                     if (null != tempData && undefined == tempData) {
                         this.parseLocalProjectInfo(status, pageIndex);
@@ -246,11 +249,11 @@
                 }
 
                 this.buttomLoadingType = 1;
-                var params = {
+                let params = {
                     status: status,
                     pageSize: this.pageSize,
                     pageIndex: pageIndex
-                }
+                };
 
                 http.get(url, params).then(response => {
                     var result = response

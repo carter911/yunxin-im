@@ -1,7 +1,7 @@
 <template>
     <ul  class="m-chat-list p-chat-list" v-bind:style="{height: (this.$store.state.windowClientHeight-370)+'px'}">
-        <li  class="u-msg item-time" v-if="canLoadMore" @click="loadChatData()">
-        ---- 暂无更多记录 ----
+        <li  class="u-msg item-time" v-if="this.canLoadMore" @click="loadChatData()">
+        ---- 点击加载更多 ----
 
         </li>
         <li class="u-msg item-time" v-else>
@@ -36,31 +36,41 @@
 
         props: {
             type: String, // 类型，chatroom, session
-            canLoadMore: [String, Boolean],
+
+            canLoadMore:{
+                type:Boolean,
+                default(){
+                    return true
+                }
+            },
             isRobot: {
                 type: Boolean,
                 default () {
                 return false
                 }
             },
+
             msglist: {
                 type: Array,
                 default () {
                 return []
                 }
             },
+
             userInfos: {
                 type: Object,
                 default () {
                 return {}
                 }
             },
+
             myInfo: {
                 type: Object,
                 default () {
                 return {}
                 }
             },
+
             isHistory: {
                 type: Boolean,
                 default() {
@@ -84,6 +94,8 @@
             },
         data () {
                 return {
+                    lastMsgCount:0,
+
                     isFullImgShow: false,
                     msgLoadedTimer: null,
                     //chatHeight :(this.$store.state.windowClientHeight-370)+'px',
@@ -107,14 +119,17 @@
             },
 
             loadChatData(){
-                //this.$store.dispatch("loadMoreChatData",this.isOAItem)
+                this.$store.dispatch("loadMoreChatData",this.isOAItem)
             },
+
         },
+
         computed:{
-        // chatHeight(){
-        //   console.log(this.state.changeWindowClienHeight)
-        //   return (this.state.changeWindowClienHeight-380)+'px';
-        // }
+        },
+
+        mounted() {
+            this.lastMsgCount = this.msglist.length;
+            console.log("----last msg count---" , this.lastMsgCount);
         }
     }
 </script>

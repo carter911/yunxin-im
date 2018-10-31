@@ -140,4 +140,5 @@ export default {
 
   //当前任务Id
   currentTaskId:0,
+
 }

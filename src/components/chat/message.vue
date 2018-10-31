@@ -6,7 +6,7 @@
         {{`您已退出该${teamInfo && teamInfo.type==='normal' ? '讨论组':'群'}`}}
       </div>
       <div  id="chat_list" class="chat_list" v-bind:style="{height: chatHeight}">
-        <ChatList type="session" :canLoadMore="chatCanLoadMore" :isOAItem="isOAItem" :msglist="msglist" :userInfos="userInfos" :myInfo="myInfo" :isRobot="isRobot" @msgs-loaded="msgsLoaded" @msgFileDetail="msgFileDetail"/>
+        <ChatList type="session" :canLoadMore="msgCanLoadMore" :isOAItem="isOAItem" :msglist="msglist" :userInfos="userInfos" :myInfo="myInfo" :isRobot="isRobot" @msgs-loaded="msgsLoaded" @msgFileDetail="msgFileDetail"/>
       </div>
       <div>
         <ChatEditor type="session" :scene="scene" :to="to" :isOAItem="isOAItem" :isRobot="isRobot" :invalid="teamInvalid || muteInTeam" :invalidHint="sendInvalidHint" :advancedTeam="teamInfo && teamInfo.type === 'advanced'"/>
@@ -21,15 +21,14 @@
   </keep-alive>
 </template>
 <script>
-import ChatEditor from "../../components/chat/ChatEditor";
-import ChatList from "../../components/chat/ChatList";
-import util from "../../utils";
-import pageUtil from "../../utils/page";
-import store from '../../store';
+    import ChatEditor from "../../components/chat/ChatEditor";
+    import ChatList from "../../components/chat/ChatList";
+    import util from "../../utils";
+    import pageUtil from "../../utils/page";
 
-import FileDetailDialog from "./FileDetailDialog";
+    import FileDetailDialog from "./FileDetailDialog";
 
-export default {
+    export default {
     components: {
         ChatEditor,
         ChatList,
@@ -82,11 +81,13 @@ export default {
     // 离开该页面，此时重置当前会话
     data() {
         return {
+            lastMsgCount:0,
+            msgCanLoadMore:true ,
+
             showFileDetailDialog:false,
             detailMessage:{},
 
             chat_height:(this.$store.state.windowClientHeight-236)+'px',
-            chatCanLoadMore:true ,
 
             leftBtnOptions: {
                 backText: " ",
@@ -97,8 +98,11 @@ export default {
     watch:{
         sessionId(){
             pageUtil.scrollChatListDown();
-            // if(this.chatType == 'worker'){
+            this.lastMsgCount = 0 ;
+            console.log("sessionId has changed....", this.lastMsgCount);
 
+
+            // if(this.chatType == 'worker'){
             // }
             // if(this.chatType == 'owner'){
             //     pageUtil.scrollChatOwnerDown()
@@ -114,7 +118,6 @@ export default {
     },
 
     computed: {
-
         sessionName() {
             let sessionId = this.sessionId;
             let user = null;
@@ -192,16 +195,24 @@ export default {
         },
 
         msglist() {
-            //let msgs = this.$store.state.currSessionMsgs;
-            // var arr2 = msgs.filter(function(msg, index) {
-            //     //console.log('------------->'+msg.type,msg);
-            // });
-            //console.log('------------->',msgs);
+            console.log("---msglist----------");
 
-            console.log("isOAItem","-------->>" + this.isOAItem);
+            return this.isOAItem ? this.$store.state.OACurrentSessionMsg : this.$store.state.currSessionMsgs;
 
-            return this.isOAItem ? this.$store.state.OACurrentSessionMsg : this.$store.state.currSessionMsgs ;
+            // let currentLen = msgList.length ;
+            // if(this.lastMsgCount <= 0) {
+            //     this.msgCanLoadMore = true ;
+            // }else {
+            //     this.msgCanLoadMore = currentLen - this.lastMsgCount >= 20;
+            // }
+            //
+            // //false 31 26 false
+            // console.log("isOAItem","--->>" + this.isOAItem, this.lastMsgCount , currentLen, this.msgCanLoadMore);
+            //
+            // this.lastMsgCount = currentLen;
+            //return msgList ;
         },
+
 
         teamInfo() {
             if (this.scene === "team") {
@@ -245,14 +256,13 @@ export default {
     },
     methods: {
         msgsLoaded() {
-            pageUtil.scrollChatListDown();
+            //console.log("----msgLoaded--------");
+            pageUtil.scrollChatListDown(5500 ,1);
         },
 
         msgFileDetail(message){
             this.detailMessage = message ;
             this.showFileDetailDialog = true ;
-
-            console.log("----------->>------>>---->>>" );
             console.dir(message);
         },
 

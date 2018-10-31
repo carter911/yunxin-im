@@ -303,7 +303,7 @@
 
                    let newResult = response; 
                    let result = newResult.code;
-                   if(result == 200 ) {
+                   if(result === 200 ) {
                        this.project = newResult.data ;
                    }else {
                        this.project = {}
@@ -322,9 +322,6 @@
             if(null != userInfo) {
                 user_id = userInfo.userId;
             }
-
-            console.log("-----require_remind_list---->>deddd---->>" + this.pid)
-
 
             let url = user_id +  "/usermessage";
             let params = { projectId:this.pid,
