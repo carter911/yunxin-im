@@ -6,13 +6,15 @@
                 v-bind:to="to"
                 v-show="isEmojiShown"
                 v-on:add-emoji="addEmoji"
-                v-on:hide-emoji="hideEmoji"
-        ></ChatEmoji>
+                v-on:hide-emoji="hideEmoji"></ChatEmoji>
+
         <!-- <group v-show="isRobotListShown" class="m-chat-emoji m-chat-robot">
           <cell v-for="robot in robotslist" :title="robot.nick" :key="robot.account" @click.native="chooseRobot(robot)">
             <img class="icon u-circle" slot="icon" width="20" height="20" :src="robot.avatar">
           </cell>
         </group> -->
+
+        <AtPanel v-if="showPanelShow" :teamId="getCurrentTeamId" v-on:selectMember="selectMember"></AtPanel>
 
         <div class="m-chat-editor-main" :class="{robot:isRobot}">
             <div class="edit-bar">
@@ -27,10 +29,10 @@
             <input type="file" ref="fileToSent">
           </span>
 
-          <!--<span v-if="!isRobot" class="u-editor-icons img" @change="sendWordMsg">-->
-              <!--<i class="u-icon-img"><img :src="icon3"></i>-->
-              <!--<input type="file" ref="wordFile">-->
-          <!--</span>-->
+          <span v-if="showAtIcon" class="u-editor-icons img" @click.stop="showAtPanel">
+              <i class="u-icon-img"><img :src="icon3"></i>
+          </span>
+
 
             <!-- <span v-if="!isRobot && !advancedTeam" class="u-editor-icon" @click.stop="sendPlayMsg">
               <i class="u-icon-img"><img :src="icon3"></i>
@@ -66,6 +68,7 @@
 </template>
 
 <script>
+    import AtPanel from "./AtPanel"
     import ChatEmoji from './ChatEmoji'
     import config from '../../configs'
     import pageUtil from '../../utils/page'
@@ -73,6 +76,7 @@
 
     export default {
         components: {
+            AtPanel,
             ChatEmoji,
             PreviewImagePlugin
         },
@@ -115,7 +119,8 @@
 
         updated() {
             window.document.body.addEventListener('click', () => {
-                this.isEmojiShown = false
+                this.isEmojiShown = false;
+                this.atPanelShow = false;
             })
         },
 
@@ -129,14 +134,17 @@
                     return false
                 }
             },
+
             invalid: {
                 type: Boolean,
                 default: false
             },
+
             invalidHint: {
                 type: String,
                 default: '您无权限发送消息'
             },
+
             advancedTeam: {
                 type: Boolean,
                 default: false
@@ -148,48 +156,95 @@
                 default() {
                     return false
                 }
+            },
+
+            sessionId : {
+                type:String,
+                required:true
             }
         },
 
         watch: {
+            sessionId(curVal, oldVal) {
+                this.atAccountList = [];
+                this.tempMsgContainer[oldVal] = this.msgToSent;
+                let tempMsg = this.tempMsgContainer[curVal];
+
+                if (null != tempMsg) {
+                    this.msgToSent = tempMsg;
+                } else {
+                    this.msgToSent = "";
+                }
+            },
+
             continueRobotAccid(curVal, oldVal) {
                 if (curVal && this.robotInfos[curVal]) {
                     this.msgToSent = `@${this.robotInfos[curVal].nick} `
                 }
+
                 // 重置
                 this.$store.dispatch('continueRobotMsg', '')
             },
+
             msgToSent(curVal, oldVal) {
                 if (this.isRobot) {
                     return
                 }
 
-                // let indexAt = this.msgToSent.indexOf('@')
-                // if (indexAt >= 0 && (indexAt === this.msgToSent.length - 1)) {
-                //     if (this.robotslist && this.robotslist.length > 0) {
-                //         this.isRobotListShown = true
-                //     }
-                // } else if (this.isRobotListShown === true) {
-                //     this.isRobotListShown = false
-                // }
+                if(null === curVal || null === oldVal) return;
+                let curLength = curVal.length ;
+                let oldLength = oldVal.length ;
+
+
+                //显示@
+                if(curLength - oldLength === 1 && curVal.charAt(curLength-1) === '@'){
+                    this.atPanelShow = true ;
+                }
             }
         },
 
 
         data() {
             return {
+                tempMsgContainer:[],
+
+                atPanelShow:false,
+
                 dialogVisible: false,
                 fullImageUrl: "",
 
                 isEmojiShown: false,
                 isRobotListShown: false,
+                atAccountList:[] ,      //at用户列表
+
                 msgToSent: '',
-                icon1: `${config.resourceUrl}/im/chat-editor-1.png`,
-                icon2: `${config.resourceUrl}/im/chat-editor-2.png`,
-                icon3: `${config.resourceUrl}/im/chat-editor-3.png`,
+                icon1: `../../../static/chat_face.png`,
+                icon2: `../../../static/chat_file.png`,
+                icon3: `../../../static/chat_at.png`,
             }
         },
         computed: {
+            showAtIcon(){  //只显示 team 不需要 sgb
+                let sessionId =  this.sessionId;
+                console.log("------sessionId--xxxx---", sessionId);
+                if(null == sessionId || sessionId.length === 0) return false;
+                return  !this.isRobot && (sessionId.indexOf("o") >= 0 || sessionId.indexOf("t") >= 0);
+            },
+
+
+            showPanelShow(){
+                return this.atPanelShow && this.showAtIcon;
+            },
+
+            getCurrentTeamId(){
+                let sessionId =  this.sessionId;
+                console.log("------sessionId-----", sessionId);
+                if(null == sessionId || sessionId.length === 0) return "0";
+
+                sessionId = sessionId.replace("oa-","").replace("team-","");
+                return sessionId ;
+            },
+
             continueRobotAccid() {
                 return this.$store.state.continueRobotAccid
             },
@@ -211,6 +266,29 @@
         },
 
         methods: {
+            selectMember(selectMemberList) {
+                console.log("----selectMember---", selectMemberList);
+                if(null == selectMemberList || selectMemberList.length === 0) return ;
+                this.msgToSent += this.getAtMemberListStr(selectMemberList);
+                this.atAccountList = selectMemberList;
+
+            },
+
+            getAtMemberListStr(selectMemberList) {
+                let atPath = "" ;
+                selectMemberList.forEach(item => {
+                    atPath += "@" + item.name +","
+                });
+
+              return atPath.substr(0, atPath.length - 1) ;
+            },
+
+
+            showAtPanel() {
+              this.atPanelShow =true;
+              console.log("---showAtPanel---" , this.atPanelShow);
+            },
+
             handleClose() {
                 this.dialogVisible = false;
             },
@@ -240,6 +318,7 @@
             },
 
             sendTextMsg() {
+
                 if (this.invalid) {
                     this.$toast(this.invalidHint)
                     return
@@ -310,14 +389,31 @@
                                 })
                             }
                         } else {
-                            //console.log("chatEditor", "--->>>" + this);
+                            let apns = {};
+                            if(this.atAccountList.length > 0) {
+                                let idArray = [] ;
+                                let content = this.msgToSent;
+                                this.atAccountList.forEach(item => {
+                                    if(content.indexOf(item.name) >= 0) { //如果包含了指定的名字 则认为需要@他
+                                        idArray.push(item.user_id);
+                                    }
+                                });
 
+                                apns = {
+                                    accounts: idArray,
+                                    content:this.msgToSent,
+                                    forcePush:true,
+                                }
+                            }
+
+                            this.atAccountList = [];
                             this.$store.dispatch('sendMsg', {
                                 type: 'text',
                                 scene: this.scene,
                                 to: this.to,
                                 text: this.msgToSent,
-                                isOAItem: this.isOAItem
+                                isOAItem: this.isOAItem,
+                                apns: apns
                             })
                         }
                     }
@@ -372,28 +468,12 @@
                 let ipt = this.$refs.fileToSent
                 if (ipt.value) {
                     if (this.type === 'session') {
-
-                        /*let type = 'file'
-                        if (/\.(png|jpg|bmp|jpeg|gif)$/i.test(ipt.value)) {
-                            type = 'image'
-                        } else if (/\.(mov|mp4|ogg|webm)$/i.test(ipt.value)) {
-                            type = 'video'
-                        }
-
-                        if (type === 'file') {
-                            this.uploadWordExcel(ipt);
-
-                        } else {*/
-
-
                         this.$store.dispatch('sendFileMsg', {
                             scene: this.scene,
                             to: this.to,
                             fileInput: ipt,
                             isOAItem: this.isOAItem
                         })
-
-                        //}
 
                     } else if (this.type === 'chatroom') {
                         this.$store.dispatch('sendChatroomFileMsg', {

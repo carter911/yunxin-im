@@ -224,8 +224,10 @@ export function sendMsg({state, commit}, obj) {
     obj = obj || {};
     obj.isOAItem = undefined === obj.isOAItem ? false : obj.isOAItem;
 
-    let type = obj.type || ''
-    let custom = {}
+    let type = obj.type || '';
+    let custom = {};
+    let apns = obj.apns || {};
+
     if (obj.to.indexOf('sgb') >= 0) {  //发送到OA群&个人群
         if (type === 'custom') {
             custom = getCustom({state, commit}, 'team', obj.isOAItem)
@@ -238,15 +240,34 @@ export function sendMsg({state, commit}, obj) {
 
     switch (type) {
         case 'text':
-            nim.sendText({
-                scene: obj.scene,
-                to: obj.to,
-                text: obj.text,
-                done: onSendMsgDone,
-                needMsgReceipt: obj.needMsgReceipt || false,
-                custom: custom,
-            });
+            if(apns.accounts) {
+                nim.sendText({
+                    scene: obj.scene,
+                    to: obj.to,
+                    text: obj.text,
+                    done: onSendMsgDone,
+                    needMsgReceipt: obj.needMsgReceipt || false,
+                    custom: custom,
+                    apns:apns
+                });
+            }else {
+                nim.sendText({
+                    scene: obj.scene,
+                    to: obj.to,
+                    text: obj.text,
+                    done: onSendMsgDone,
+                    needMsgReceipt: obj.needMsgReceipt || false,
+                    custom: custom,
+                });
+            }
+
             break;
+
+            // apns: {
+            //     accounts:['sgb966','sgb1014'],
+            //     content:"@测试 来来来",
+            //     forcePush:true,
+            // }
 
         case 'custom':
             nim.sendCustomMsg({

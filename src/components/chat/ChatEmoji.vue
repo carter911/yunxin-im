@@ -114,6 +114,9 @@ export default {
   }
 }
 </script>
+
+
+
 <style >
 
   .m-chat-emoji{

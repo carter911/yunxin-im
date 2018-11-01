@@ -9,7 +9,7 @@
         <ChatList type="session" :canLoadMore="msgCanLoadMore" :isOAItem="isOAItem" :msglist="msglist" :userInfos="userInfos" :myInfo="myInfo" :isRobot="isRobot" @msgs-loaded="msgsLoaded" @msgFileDetail="msgFileDetail"/>
       </div>
       <div>
-        <ChatEditor type="session" :scene="scene" :to="to" :isOAItem="isOAItem" :isRobot="isRobot" :invalid="teamInvalid || muteInTeam" :invalidHint="sendInvalidHint" :advancedTeam="teamInfo && teamInfo.type === 'advanced'"/>
+        <ChatEditor type="session" :sessionId="sessionId" :scene="scene" :to="to" :isOAItem="isOAItem" :isRobot="isRobot" :invalid="teamInvalid || muteInTeam" :invalidHint="sendInvalidHint" :advancedTeam="teamInfo && teamInfo.type === 'advanced'"/>
       </div>
     </div>
 

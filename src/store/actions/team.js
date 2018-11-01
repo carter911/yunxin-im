@@ -20,6 +20,7 @@ export function onTeams(teams) {
 
 // 收到群成员及更新群成员接口
 export function onTeamMembers(obj) {
+  console.log("-----onTeamMembers------" , obj);
   store.commit('updateTeamMembers', obj)
 }
 
